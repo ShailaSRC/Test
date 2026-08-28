@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Script Game</title>
+    <style>
+        :root {
+            --bg-color: #f4f1ea;
+            --paper-color: #ffffff;
+            --text-color: #1a1a1a;
+            --border-color: #e0dcd3;
+            --accent-color: #2b2b2b;
+            --accent-hover: #4a4a4a;
+            --success-color: #2e7d32;
+            --error-color: #c62828;
+            --font-courier: "Courier New", Courier, monospace;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+            --shadow-md: 0 8px 16px rgba(0,0,0,0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 12px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Header & Info Bar */
+        header {
+            background: var(--paper-color);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        p.instruction {
+            color: #555;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--paper-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .score-val {
+            font-family: var(--font-courier);
+            font-size: 1.2rem;
+            background: #eae6df;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Script Page Container */
+        .page {
+            background: var(--paper-color);
+            padding: 30px 24px;
+            border-radius: 4px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .page-header {
+            font-family: var(--font-courier);
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Block Styles */
+        .block-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .block {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+            position: relative;
+        }
+
+        .block:hover {
+            border-color: #bbb;
+        }
+
+        .block.moving {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 2;
+        }
+
+        /* Block Controls */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .btn-move {
+            background: #f0ede6;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 38px;
+            height: 38px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: background 0.15s ease;
+        }
+
+        .btn-move:active {
+            background: #dcd7cc;
+        }
+
+        .btn-move:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Script Format Visuals */
+        .content-box {
+            flex: 1;
+            font-family: var(--font-courier);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            overflow: hidden;
+        }
+
+        .tag {
+            font-family: var(--font-sans);
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+            width: fit-content;
+            letter-spacing: 0.5px;
+        }
+
+        /* Script Element Specific Layouts */
+        .type-scene_heading .tag { background: #e3f2fd; color: #1565c0; }
+        .type-action .tag { background: #e8f5e9; color: #2e7d32; }
+        .type-character .tag { background: #fff3e0; color: #ef6c00; }
+        .type-dialogue .tag { background: #f3e5f5; color: #6a1b9a; }
+        .type-transition .tag { background: #fbe9e7; color: #d84315; }
+
+        .script-text {
+            font-size: 0.95rem;
+            color: #111;
+            line-height: 1.3;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* Format specific alignments matching real screenplays */
+        .type-scene_heading .script-text {
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .type-character .script-text {
+            text-transform: uppercase;
+            text-align: center;
+            padding-left: 10%;
+            padding-right: 10%;
+            font-weight: bold;
+        }
+
+        .type-dialogue .script-text {
+            text-align: center;
+            padding-left: 15%;
+            padding-right: 15%;
+        }
+
+        .type-transition .script-text {
+            text-align: right;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* Action bar & Feedback */
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            touch-action: manipulation;
+        }
+
+        .btn-submit {
+            background: var(--accent-color);
+            color: #fff;
+        }
+
+        .btn-submit:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-reset {
+            background: #e5e0d8;
+            color: var(--text-color);
+            flex: 0 0 100px;
+        }
+
+        .btn-reset:hover {
+            background: #d5cfc4;
+        }
+
+        .feedback {
+            padding: 14px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .feedback.correct {
+            display: block;
+            background: #e8f5e9;
+            color: var(--success-color);
+            border: 1px solid #a5d6a7;
+        }
+
+        .feedback.incorrect {
+            display: block;
+            background: #ffebee;
+            color: var(--error-color);
+            border: 1px solid #ef9a9a;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Tweaks */
+        @media (max-width: 480px) {
+            body { padding: 12px 8px; }
+            .page { padding: 20px 14px; }
+            .type-dialogue .script-text { padding-left: 5%; padding-right: 5%; }
+            .type-character .script-text { padding-left: 5%; padding-right: 5%; }
+            .btn-move { width: 42px; height: 42px; font-size: 1.2rem; } /* Touch optimized */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Editor Script Game</h1>
+        <p class="instruction">Arrange the screenplay blocks in the correct order to form a proper scene sequence.</p>
+    </header>
+
+    <div class="score-board">
+        <span>Scene <span id="current-scene-num">1</span> of <span id="total-scenes">3</span></span>
+        <span>Score: <span id="score" class="score-val">0</span></span>
+    </div>
+
+    <div class="page">
+        <div class="page-header">
+            <span>DRAFT_SCENE.FTM</span>
+            <span id="scene-title">SCENE 1</span>
+        </div>
+
+        <div id="block-list" class="block-list">
+            <!-- Blocks rendered dynamically -->
+        </div>
+
+        <div id="feedback" class="feedback"></div>
+
+        <div class="action-bar">
+            <button id="submit-btn" class="btn btn-submit" onclick="checkOrder()">Submit Scene</button>
+            <button id="reset-btn" class="btn btn-reset" onclick="resetCurrentScene()">Reset</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Database of script scenes to arrange
+    const scenes = [
+        {
+            title: "COFFEE SHOP - DAY",
+            blocks: [
+                { id: "b1", type: "scene_heading", tag: "Scene Heading", text: "INT. COFFEE SHOP - DAY" },
+                { id: "b2", type: "action", tag: "Action", text: "ALEX (30s) sits by the window, staring intently at a laptop screen." },
+                { id: "b3", type: "character", tag: "Character", text: "ALEX" },
+                { id: "b4", type: "dialogue", tag: "Dialogue", text: "(whispering to self)\nIt's finally working..." },
+                { id: "b5", type: "action", tag: "Action", text: "The CAFE OWNER walks up, placing a fresh mug on the table." },
+                { id: "b6", type: "transition", tag: "Transition", text: "CUT TO:" }
+            ]
+        },
+        {
+            title: "THE ESCAPE - NIGHT",
+            blocks: [
+                { id: "b1", type: "scene_heading", tag: "Scene Heading", text: "EXT. ALLEYWAY - NIGHT" },
+                { id: "b2", type: "action", tag: "Action", text: "Rain pours onto the slick cobblestone streets. Footsteps echo loudly." },
+                { id: "b3", type: "character", tag: "Character", text: "DETECTIVE MILLER" },
+                { id: "b4", type: "dialogue", tag: "Dialogue", text: "Hold it right there!" },
+                { id: "b5", type: "character", tag: "Character", text: "SUSPECT" },
+                { id: "b6", type: "dialogue", tag: "Dialogue", text: "You'll never catch me alive!" },
+                { id: "b7", type: "action", tag: "Action", text: "The suspect vaults over a tall wire fence and vanishes into darkness." },
+                { id: "b8", type: "transition", tag: "Transition", text: "FADE OUT." }
+            ]
+        },
+        {
+            title: "LABORATORY - MOMENTS LATER",
+            blocks: [
+                { id: "b1", type: "scene_heading", tag: "Scene Heading", text: "INT. LABORATORY - NIGHT" },
+                { id: "b2", type: "action", tag: "Action", text: "Sparks fly from the central reactor console." },
+                { id: "b3", type: "character", tag: "Character", text: "DR. ARIS" },
+                { id: "b4", type: "dialogue", tag: "Dialogue", text: "Shut it down! Pull the main breaker!" },
+                { id: "b5", type: "action", tag: "Action", text: "Technicians scramble across the room frantically." },
+                { id: "b6", type: "transition", tag: "Transition", text: "DISSOLVE TO:" }
+            ]
+        }
+    ];
+
+    let currentSceneIndex = 0;
+    let score = 0;
+    let currentBlocks = [];
+    let isSceneCompleted = false;
+
+    // Load initial game state
+    window.onload = function() {
+        document.getElementById("total-scenes").innerText = scenes.length;
+        loadScene(currentSceneIndex);
+    };
+
+    // Load a scene and shuffle blocks
+    function loadScene(index) {
+        isSceneCompleted = false;
+        const feedbackEl = document.getElementById("feedback");
+        feedbackEl.className = "feedback";
+        feedbackEl.innerText = "";
+        
+        document.getElementById("current-scene-num").innerText = index + 1;
+        document.getElementById("scene-title").innerText = scenes[index].title;
+
+        // Clone correct blocks and shuffle
+        const correctBlocks = scenes[index].blocks;
+        currentBlocks = [...correctBlocks];
+        
+        // Shuffle array until it differs from correct order
+        do {
+            currentBlocks.sort(() => Math.random() - 0.5);
+        } while (isAlreadyCorrect(currentBlocks, correctBlocks) && correctBlocks.length > 1);
+
+        renderBlocks();
+    }
+
+    // Helper to check if shuffled array matches correct state
+    function isAlreadyCorrect(arr1, arr2) {
+        return arr1.every((item, idx) => item.id === arr2[idx].id);
+    }
+
+    // Render blocks onto the paper
+    function renderBlocks() {
+        const listContainer = document.getElementById("block-list");
+        listContainer.innerHTML = "";
+
+        currentBlocks.forEach((block, index) => {
+            const blockEl = document.createElement("div");
+            blockEl.className = `block type-${block.type}`;
+            
+            const isFirst = index === 0;
+            const isLast = index === currentBlocks.length - 1;
+
+            blockEl.innerHTML = `
+                <div class="controls">
+                    <button class="btn-move" onclick="moveUp(${index})" ${isFirst ? 'disabled' : ''} title="Move Up" aria-label="Move Up">↑</button>
+                    <button class="btn-move" onclick="moveDown(${index})" ${isLast ? 'disabled' : ''} title="Move Down" aria-label="Move Down">↓</button>
+                </div>
+                <div class="content-box">
+                    <span class="tag">${block.tag}</span>
+                    <div class="script-text">${escapeHtml(block.text)}</div>
+                </div>
+            `;
+            listContainer.appendChild(blockEl);
+        });
+    }
+
+    // Move block up
+    function moveUp(index) {
+        if (index <= 0 || isSceneCompleted) return;
+        const temp = currentBlocks[index];
+        currentBlocks[index] = currentBlocks[index - 1];
+        currentBlocks[index - 1] = temp;
+        renderBlocks();
+        hideFeedback();
+    }
+
+    // Move block down
+    function moveDown(index) {
+        if (index >= currentBlocks.length - 1 || isSceneCompleted) return;
+        const temp = currentBlocks[index];
+        currentBlocks[index] = currentBlocks[index + 1];
+        currentBlocks[index + 1] = temp;
+        renderBlocks();
+        hideFeedback();
+    }
+
+    // Hide active feedback message when editing order
+    function hideFeedback() {
+        const feedbackEl = document.getElementById("feedback");
+        feedbackEl.className = "feedback";
+    }
+
+    // Check user submission
+    function checkOrder() {
+        if (isSceneCompleted) {
+            // If already completed, move to next scene on click
+            if (currentSceneIndex < scenes.length - 1) {
+                currentSceneIndex++;
+                loadScene(currentSceneIndex);
+                document.getElementById("submit-btn").innerText = "Submit Scene";
+            } else {
+                // Game Finished
+                alert(`Game Complete! Final Score: ${score}`);
+                currentSceneIndex = 0;
+                score = 0;
+                document.getElementById("score").innerText = score;
+                document.getElementById("submit-btn").innerText = "Submit Scene";
+                loadScene(currentSceneIndex);
+            }
+            return;
+        }
+
+        const correctBlocks = scenes[currentSceneIndex].blocks;
+        let isCorrect = true;
+
+        for (let i = 0; i < currentBlocks.length; i++) {
+            if (currentBlocks[i].id !== correctBlocks[i].id) {
+                isCorrect = false;
+                break;
+            }
+        }
+
+        const feedbackEl = document.getElementById("feedback");
+
+        if (isCorrect) {
+            score += 100;
+            document.getElementById("score").innerText = score;
+            isSceneCompleted = true;
+
+            feedbackEl.innerText = "Correct! You completed the scene!";
+            feedbackEl.className = "feedback correct";
+
+            if (currentSceneIndex < scenes.length - 1) {
+                document.getElementById("submit-btn").innerText = "Next Scene →";
+            } else {
+                document.getElementById("submit-btn").innerText = "Finish Game";
+            }
+        } else {
+            feedbackEl.innerText = "Not quite. Try again!";
+            feedbackEl.className = "feedback incorrect";
+        }
+    }
+
+    // Reset current scene shuffle
+    function resetCurrentScene() {
+        document.getElementById("submit-btn").innerText = "Submit Scene";
+        loadScene(currentSceneIndex);
+    }
+
+    // Escape HTML strings for safety
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.innerText = text;
+        return div.innerHTML;
+    }
+</script>
+</body>
+</html>
