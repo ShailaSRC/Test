@@ -1098,9 +1098,19 @@
 
             flex-direction: column;
 
-            overflow-y: auto;
+            /* Removed overflow-y: auto from here to let the panel content expand */
         }
-
+        
+        /* New wrapper to handle scrolling inside the right panel, leaving pagination at the bottom */
+        .right-panel-content {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 0; /* Important for flex child scrolling */
+            /* Add some padding to the bottom so content doesn't touch the pagination line */
+            padding-bottom: 10px; 
+        }
 
         .right-section-title {
             font-size: 1.2rem;
@@ -1481,7 +1491,7 @@
 
             gap: 10px;
 
-            margin-top: 15px;
+            margin-top: auto; /* Push to bottom of right panel */
 
             padding-top: 15px;
 
@@ -2520,110 +2530,110 @@
                 id="right-panel"
                 class="panel"
             >
-
-
-                <div
-                    class="right-section-title"
-                    style="margin-bottom: 8px;"
-                >
-                    CHECKLIST
-                </div>
-
-
-                <div id="checklist-container"></div>
-
-
-
-                <!-- HINT -->
-
-                <div class="hint-section">
-
-                    <button
-                        id="btn-open-hint"
-                        class="hint-btn-style"
-                        onclick="openHint()"
+                <!-- Add a wrapper for the scrollable content above pagination -->
+                <div class="right-panel-content">
+                    <div
+                        class="right-section-title"
+                        style="margin-bottom: 8px;"
                     >
-
-                        <span>
-                            HINT
-                        </span>
-
-                        <div
-                            id="hint-badge"
-                            class="notification-badge"
-                        >
-                            1
-                        </div>
-
-                    </button>
-
-                </div>
-
-
-
-                <!-- KAMUS -->
-
-                <div class="kamus-tab-container">
-
-                    <div class="kamus-tab-title">
-                        KAMUS
+                        CHECKLIST
                     </div>
 
 
-                    <div class="kamus-tab-content">
+                    <div id="checklist-container"></div>
 
 
-                        <div
-                            id="glossary-empty"
-                            class="text-center text-xs"
-                            style="
-                                color: var(--text-muted);
-                                margin-top: 10px;
-                            "
+
+                    <!-- HINT -->
+
+                    <div class="hint-section">
+
+                        <button
+                            id="btn-open-hint"
+                            class="hint-btn-style"
+                            onclick="openHint()"
                         >
-                            Klik kata biru pada naskah untuk melihat definisi.
-                        </div>
 
-
-                        <div
-                            id="glossary-content"
-                            class="hidden"
-                        >
+                            <span>
+                                HINT
+                            </span>
 
                             <div
-                                class="g-term-title"
-                                id="glossary-title"
+                                id="hint-badge"
+                                class="notification-badge"
                             >
-                                ISTILAH
+                                1
+                            </div>
+
+                        </button>
+
+                    </div>
+
+
+
+                    <!-- KAMUS -->
+
+                    <div class="kamus-tab-container">
+
+                        <div class="kamus-tab-title">
+                            KAMUS
+                        </div>
+
+
+                        <div class="kamus-tab-content">
+
+
+                            <div
+                                id="glossary-empty"
+                                class="text-center text-xs"
+                                style="
+                                    color: var(--text-muted);
+                                    margin-top: 10px;
+                                "
+                            >
+                                Klik kata biru pada naskah untuk melihat definisi.
                             </div>
 
 
-                            <p
-                                class="g-def-text"
-                                id="glossary-def"
+                            <div
+                                id="glossary-content"
+                                class="hidden"
                             >
-                                Definisi akan muncul di sini.
-                            </p>
+
+                                <div
+                                    class="g-term-title"
+                                    id="glossary-title"
+                                >
+                                    ISTILAH
+                                </div>
 
 
-                            <div class="g-example-title">
-                                CONTOH
+                                <p
+                                    class="g-def-text"
+                                    id="glossary-def"
+                                >
+                                    Definisi akan muncul di sini.
+                                </p>
+
+
+                                <div class="g-example-title">
+                                    CONTOH
+                                </div>
+
+
+                                <p
+                                    class="g-example-text"
+                                    id="glossary-ex"
+                                >
+                                    "Contoh kalimat."
+                                </p>
+
                             </div>
-
-
-                            <p
-                                class="g-example-text"
-                                id="glossary-ex"
-                            >
-                                "Contoh kalimat."
-                            </p>
 
                         </div>
 
                     </div>
-
-                </div>
-
+                </div> <!-- End right-panel-content -->
 
 
                 <!-- PAGINATION -->
