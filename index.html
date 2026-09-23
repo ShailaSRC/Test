@@ -320,10 +320,10 @@
             }
         }
 
+        /* ==================================================
+           LAYOUT UTAMA
+           ================================================== */
 
-        /* =========================================================
-           GAME LAYOUT (Default / Landscape)
-        ========================================================= */
         #game-layout {
             width: 100%;
             height: 100dvh;
@@ -336,16 +336,22 @@
             z-index: 10;
         }
 
+
+        /* ==================================================
+           HEADER
+           ================================================== */
+
         #game-header {
             flex: 0 0 auto;
-            min-height: 60px; /* Diperkecil agar lebih padat */
+            min-height: 82px;
             display: grid;
-            grid-template-columns: 210px minmax(0, 1fr) 210px;
+            grid-template-columns: 250px minmax(0, 1fr) 250px;
             gap: 10px;
             align-items: center;
+            
             background: var(--bg-panel);
             border: 2px solid var(--border-dark);
-            padding: 8px 15px; /* Padding dikurangi */
+            padding: 10px 20px;
             box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
         }
 
@@ -384,7 +390,7 @@
 
         .header-left h1 {
             margin: 0;
-            font-size: 1.6rem; /* Font diperkecil sedikit */
+            font-size: 2rem;
             color: var(--text-highlight);
             letter-spacing: 2px;
             font-weight: normal;
@@ -392,7 +398,7 @@
         }
 
         .header-left .day-text {
-            font-size: 0.95rem; /* Font diperkecil sedikit */
+            font-size: 1.1rem;
             color: var(--text-muted);
         }
 
@@ -409,7 +415,7 @@
         }
 
         .client-avatar {
-            width: 55px; /* Diperkecil */
+            width: 70px;
             flex-shrink: 0;
             background: #3b3a36;
             border: 2px solid var(--border-dark);
@@ -444,18 +450,18 @@
         .client-brief-box .brief-title {
             background: rgba(255,255,255,0.03);
             border-bottom: 2px solid var(--border-dark);
-            padding: 2px 8px; /* Padding dikurangi */
-            font-size: 0.85rem;
+            padding: 4px 10px;
+            font-size: 0.9rem;
             color: var(--text-muted);
             letter-spacing: 1px;
         }
 
         .client-brief-box .brief-content {
-            padding: 4px 8px; /* Padding dikurangi */
+            padding: 6px 10px;
             display: flex;
             flex-direction: column;
             gap: 4px;
-            font-size: 0.8rem; /* Font dikurangi sedikit */
+            font-size: 0.85rem;
             font-family: var(--font-ui);
             text-transform: uppercase;
             color: var(--text-normal);
@@ -498,8 +504,8 @@
             border: 2px solid var(--border-dark);
             color: var(--text-highlight);
             font-family: var(--font-ui);
-            font-size: 0.95rem; /* Font diperkecil sedikit */
-            padding: 4px 12px; /* Padding diperkecil */
+            font-size: 1.1rem;
+            padding: 6px 14px;
             cursor: pointer;
             text-transform: uppercase;
             box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
@@ -639,8 +645,8 @@
             background: var(--paper-bg);
             width: 100%;
             max-width: 750px;
-            height: max-content; /* FIXED: agar tidak terpotong */
-            flex: 1 0 auto;      /* FIXED: mengisi area kosong & expand */
+            height: auto;
+            min-height: 100%;
             border: 1px solid var(--paper-border);
             box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
             display: flex;
@@ -725,5 +731,14 @@
             text-align: justify;
         }
 
-        .drop-slot > .script-block[data-type="TRANSITION"] .bloc
+        .drop-slot > .script-block[data-type="TRANSITION"] .block-text {
+            text-align: right !important;
+        }
+
+
+        /* ==================================================
+           PANEL KANAN
+           ================================================== */
+
+        #rig
 
