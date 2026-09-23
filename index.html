@@ -1,482 +1,1397 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>EDITOR SCRIPT: Permainan Penyuntingan Naskah</title>
-<script src="https://unpkg.com/drag-drop-touch"></script>
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
-<style>
-:root{
---bg-app:#1e1e1c;--bg-panel:#2a2a28;--border-dark:#121211;--border-light:#4a4a47;
---text-muted:#88867c;--text-normal:#b5b3a6;--text-highlight:#e0ddcc;
---paper-bg:#e6dfc8;--paper-border:#b0a688;--paper-text:#2a2926;--paper-dashed:#b5aa8b;
---block-bg:#d9d1ba;--block-border:#999075;--accent-yellow:#d6b054;--color-scene:#7fa37f;--color-char:#b56c6c;
---font-ui:'VT323',monospace;--font-script:'Courier Prime',monospace;
-}
-*{box-sizing:border-box}
-html,body{width:100%;height:100%;margin:0;padding:0;overflow:hidden}
-body{background-color:var(--bg-app);color:var(--text-normal);font-family:var(--font-ui);position:fixed;inset:0;display:flex;flex-direction:column;user-select:none;overscroll-behavior:none}
-body::after{content:"";display:block;position:absolute;inset:0;background:linear-gradient(rgba(18,16,16,0) 50%,rgba(0,0,0,.1) 50%);background-size:100% 4px;z-index:100;pointer-events:none;opacity:.3}
-.retro-scrollbar{position:relative;width:100%;height:100%;overflow-y:scroll!important;overflow-x:hidden;overscroll-behavior:none;scrollbar-width:none;-ms-overflow-style:none;touch-action:pan-y}
-.retro-scrollbar::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
-.scroll-container{flex:1;position:relative;min-height:0;overflow:hidden}
-.w95-scrollbar{position:absolute;top:2px;right:2px;bottom:2px;width:14px;background:var(--bg-app);z-index:50;box-sizing:border-box;border-left:2px solid var(--border-dark);user-select:none;-webkit-user-select:none;touch-action:none;pointer-events:auto}
-.w95-scroll-track{position:absolute;inset:0;background:#161514;box-sizing:border-box;cursor:pointer;touch-action:none}
-.w95-scroll-track::before{content:"";position:absolute;inset:0;background-image:linear-gradient(45deg,#2a2a28 25%,transparent 25%,transparent 75%,#2a2a28 75%),linear-gradient(45deg,#2a2a28 25%,transparent 25%,transparent 75%,#2a2a28 75%);background-size:4px 4px;background-position:0 0,2px 2px;opacity:.5;pointer-events:none}
-.w95-scroll-thumb{position:absolute;left:1px;right:1px;top:0;height:40px;min-height:40px;background:var(--border-light);box-sizing:border-box;cursor:grab;z-index:2;border:1px solid var(--border-dark);border-top:1px solid #6a6a66;border-left:1px solid #6a6a66;user-select:none;-webkit-user-select:none;touch-action:none;will-change:transform}
-.w95-scroll-thumb.dragging{cursor:grabbing;background:#3b3a36;border-top:1px solid var(--border-dark);border-left:1px solid var(--border-dark);border-right:1px solid #6a6a66;border-bottom:1px solid #6a6a66}
-.w95-scroll-thumb::after{content:"";position:absolute;left:2px;right:2px;top:50%;height:2px;transform:translateY(-50%);background:var(--bg-panel);box-shadow:0 -2px 0 var(--border-dark),0 2px 0 var(--border-dark);pointer-events:none}
-.w95-scrollbar.disabled{opacity:.3}.w95-scrollbar.disabled .w95-scroll-thumb{cursor:default}
-#block-container{padding:18px;padding-right:38px}
-@media(pointer:coarse){.w95-scrollbar{width:18px}.w95-scroll-thumb{min-height:50px}#block-container{padding:18px;padding-right:42px}}
-#game-layout{display:flex;flex-direction:column;width:100%;height:100%;padding:10px;gap:10px;position:relative;z-index:10;min-height:0}
-header{display:flex;align-items:stretch;justify-content:space-between;background:var(--bg-panel);border:2px solid var(--border-dark);padding:10px 20px;height:auto;min-height:80px;flex-shrink:0;box-shadow:2px 2px 0 rgba(0,0,0,.3);gap:15px}
-.header-left{display:flex;flex-direction:row;align-items:center;gap:15px;min-width:auto}
-.settings-btn{color:var(--text-muted);font-size:28px;cursor:pointer;transition:color .2s;flex-shrink:0;display:flex;align-items:center;justify-content:center}.settings-btn:hover{color:var(--text-highlight)}
-.title-area{display:flex;flex-direction:column;justify-content:center}.header-left h1{margin:0;font-size:2rem;color:var(--text-highlight);letter-spacing:2px;font-weight:normal;line-height:1.1}.header-left .day-text{font-size:1.1rem;color:var(--text-muted)}
-.header-center{flex:1;max-width:800px;display:flex;gap:10px;align-items:stretch;background:transparent;border:none;padding:0;justify-content:center}
-.client-avatar{width:70px;flex-shrink:0;background:#3b3a36;border:2px solid var(--border-dark);border-radius:4px;display:flex;align-items:flex-end;justify-content:center;overflow:hidden;box-shadow:inset 0 0 10px rgba(0,0,0,.5)}
-.client-avatar svg{width:85%;height:auto;margin-bottom:-5px;fill:#1c1c1a}
-.client-brief-box{flex:1;max-width:500px;border:2px solid var(--border-dark);background:var(--bg-app);display:flex;flex-direction:column;border-radius:4px;overflow-y:auto;overflow-x:hidden;min-height:0}
-.client-brief-box .brief-title{background:rgba(255,255,255,.03);border-bottom:2px solid var(--border-dark);padding:4px 10px;font-size:.9rem;color:var(--text-muted);letter-spacing:1px}
-.client-brief-box .brief-content{padding:6px 10px;display:flex;flex-direction:column;gap:4px;font-size:.85rem;font-family:var(--font-ui);text-transform:uppercase;color:var(--text-normal)}
-.brief-line{display:flex;align-items:flex-start;line-height:1.3}.brief-line .label{color:var(--text-muted);margin-right:8px;font-weight:bold;min-width:80px}.brief-line .value{color:var(--text-highlight);flex:1;word-wrap:break-word;white-space:normal}
-.header-right{display:flex;align-items:center;justify-content:flex-end;gap:10px;min-width:auto}
-.retro-btn{background:var(--bg-panel);border:2px solid var(--border-dark);color:var(--text-highlight);font-family:var(--font-ui);font-size:1.1rem;padding:6px 14px;cursor:pointer;text-transform:uppercase;box-shadow:2px 2px 0 rgba(0,0,0,.5);transition:transform .1s,box-shadow .1s;display:flex;align-items:center;gap:5px}.retro-btn:active{transform:translate(2px,2px);box-shadow:none}.retro-btn.primary{background:#b56c6c;color:#fff;border-color:#5c2f2f}
-#main-area{display:flex;flex:1;gap:10px;overflow:hidden;min-height:0}
-.panel{background:var(--bg-panel);border:2px solid var(--border-dark);display:flex;flex-direction:column;box-shadow:2px 2px 0 rgba(0,0,0,.3);min-height:0}
-#left-panel{width:290px;flex-shrink:0;position:relative}.panel-header{padding:15px;border-bottom:2px solid var(--border-dark);background:rgba(0,0,0,.2);flex-shrink:0}.panel-title{font-size:1.4rem;color:var(--text-highlight);letter-spacing:1px;margin:0}.panel-subtitle{font-size:.9rem;color:var(--text-muted)}
-.script-block{background:var(--block-bg);border:2px solid var(--block-border);color:var(--paper-text);font-family:var(--font-script);font-size:.85rem;margin-bottom:12px;display:flex;flex-direction:column;cursor:grab;box-shadow:3px 3px 0 rgba(0,0,0,.3);transition:transform .1s;width:100%;position:relative;z-index:1;padding:10px 12px;box-sizing:border-box}
-.script-block:active{cursor:grabbing;transform:translate(2px,2px);box-shadow:1px 1px 0 rgba(0,0,0,.3)}
-.block-type-label{font-family:var(--font-ui);font-size:.85rem;text-transform:uppercase;margin-bottom:4px;letter-spacing:1px;opacity:.8;font-weight:bold;color:var(--paper-text)}.block-text{line-height:1.3;text-align:left}
-#center-panel{flex:1;background:#1c1c1b;border:2px solid var(--border-dark);display:flex;flex-direction:column;align-items:center;padding:15px;overflow-y:auto;overflow-x:hidden;min-height:0}
-.paper-sheet{background:var(--paper-bg);width:100%;max-width:750px;height:auto;min-height:100%;border:1px solid var(--paper-border);box-shadow:4px 4px 0 rgba(0,0,0,.5);display:flex;flex-direction:column;color:var(--paper-text);padding:25px 35px;position:relative;flex-shrink:0}
-.paper-header{display:flex;justify-content:space-between;font-family:var(--font-ui);font-size:1.4rem;color:#333;margin-bottom:20px;border-bottom:2px solid rgba(0,0,0,.1);padding-bottom:6px;flex-shrink:0}.paper-header .title{flex:1;text-align:center;font-weight:bold}.paper-header .page-num{width:60px;text-align:right}
-.slot-row{display:flex;align-items:stretch;margin-bottom:8px;min-height:50px;width:100%}.slot-number{width:30px;font-family:var(--font-script);color:#777;font-size:1rem;padding-top:10px;text-align:left;flex-shrink:0}.drop-slot{flex:1;border:2px dashed var(--paper-dashed);display:flex;align-items:stretch;transition:background .2s,border-color .2s;min-height:50px;background:rgba(0,0,0,.02);width:100%}.drop-slot.drag-over{background:rgba(0,0,0,.08);border-color:#555}.drop-slot>.script-block{margin-bottom:0;width:100%;box-shadow:none;background:transparent;border:1px solid var(--paper-dashed);padding:8px 10px}.drop-slot>.script-block .block-text{text-align:justify}.drop-slot>.script-block[data-type="TRANSITION"] .block-text{text-align:right!important}
-#right-panel{width:240px;flex-shrink:0;padding:18px;display:flex;flex-direction:column}.right-panel-content{flex:1 1 0;overflow-y:auto;display:flex;flex-direction:column;min-height:0;padding-bottom:10px}
-.right-section-title{font-size:1.2rem;color:var(--text-highlight);margin-bottom:12px;border-bottom:2px solid var(--border-light);padding-bottom:6px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-.checklist-item{display:flex;align-items:flex-start;margin-bottom:10px;color:var(--text-muted);font-family:sans-serif;font-size:.85rem;width:100%;box-sizing:border-box}.checklist-box{width:14px;height:14px;border:2px solid var(--text-muted);margin-right:10px;margin-top:2px;position:relative;flex-shrink:0;background:#1a1a1a}.checklist-item.done .checklist-box::after{content:"✔";color:var(--color-scene);position:absolute;top:-4px;left:1px;font-size:14px;font-family:var(--font-ui)}.checklist-item.done{color:var(--text-normal)}
-.hint-section{margin:10px 0 15px;width:100%;display:block;flex-shrink:0;box-sizing:border-box}.hint-btn-style{width:100%;display:flex;justify-content:center;align-items:center;font-size:.95rem;padding:10px;border:2px solid var(--border-light);background:rgba(0,0,0,.25);color:var(--text-highlight);font-family:var(--font-ui);letter-spacing:1px;position:relative;cursor:pointer;transition:background .1s,color .1s;box-sizing:border-box}.hint-btn-style:hover:not(.hint-disabled){background:rgba(255,255,255,.05);color:#fff}.hint-btn-style:active:not(.hint-disabled){transform:translate(1px,1px)}
-.notification-badge{position:absolute;top:-6px;right:-6px;background:var(--color-char);color:white;border-radius:50%;width:18px;height:18px;font-size:.7rem;display:flex;align-items:center;justify-content:center;border:2px solid var(--bg-panel);font-family:sans-serif;font-weight:bold;box-shadow:1px 1px 0 rgba(0,0,0,.5);pointer-events:none}.hint-disabled{opacity:.3;pointer-events:none;border-style:solid!important}
-.glossary-term-link{color:#5a8ca8;cursor:pointer;text-decoration:none;font-weight:bold;border-bottom:1px dotted #5a8ca8}.glossary-term-link:hover{background:rgba(90,140,168,.2)}
-.kamus-tab-container{display:flex;flex-direction:column;width:100%;margin-top:5px;flex-shrink:0;flex:1;box-sizing:border-box}.kamus-tab-title{background:rgba(255,255,255,.05);border:2px solid var(--border-light);border-bottom:none;border-radius:6px 6px 0 0;padding:4px 12px;display:inline-block;width:max-content;font-size:1.1rem;margin-bottom:0;color:var(--accent-yellow);font-family:var(--font-ui)}.kamus-tab-content{border:2px solid var(--border-light);background:rgba(0,0,0,.15);border-radius:0 6px 6px 6px;padding:10px;flex:1;display:flex;flex-direction:column;width:100%;box-sizing:border-box}
-#glossary-content{display:flex;flex-direction:column;font-family:sans-serif;color:var(--text-normal)}.g-term-title{color:#5a8ca8;font-family:var(--font-ui);font-size:.85rem;text-transform:uppercase;margin-bottom:4px;letter-spacing:1px;border-bottom:1px solid #5a8ca8;padding-bottom:2px}.g-def-text{font-size:.75rem;line-height:1.3;margin-bottom:10px}.g-example-title{color:#5a8ca8;font-family:var(--font-ui);font-size:.8rem;letter-spacing:1px;margin-bottom:2px}.g-example-text{color:var(--text-muted);font-style:italic;background:rgba(0,0,0,.2);padding:6px;border-left:2px solid #5a8ca8;font-size:.7rem}
-.pagination-area{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:auto;padding-top:15px;border-top:2px dashed var(--border-light);flex-shrink:0;width:100%;box-sizing:border-box}.nav-arrow{width:30px;height:30px;background:var(--bg-panel);border:2px solid var(--border-dark);display:flex;align-items:center;justify-content:center;color:var(--text-muted);cursor:pointer;font-size:1rem}.nav-arrow:hover{color:var(--text-highlight)}.page-thumb-wrapper{position:relative;display:flex;flex-direction:column;align-items:center}.page-thumb{width:35px;height:42px;background:#8e8877;border:2px solid var(--border-dark);display:flex;align-items:flex-start;padding:2px 4px;font-size:.8rem;color:#333;cursor:pointer;box-shadow:2px 2px 0 rgba(0,0,0,.3)}.page-thumb.active{background:var(--paper-bg);box-shadow:none;transform:translate(1px,1px)}.page-indicator{position:absolute;top:-8px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:5px solid var(--accent-yellow);display:none}.page-thumb.active+.page-indicator{display:block}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}.modal-overlay.active{opacity:1;pointer-events:auto}.modal-content{background:var(--bg-panel);border:2px solid var(--text-highlight);padding:25px;max-width:550px;width:90%;color:var(--text-highlight);text-align:center;box-shadow:5px 5px 0 rgba(0,0,0,.5)}
-.hidden{display:none!important}.text-2xl{font-size:1.5rem;line-height:2rem}.text-4xl{font-size:2.25rem;line-height:2.5rem}.mb-2{margin-bottom:.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xs{font-size:.75rem;line-height:1rem}.text-center{text-align:center}.text-left{text-align:left}.text-right{text-align:right}.font-bold{font-weight:700}.font-sans{font-family:sans-serif}.flex{display:flex}.justify-between{justify-content:space-between}.justify-center{justify-content:center}.items-center{align-items:center}.grid{display:grid}.grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.gap-2{gap:.5rem}.p-3{padding:.75rem}.pb-2{padding-bottom:.5rem}.border-b{border-bottom-width:1px;border-style:solid}.border-t{border-top-width:1px;border-style:solid}.border{border-width:1px;border-style:solid}.cursor-pointer{cursor:pointer}.hover\\:text-\\[var\\(--text-highlight\\)\\]:hover{color:var(--text-highlight)}
-/* PORTRAIT: fitur baru, landscape tidak diubah */
-#portrait-tabs{display:none}
-@media screen and (orientation:portrait),(max-aspect-ratio:9/10){
-#landscape-warning{display:none!important}
-#game-layout{height:100%;padding:6px;gap:6px}
-header{min-height:0;height:auto;padding:7px 8px;display:block}
-.header-left{display:none}.header-right{position:absolute;right:10px;top:8px;z-index:5}.header-right .retro-btn{font-size:.75rem;padding:3px 7px}
-.header-center{max-width:none;width:100%;display:flex;gap:6px}.client-avatar{width:42px}.client-brief-box{max-width:none;max-height:125px}
-.client-brief-box .brief-title{padding:3px 7px;font-size:.75rem}.client-brief-box .brief-content{padding:4px 7px;font-size:.7rem;gap:2px}.brief-line .label{min-width:48px}
-#main-area{display:flex;flex-direction:column;gap:6px;overflow:hidden}
-#center-panel{order:1;flex:1;min-height:0;width:100%;padding:6px 4px;overflow-y:auto}
-.paper-sheet{min-height:100%;height:auto;max-width:none;padding:15px 18px;box-shadow:2px 2px 0 rgba(0,0,0,.35)}
-.paper-header{font-size:1.05rem;margin-bottom:10px}
-.slot-row{min-height:40px;margin-bottom:6px}.drop-slot{min-height:40px}.slot-number{width:22px;padding-top:6px;font-size:.8rem}
-#portrait-tabs{order:2;display:grid;grid-template-columns:1fr 1fr;gap:6px;min-height:145px;height:34%;max-height:280px}
-#left-panel,#right-panel{width:100%;height:100%;min-height:0}
-#left-panel{display:flex}.panel-header{padding:7px 9px}.panel-title{font-size:1rem}.panel-subtitle{font-size:.7rem}
-#block-container{padding:8px;padding-right:32px}.script-block{padding:6px 8px;margin-bottom:7px;font-size:.72rem}.block-type-label{font-size:.65rem;margin-bottom:2px}
-#right-panel{padding:8px;display:flex}.right-panel-content{padding-bottom:4px}.right-section-title{font-size:.9rem;margin-bottom:6px}.checklist-item{font-size:.7rem;margin-bottom:5px;line-height:1.2}.checklist-box{width:12px;height:12px;margin-right:6px}.checklist-item.done .checklist-box::after{font-size:12px;top:-5px;left:0}
-.hint-section{margin:6px 0 8px}.hint-btn-style{font-size:.8rem;padding:6px}
-.kamus-tab-title{font-size:.85rem;padding:2px 7px}.kamus-tab-content{padding:6px;min-height:55px}.g-term-title{font-size:.7rem}.g-def-text{font-size:.65rem;line-height:1.2;margin-bottom:4px}.g-example-title{font-size:.65rem}.g-example-text{font-size:.6rem;padding:3px}
-.pagination-area{margin-top:5px;padding-top:6px;gap:4px}.nav-arrow{width:22px;height:22px;font-size:.7rem}.page-thumb{width:23px;height:30px;font-size:.65rem;padding:2px}.page-indicator{border-width:4px;top:-6px}
-#landscape-warning{pointer-events:none}
-}
-@media screen and (orientation:landscape) and (max-height:600px),(max-width:950px) and (orientation:landscape){
-header{padding:5px 10px;min-height:50px;gap:8px}.header-left{gap:8px}.header-left h1{font-size:1.2rem}.header-left .day-text{font-size:.9rem}.settings-btn{font-size:24px}.client-avatar{width:45px}.client-brief-box .brief-title{padding:2px 6px;font-size:.75rem}.client-brief-box .brief-content{padding:4px 6px;font-size:.7rem;gap:2px}.brief-line .label{min-width:50px}.header-right{gap:5px}.retro-btn{font-size:.8rem;padding:4px 8px}.hide-mobile{display:none}#left-panel{width:280px}#right-panel{width:200px;padding:10px}.panel-header{padding:8px 10px}.panel-title{font-size:1.1rem}.panel-subtitle{font-size:.75rem}#block-container{padding:10px;padding-right:32px}.w95-scrollbar{width:18px}.w95-scroll-thumb{min-height:50px}.script-block{padding:6px 8px;margin-bottom:8px;font-size:.75rem}.block-type-label{font-size:.7rem;margin-bottom:2px}#center-panel{padding:8px 5px}.paper-sheet{padding:15px 20px;max-width:100%;border-width:0;box-shadow:none;border-radius:4px}.paper-header{font-size:1.1rem;margin-bottom:12px;padding-bottom:4px}.slot-row{min-height:35px;margin-bottom:6px}.drop-slot{min-height:35px}.slot-number{width:20px;padding-top:5px;font-size:.8rem}.right-section-title{font-size:.9rem;margin-bottom:8px}.checklist-item{font-size:.75rem;margin-bottom:6px;line-height:1.2}.checklist-box{width:12px;height:12px;margin-right:6px}.checklist-item.done .checklist-box::after{font-size:12px;top:-5px;left:0}.kamus-tab-title{font-size:.9rem;padding:2px 8px}.kamus-tab-content{padding:6px;min-height:80px}.g-term-title{font-size:.75rem;margin-bottom:2px}.g-def-text{font-size:.7rem;line-height:1.2;margin-bottom:6px}.g-example-title{font-size:.7rem}.g-example-text{font-size:.65rem;padding:4px}.pagination-area{margin-top:10px;padding-top:10px;gap:5px}.nav-arrow{width:24px;height:24px;font-size:.8rem}.page-thumb{width:25px;height:35px;font-size:.7rem;padding:2px}.page-indicator{border-width:4px;top:-6px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EDITOR SCRIPT: Permainan Penyuntingan Naskah</title>
+    <!-- Polyfill for touch drag-and-drop -->
+    <script src="https://unpkg.com/drag-drop-touch"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        /* ==================================================
+           RETRO COLOR VARIABLES
+           ================================================== */
+        :root {
+            --bg-app: #1e1e1c;
+            --bg-panel: #2a2a28;
+            --border-dark: #121211;
+            --border-light: #4a4a47;
+            --text-muted: #88867c;
+            --text-normal: #b5b3a6;
+            --text-highlight: #e0ddcc;
+            --paper-bg: #e6dfc8;
+            --paper-border: #b0a688;
+            --paper-text: #2a2926;
+            --paper-dashed: #b5aa8b;
+            --block-bg: #d9d1ba;
+            --block-border: #999075;
+            --accent-yellow: #d6b054;
+            --color-scene: #7fa37f;
+            --color-char: #b56c6c;
+            --font-ui: 'VT323', monospace;
+            --font-script: 'Courier Prime', monospace;
+        }
+        /* ==================================================
+           RESET
+           ================================================== */
+        * { box-sizing: border-box; }
+        html, body {
+            width: 100%; height: 100%; margin: 0; padding: 0;
+            overflow: hidden;
+        }
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-normal);
+            font-family: var(--font-ui);
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            overscroll-behavior: none;
+        }
+        /* ==================================================
+           CRT SCANLINE
+           ================================================== */
+        body::after {
+            content: ""; display: block; position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 100; pointer-events: none; opacity: 0.3;
+        }
+        /* ==================================================
+           CUSTOM SCROLLBAR (WINDOWS 95 RETRO DARK)
+           ================================================== */
+        .retro-scrollbar {
+            position: relative; width: 100%; height: 100%;
+            overflow-y: scroll !important; overflow-x: hidden;
+            overscroll-behavior: none;
+            scrollbar-width: none; -ms-overflow-style: none;
+            touch-action: pan-y;
+        }
+        .retro-scrollbar::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+        .scroll-container { flex: 1; position: relative; min-height: 0; overflow: hidden; }
+        .w95-scrollbar {
+            position: absolute; top: 2px; right: 2px; bottom: 2px; width: 14px;
+            background: var(--bg-app); z-index: 50; box-sizing: border-box;
+            border-left: 2px solid var(--border-dark); user-select: none;
+            -webkit-user-select: none; touch-action: none; pointer-events: auto;
+        }
+        .w95-scroll-track {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: #161514; box-sizing: border-box; cursor: pointer;
+            touch-action: none;
+        }
+        .w95-scroll-track::before {
+            content: ""; position: absolute; inset: 0;
+            background-image: linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%),
+                              linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%);
+            background-size: 4px 4px; background-position: 0 0, 2px 2px;
+            opacity: 0.5; pointer-events: none;
+        }
+        .w95-scroll-thumb {
+            position: absolute; left: 1px; right: 1px; top: 0; height: 40px; min-height: 40px;
+            background: var(--border-light); box-sizing: border-box; cursor: grab;
+            z-index: 2; border: 1px solid var(--border-dark);
+            border-top: 1px solid #6a6a66; border-left: 1px solid #6a6a66;
+            user-select: none; -webkit-user-select: none; touch-action: none;
+            will-change: transform;
+        }
+        .w95-scroll-thumb.dragging {
+            cursor: grabbing; background: #3b3a36;
+            border-top: 1px solid var(--border-dark); border-left: 1px solid var(--border-dark);
+            border-right: 1px solid #6a6a66; border-bottom: 1px solid #6a6a66;
+        }
+        .w95-scroll-thumb::after {
+            content: ""; position: absolute; left: 2px; right: 2px; top: 50%;
+            height: 2px; transform: translateY(-50%); background: var(--bg-panel);
+            box-shadow: 0 -2px 0 var(--border-dark), 0 2px 0 var(--border-dark);
+            pointer-events: none;
+        }
+        .w95-scrollbar.disabled { opacity: 0.3; }
+        .w95-scrollbar.disabled .w95-scroll-thumb { cursor: default; }
+        #block-container { padding: 18px; padding-right: 38px; }
+        @media (pointer: coarse) {
+            .w95-scrollbar { width: 18px; }
+            .w95-scroll-thumb { min-height: 50px; }
+            #block-container { padding: 18px; padding-right: 42px; }
+        }
+        /* ==================================================
+           MAIN LAYOUT
+           ================================================== */
+        #game-layout {
+            display: flex; flex-direction: column; width: 100%; height: 100%;
+            padding: 10px; gap: 10px; position: relative; z-index: 10;
+        }
+        header {
+            display: flex; align-items: stretch; justify-content: space-between;
+            background: var(--bg-panel); border: 2px solid var(--border-dark);
+            padding: 10px 20px; height: auto; min-height: 80px; flex-shrink: 0;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.3); gap: 15px;
+        }
+        .header-left { display: flex; flex-direction: row; align-items: center; gap: 15px; min-width: auto; }
+        .settings-btn {
+            color: var(--text-muted); font-size: 28px; cursor: pointer;
+            transition: color 0.2s; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .settings-btn:hover { color: var(--text-highlight); }
+        .title-area { display: flex; flex-direction: column; justify-content: center; }
+        .header-left h1 {
+            margin: 0; font-size: 2rem; color: var(--text-highlight);
+            letter-spacing: 2px; font-weight: normal; line-height: 1.1;
+        }
+        .header-left .day-text { font-size: 1.1rem; color: var(--text-muted); }
+        .header-center {
+            flex: 1; max-width: 800px; display: flex; gap: 10px; align-items: stretch;
+            background: transparent; border: none; padding: 0; justify-content: center;
+        }
+        .client-avatar {
+            width: 70px; flex-shrink: 0; background: #3b3a36;
+            border: 2px solid var(--border-dark); border-radius: 4px;
+            display: flex; align-items: flex-end; justify-content: center;
+            overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+        .client-avatar svg { width: 85%; height: auto; margin-bottom: -5px; fill: #1c1c1a; }
+        .client-brief-box {
+            flex: 1; max-width: 500px; border: 2px solid var(--border-dark);
+            background: var(--bg-app); display: flex; flex-direction: column;
+            border-radius: 4px; overflow-y: auto; overflow-x: hidden; min-height: 0;
+        }
+        .client-brief-box .brief-title {
+            background: rgba(255,255,255,0.03); border-bottom: 2px solid var(--border-dark);
+            padding: 4px 10px; font-size: 0.9rem; color: var(--text-muted); letter-spacing: 1px;
+        }
+        .client-brief-box .brief-content {
+            padding: 6px 10px; display: flex; flex-direction: column; gap: 4px;
+            font-size: 0.85rem; font-family: var(--font-ui);
+            text-transform: uppercase; color: var(--text-normal);
+        }
+        .brief-line { display: flex; align-items: flex-start; line-height: 1.3; }
+        .brief-line .label { color: var(--text-muted); margin-right: 8px; font-weight: bold; min-width: 80px; }
+        .brief-line .value { color: var(--text-highlight); flex: 1; word-wrap: break-word; white-space: normal; }
+        .header-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; min-width: auto; }
+        .retro-btn {
+            background: var(--bg-panel); border: 2px solid var(--border-dark);
+            color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.1rem;
+            padding: 6px 14px; cursor: pointer; text-transform: uppercase;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex; align-items: center; gap: 5px;
+        }
+        .retro-btn:active { transform: translate(2px,2px); box-shadow: none; }
+        .retro-btn.primary { background: #b56c6c; color: #fff; border-color: #5c2f2f; }
+        #main-area { display: flex; flex: 1; gap: 10px; overflow: hidden; min-height: 0; }
+        .panel {
+            background: var(--bg-panel); border: 2px solid var(--border-dark);
+            display: flex; flex-direction: column; box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            min-height: 0;
+        }
+        #left-panel { width: 290px; flex-shrink: 0; position: relative; }
+        .panel-header {
+            padding: 15px; border-bottom: 2px solid var(--border-dark);
+            background: rgba(0,0,0,0.2); flex-shrink: 0;
+        }
+        .panel-title { font-size: 1.4rem; color: var(--text-highlight); letter-spacing: 1px; margin: 0; }
+        .panel-subtitle { font-size: 0.9rem; color: var(--text-muted); }
+        /* ==================================================
+           SCRIPT BLOCK
+           ================================================== */
+        .script-block {
+            background: var(--block-bg); border: 2px solid var(--block-border);
+            color: var(--paper-text); font-family: var(--font-script);
+            font-size: 0.85rem; margin-bottom: 12px; display: flex;
+            flex-direction: column; cursor: grab;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+            transition: transform 0.1s; width: 100%; position: relative;
+            z-index: 1; padding: 10px 12px; box-sizing: border-box;
+        }
+        .script-block:active {
+            cursor: grabbing; transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+        }
+        .block-type-label {
+            font-family: var(--font-ui); font-size: 0.85rem; text-transform: uppercase;
+            margin-bottom: 4px; letter-spacing: 1px; opacity: 0.8;
+            font-weight: bold; color: var(--paper-text);
+        }
+        .block-text { line-height: 1.3; text-align: left; }
+        #center-panel {
+            flex: 1; background: #1c1c1b; border: 2px solid var(--border-dark);
+            display: flex; flex-direction: column; align-items: center;
+            padding: 15px; overflow-y: auto; overflow-x: hidden;
+        }
+        .paper-sheet {
+            background: var(--paper-bg); width: 100%; max-width: 750px;
+            height: auto; min-height: 100%; border: 1px solid var(--paper-border);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.5); display: flex;
+            flex-direction: column; color: var(--paper-text); padding: 25px 35px;
+            position: relative;
+        }
+        .paper-header {
+            display: flex; justify-content: space-between;
+            font-family: var(--font-ui); font-size: 1.4rem; color: #333;
+            margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.1);
+            padding-bottom: 6px; flex-shrink: 0;
+        }
+        .paper-header .title { flex: 1; text-align: center; font-weight: bold; }
+        .paper-header .page-num { width: 60px; text-align: right; }
+        .slot-row { display: flex; align-items: stretch; margin-bottom: 8px; min-height: 50px; width: 100%; }
+        .slot-number {
+            width: 30px; font-family: var(--font-script);
+            color: #777; font-size: 1rem; padding-top: 10px;
+            text-align: left; flex-shrink: 0;
+        }
+        .drop-slot {
+            flex: 1; border: 2px dashed var(--paper-dashed);
+            display: flex; align-items: stretch;
+            transition: background 0.2s, border-color 0.2s;
+            min-height: 50px; background: rgba(0,0,0,0.02); width: 100%;
+        }
+        .drop-slot.drag-over { background: rgba(0,0,0,0.08); border-color: #555; }
+        .drop-slot > .script-block {
+            margin-bottom: 0; width: 100%; box-shadow: none;
+            background: transparent; border: 1px solid var(--paper-dashed);
+            padding: 8px 10px;
+        }
+        .drop-slot > .script-block .block-text { text-align: justify; }
+        .drop-slot > .script-block[data-type="TRANSITION"] .block-text { text-align: right !important; }
+        #right-panel {
+            width: 240px; flex-shrink: 0; padding: 18px;
+            display: flex; flex-direction: column;
+        }
+        .right-panel-content {
+            flex: 1 1 0; overflow-y: auto; display: flex;
+            flex-direction: column; min-height: 0; padding-bottom: 10px;
+        }
+        .right-section-title {
+            font-size: 1.2rem; color: var(--text-highlight); margin-bottom: 12px;
+            border-bottom: 2px solid var(--border-light); padding-bottom: 6px;
+            display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0;
+        }
+        .checklist-item {
+            display: flex; align-items: flex-start; margin-bottom: 10px;
+            color: var(--text-muted); font-family: sans-serif;
+            font-size: 0.85rem; width: 100%; box-sizing: border-box;
+        }
+        .checklist-box {
+            width: 14px; height: 14px; border: 2px solid var(--text-muted);
+            margin-right: 10px; margin-top: 2px; position: relative;
+            flex-shrink: 0; background: #1a1a1a;
+        }
+        .checklist-item.done .checklist-box::after {
+            content: "✔"; color: var(--color-scene);
+            position: absolute; top: -4px; left: 1px;
+            font-size: 14px; font-family: var(--font-ui);
+        }
+        .checklist-item.done { color: var(--text-normal); }
+        .hint-section {
+            margin: 10px 0 15px 0; width: 100%; display: block;
+            flex-shrink: 0; box-sizing: border-box;
+        }
+        .hint-btn-style {
+            width: 100%; display: flex; justify-content: center; align-items: center;
+            font-size: 0.95rem; padding: 10px; border: 2px solid var(--border-light);
+            background: rgba(0,0,0,0.25); color: var(--text-highlight);
+            font-family: var(--font-ui); letter-spacing: 1px; position: relative;
+            cursor: pointer; transition: background 0.1s, color 0.1s;
+            box-sizing: border-box;
+        }
+        .hint-btn-style:hover:not(.hint-disabled) { background: rgba(255,255,255,0.05); color: #fff; }
+        .hint-btn-style:active:not(.hint-disabled) { transform: translate(1px,1px); }
+        .notification-badge {
+            position: absolute; top: -6px; right: -6px; background: var(--color-char);
+            color: white; border-radius: 50%; width: 18px; height: 18px;
+            font-size: 0.7rem; display: flex; align-items: center; justify-content: center;
+            border: 2px solid var(--bg-panel); font-family: sans-serif;
+            font-weight: bold; box-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+        .hint-disabled { opacity: 0.3; pointer-events: none; border-style: solid !important; }
+        .glossary-term-link {
+            color: #5a8ca8; cursor: pointer; text-decoration: none;
+            font-weight: bold; border-bottom: 1px dotted #5a8ca8;
+        }
+        .glossary-term-link:hover { background: rgba(90,140,168,0.2); }
+        .kamus-tab-container {
+            display: flex; flex-direction: column; width: 100%;
+            margin-top: 5px; flex-shrink: 0; flex: 1; box-sizing: border-box;
+        }
+        .kamus-tab-title {
+            background: rgba(255,255,255,0.05); border: 2px solid var(--border-light);
+            border-bottom: none; border-radius: 6px 6px 0 0; padding: 4px 12px;
+            display: inline-block; width: max-content; font-size: 1.1rem;
+            margin-bottom: 0; color: var(--accent-yellow); font-family: var(--font-ui);
+        }
+        .kamus-tab-content {
+            border: 2px solid var(--border-light); background: rgba(0,0,0,0.15);
+            border-radius: 0 6px 6px 6px; padding: 10px; flex: 1;
+            display: flex; flex-direction: column; width: 100%; box-sizing: border-box;
+        }
+        #glossary-content { display: flex; flex-direction: column; font-family: sans-serif; color: var(--text-normal); }
+        .g-term-title {
+            color: #5a8ca8; font-family: var(--font-ui); font-size: 0.85rem;
+            text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;
+            border-bottom: 1px solid #5a8ca8; padding-bottom: 2px;
+        }
+        .g-def-text { font-size: 0.75rem; line-height: 1.3; margin-bottom: 10px; }
+        .g-example-title {
+            color: #5a8ca8; font-family: var(--font-ui); font-size: 0.8rem;
+            letter-spacing: 1px; margin-bottom: 2px;
+        }
+        .g-example-text {
+            color: var(--text-muted); font-style: italic;
+            background: rgba(0,0,0,0.2); padding: 6px;
+            border-left: 2px solid #5a8ca8; font-size: 0.7rem;
+        }
+        .pagination-area {
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; margin-top: auto; padding-top: 15px;
+            border-top: 2px dashed var(--border-light); flex-shrink: 0;
+            width: 100%; box-sizing: border-box;
+        }
+        .nav-arrow {
+            width: 30px; height: 30px; background: var(--bg-panel);
+            border: 2px solid var(--border-dark); display: flex;
+            align-items: center; justify-content: center;
+            color: var(--text-muted); cursor: pointer; font-size: 1rem;
+        }
+        .nav-arrow:hover { color: var(--text-highlight); }
+        .page-thumb-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; }
+        .page-thumb {
+            width: 35px; height: 42px; background: #8e8877;
+            border: 2px solid var(--border-dark); display: flex;
+            align-items: flex-start; padding: 2px 4px;
+            font-size: 0.8rem; color: #333; cursor: pointer;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+        }
+        .page-thumb.active { background: var(--paper-bg); box-shadow: none; transform: translate(1px,1px); }
+        .page-indicator {
+            position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; border-left: 5px solid transparent;
+            border-right: 5px solid transparent; border-top: 5px solid var(--accent-yellow);
+            display: none;
+        }
+        .page-thumb.active + .page-indicator { display: block; }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85); z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: var(--bg-panel); border: 2px solid var(--text-highlight);
+            padding: 25px; max-width: 550px; width: 90%;
+            color: var(--text-highlight); text-align: center;
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
+        }
+        #landscape-warning { display: none; }
+        @media screen and (orientation: portrait), screen and (max-aspect-ratio: 9/10) {
+            #landscape-warning {
+                display: flex !important; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background-color: var(--bg-app); z-index: 999999; flex-direction: column;
+                align-items: center; justify-content: center; color: var(--text-highlight);
+                text-align: center; padding: 20px;
+            }
+            #landscape-warning svg { animation: rotatePhone 2s infinite ease-in-out; margin-bottom: 20px; }
+            #game-layout, body > .modal-overlay { display: none !important; }
+            body { overflow: hidden !important; }
+        }
+        @keyframes rotatePhone {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-90deg); }
+            100% { transform: rotate(-90deg); }
+        }
+        @media screen and (max-height: 600px) and (orientation: landscape),
+               screen and (max-width: 950px) and (orientation: landscape) {
+            header { padding: 5px 10px; min-height: 50px; gap: 8px; }
+            .header-left { gap: 8px; }
+            .header-left h1 { font-size: 1.2rem; }
+            .header-left .day-text { font-size: 0.9rem; }
+            .settings-btn { font-size: 24px; }
+            .client-avatar { width: 45px; }
+            .client-brief-box .brief-title { padding: 2px 6px; font-size: 0.75rem; }
+            .client-brief-box .brief-content { padding: 4px 6px; font-size: 0.7rem; gap: 2px; }
+            .brief-line .label { min-width: 50px; }
+            .header-right { gap: 5px; }
+            .retro-btn { font-size: 0.8rem; padding: 4px 8px; }
+            .hide-mobile { display: none; }
+            #left-panel { width: 280px; }
+            #right-panel { width: 200px; padding: 10px; }
+            .panel-header { padding: 8px 10px; }
+            .panel-title { font-size: 1.1rem; }
+            .panel-subtitle { font-size: 0.75rem; }
+            #block-container { padding: 10px; padding-right: 32px; }
+            .w95-scrollbar { width: 18px; }
+            .w95-scroll-thumb { min-height: 50px; }
+            .script-block { padding: 6px 8px; margin-bottom: 8px; font-size: 0.75rem; }
+            .block-type-label { font-size: 0.7rem; margin-bottom: 2px; }
+            #center-panel { padding: 8px 5px; }
+            .paper-sheet { padding: 15px 20px; max-width: 100%; border-width: 0; box-shadow: none; border-radius: 4px; }
+            .paper-header { font-size: 1.1rem; margin-bottom: 12px; padding-bottom: 4px; }
+            .slot-row { min-height: 35px; margin-bottom: 6px; }
+            .drop-slot { min-height: 35px; }
+            .slot-number { width: 20px; padding-top: 5px; font-size: 0.8rem; }
+            .right-section-title { font-size: 0.9rem; margin-bottom: 8px; }
+            .checklist-item { font-size: 0.75rem; margin-bottom: 6px; line-height: 1.2; }
+            .checklist-box { width: 12px; height: 12px; margin-right: 6px; }
+            .checklist-item.done .checklist-box::after { font-size: 12px; top: -5px; left: 0px; }
+            .kamus-tab-title { font-size: 0.9rem; padding: 2px 8px; }
+            .kamus-tab-content { padding: 6px; min-height: 80px; }
+            .g-term-title { font-size: 0.75rem; margin-bottom: 2px; }
+            .g-def-text { font-size: 0.7rem; line-height: 1.2; margin-bottom: 6px; }
+            .g-example-title { font-size: 0.7rem; }
+            .g-example-text { font-size: 0.65rem; padding: 4px; }
+            .pagination-area { margin-top: 10px; padding-top: 10px; gap: 5px; }
+            .nav-arrow { width: 24px; height: 24px; font-size: 0.8rem; }
+            .page-thumb { width: 25px; height: 35px; font-size: 0.7rem; padding: 2px; }
+            .page-indicator { border-width: 4px; top: -6px; }
+        }
+        .hidden { display: none !important; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .font-bold { font-weight: 700; }
+        .flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .items-center { align-items: center; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-2 { gap: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .pb-2 { padding-bottom: 0.5rem; }
+        .border-b { border-bottom-width: 1px; border-style: solid; }
+        .border-t { border-top-width: 1px; border-style: solid; }
+        .border { border-width: 1px; border-style: solid; }
+        .cursor-pointer { cursor: pointer; }
+        .hover\:text-\[var\(--text-highlight\)\]:hover { color: var(--text-highlight); }
+    </style>
 </head>
 <body>
-<div id="landscape-warning"></div>
+    <!-- LANDSCAPE WARNING -->
+    <div id="landscape-warning">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+            <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        <h2 class="text-2xl font-bold mb-2">PUTAR PERANGKAT</h2>
+        <p class="text-sm" style="color: var(--text-muted);">Game ini membutuhkan tampilan Mendatar (Landscape).</p>
+    </div>
 
-<div id="game-layout">
-<header>
-<div class="header-left"><div class="settings-btn" onclick="showProfile()" title="Profil & Progress">⚙</div><div class="title-area"><h1>EDITOR SCRIPT</h1><div class="day-text" id="level-display">HARI 01</div></div></div>
-<div class="header-center">
-<div class="client-avatar"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/><circle cx="9" cy="9" r="1.5" fill="#3b3a36"/><circle cx="15" cy="9" r="1.5" fill="#3b3a36"/><path d="M8 8.5h2M14 8.5h2M10.5 12h3" stroke="#3b3a36" stroke-width="1.5"/></svg></div>
-<div class="client-brief-box"><div class="brief-title">CLIENT BRIEF</div><div class="brief-content" id="client-brief-content"></div></div>
-</div>
-<div class="header-right"><button class="retro-btn" onclick="clearBoard()" title="Kembalikan semua blok ke inventory">⟲ <span class="hide-mobile">RESET</span></button><button id="btn-periksa" class="retro-btn primary" onclick="checkScript()">PERIKSA <span class="hide-mobile">NASKAH</span></button></div>
-</header>
+    <!-- GAME LAYOUT -->
+    <div id="game-layout">
+        <!-- HEADER -->
+        <header>
+            <div class="header-left">
+                <div class="settings-btn" onclick="showProfile()" title="Profil & Progress">⚙</div>
+                <div class="title-area">
+                    <h1>EDITOR SCRIPT</h1>
+                    <div class="day-text" id="level-display">HARI 01</div>
+                </div>
+            </div>
+            <div class="header-center">
+                <div class="client-avatar">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                        <circle cx="9" cy="9" r="1.5" fill="#3b3a36"/>
+                        <circle cx="15" cy="9" r="1.5" fill="#3b3a36"/>
+                        <path d="M8 8.5h2M14 8.5h2M10.5 12h3" stroke="#3b3a36" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <div class="client-brief-box">
+                    <div class="brief-title">CLIENT BRIEF</div>
+                    <div class="brief-content" id="client-brief-content"></div>
+                </div>
+            </div>
+            <div class="header-right">
+                <button class="retro-btn" onclick="clearBoard()" title="Kembalikan semua blok ke inventory">
+                    ⟲ <span class="hide-mobile">RESET</span>
+                </button>
+                <button id="btn-periksa" class="retro-btn primary" onclick="checkScript()">
+                    PERIKSA <span class="hide-mobile">NASKAH</span>
+                </button>
+            </div>
+        </header>
 
-<div id="main-area">
-<div id="left-panel" class="panel">
-<div class="panel-header"><h2 class="panel-title">SCRIPT BLOCKS</h2><div class="panel-subtitle">(TARIK KE HALAMAN)</div></div>
-<div class="scroll-container"><div class="retro-scrollbar" id="block-container" ondragover="handleDragOverPanel(event)" ondrop="handleDropToPanel(event)"></div><div class="w95-scrollbar" id="script-scrollbar"><div class="w95-scroll-track"><div class="w95-scroll-thumb"></div></div></div></div>
-</div>
+        <!-- MAIN AREA -->
+        <div id="main-area">
+            <!-- LEFT PANEL: BLOCK INVENTORY -->
+            <div id="left-panel" class="panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">SCRIPT BLOCKS</h2>
+                    <div class="panel-subtitle">(TARIK KE HALAMAN)</div>
+                </div>
+                <div class="scroll-container">
+                    <div class="retro-scrollbar" id="block-container" ondragover="handleDragOverPanel(event)" ondrop="handleDropToPanel(event)"></div>
+                    <div class="w95-scrollbar" id="script-scrollbar">
+                        <div class="w95-scroll-track">
+                            <div class="w95-scroll-thumb"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-<div id="center-panel" class="panel">
-<div class="paper-sheet" id="script-paper"><div class="paper-header"><span class="title">UNTITLED</span><span class="page-num" id="page-number"></span></div><div id="slots-container"></div></div>
-</div>
+            <!-- CENTER PANEL: SCRIPT PAPER -->
+            <div id="center-panel" class="panel">
+                <div class="paper-sheet" id="script-paper">
+                    <div class="paper-header">
+                        <span class="title">UNTITLED</span>
+                        <span class="page-num" id="page-number"></span>
+                    </div>
+                    <div id="slots-container"></div>
+                </div>
+            </div>
 
-<div id="right-panel" class="panel">
-<div class="right-panel-content">
-<div class="right-section-title" style="margin-bottom:8px;">CHECKLIST</div><div id="checklist-container"></div>
-<div class="hint-section"><button id="btn-open-hint" class="hint-btn-style" onclick="openHint()"><span>HINT</span><div id="hint-badge" class="notification-badge">1</div></button></div>
-<div class="kamus-tab-container"><div class="kamus-tab-title">KAMUS</div><div class="kamus-tab-content"><div id="glossary-empty" class="text-center text-xs" style="color:var(--text-muted);margin-top:10px;">Klik kata biru pada naskah untuk melihat definisi.</div><div id="glossary-content" class="hidden"><div class="g-term-title" id="glossary-title">ISTILAH</div><p class="g-def-text" id="glossary-def">Definisi akan muncul di sini.</p><div class="g-example-title">CONTOH</div><p class="g-example-text" id="glossary-ex">"Contoh kalimat."</p></div></div></div>
-</div>
-<div class="pagination-area"><div class="nav-arrow">◄</div><div class="page-thumb-wrapper"><div class="page-thumb active">1</div><div class="page-indicator"></div></div><div class="page-thumb-wrapper" style="opacity:.4;pointer-events:none"><div class="page-thumb">2</div></div><div class="nav-arrow">►</div></div>
-</div>
-</div>
+            <!-- RIGHT PANEL: CHECKLIST, HINTS, DICTIONARY -->
+            <div id="right-panel" class="panel">
+                <div class="right-panel-content">
+                    <div class="right-section-title" style="margin-bottom: 8px;">CHECKLIST</div>
+                    <div id="checklist-container"></div>
+                    <div class="hint-section">
+                        <button id="btn-open-hint" class="hint-btn-style" onclick="openHint()">
+                            <span>HINT</span>
+                            <div id="hint-badge" class="notification-badge">1</div>
+                        </button>
+                    </div>
+                    <div class="kamus-tab-container">
+                        <div class="kamus-tab-title">KAMUS</div>
+                        <div class="kamus-tab-content">
+                            <div id="glossary-empty" class="text-center text-xs" style="color: var(--text-muted); margin-top: 10px;">
+                                Klik kata biru pada naskah untuk melihat definisi.
+                            </div>
+                            <div id="glossary-content" class="hidden">
+                                <div class="g-term-title" id="glossary-title">ISTILAH</div>
+                                <p class="g-def-text" id="glossary-def">Definisi akan muncul di sini.</p>
+                                <div class="g-example-title">CONTOH</div>
+                                <p class="g-example-text" id="glossary-ex">"Contoh kalimat."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- PAGINATION -->
+                <div class="pagination-area">
+                    <div class="nav-arrow">◄</div>
+                    <div class="page-thumb-wrapper">
+                        <div class="page-thumb active">1</div>
+                        <div class="page-indicator"></div>
+                    </div>
+                    <div class="page-thumb-wrapper" style="opacity: 0.4; pointer-events:none;">
+                        <div class="page-thumb">2</div>
+                    </div>
+                    <div class="nav-arrow">►</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<!-- portrait bottom panes are the same existing panels moved visually by CSS -->
-<div id="portrait-tabs" aria-hidden="true"></div>
-</div>
+    <!-- MODAL HINT -->
+    <div id="modal-hint" class="modal-overlay">
+        <div class="modal-content" style="max-width: 650px; text-align: left;">
+            <h2 class="text-2xl mb-4 border-b pb-2" style="color: var(--accent-yellow); border-color: var(--border-light); text-align: center;">ANATOMI NASKAH</h2>
+            <div style="font-family: sans-serif; font-size: 0.9rem; color: var(--text-normal); line-height: 1.6; max-height: 65vh; padding-right: 15px; overflow-y: auto;">
+                <p class="mb-4">Setiap tipe blok memiliki peran penting. Perhatikan formatnya untuk menyusun alur yang benar.</p>
+                <div class="mb-4">
+                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">1. SCENE HEADING (Slugline)</strong><br>
+                    Penanda awal adegan (Lokasi & Waktu). Selalu kapital.<br>
+                    <span style="color: var(--text-muted); font-style: italic;">Contoh: INT. RUANG SIDANG - SIANG</span>
+                </div>
+                <div class="mb-4">
+                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">2. ACTION</strong><br>
+                    Deskripsi kejadian/tindakan fisik karakter yang terlihat di layar.<br>
+                    <span style="color: var(--text-muted); font-style: italic;">Contoh: Seorang Hakim mengetuk palu.</span>
+                </div>
+                <div class="mb-4">
+                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">3. DIALOGUE / CHARACTER</strong><br>
+                    Ucapan tokoh. Nama tokoh selalu kapital di atas dialog.<br>
+                    <span style="color: var(--text-muted); font-style: italic;">JAKSA<br>Saya keberatan!</span>
+                </div>
+                <div class="mb-4">
+                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">4. TRANSITION</strong><br>
+                    Instruksi penyuntingan (kamera). Selalu di rata kanan.<br>
+                    <span style="color: var(--text-muted); font-style: italic;">Contoh: CUT TO:</span>
+                </div>
+            </div>
+            <div class="flex justify-center mt-6">
+                <button class="retro-btn primary" onclick="closeHint()">SAYA MENGERTI (TUTUP)</button>
+            </div>
+        </div>
+    </div>
 
-<div id="modal-hint" class="modal-overlay"><div class="modal-content" style="max-width:650px;text-align:left">
-<h2 class="text-2xl mb-4 border-b pb-2" style="color:var(--accent-yellow);border-color:var(--border-light);text-align:center">ANATOMI NASKAH</h2>
-<div style="font-family:sans-serif;font-size:.9rem;color:var(--text-normal);line-height:1.6;max-height:65vh;padding-right:15px;overflow-y:auto">
-<p class="mb-4">Setiap tipe blok memiliki peran penting. Perhatikan formatnya untuk menyusun alur yang benar.</p>
-<div class="mb-4"><strong style="color:var(--text-highlight);font-family:var(--font-ui);font-size:1.2rem">1. SCENE HEADING (Slugline)</strong><br>Penanda awal adegan (Lokasi & Waktu). Selalu kapital.<br><span style="color:var(--text-muted);font-style:italic">Contoh: INT. RUANG SIDANG - SIANG</span></div>
-<div class="mb-4"><strong style="color:var(--text-highlight);font-family:var(--font-ui);font-size:1.2rem">2. ACTION</strong><br>Deskripsi kejadian/tindakan fisik karakter yang terlihat di layar.<br><span style="color:var(--text-muted);font-style:italic">Contoh: Seorang Hakim mengetuk palu.</span></div>
-<div class="mb-4"><strong style="color:var(--text-highlight);font-family:var(--font-ui);font-size:1.2rem">3. DIALOGUE / CHARACTER</strong><br>Ucapan tokoh. Nama tokoh selalu kapital di atas dialog.<br><span style="color:var(--text-muted);font-style:italic">JAKSA<br>Saya keberatan!</span></div>
-<div class="mb-4"><strong style="color:var(--text-highlight);font-family:var(--font-ui);font-size:1.2rem">4. TRANSITION</strong><br>Instruksi penyuntingan (kamera). Selalu di rata kanan.<br><span style="color:var(--text-muted);font-style:italic">Contoh: CUT TO:</span></div>
-</div><div class="flex justify-center mt-6"><button class="retro-btn primary" onclick="closeHint()">SAYA MENGERTI (TUTUP)</button></div>
-</div></div>
+    <!-- MODAL EVALUASI -->
+    <div id="modal-eval" class="modal-overlay">
+        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
+            <h2 id="eval-title" class="text-2xl mb-4 border-b pb-2" style="color: var(--text-highlight); border-color: var(--border-light);">EVALUASI KLIEN</h2>
+            <div class="grid grid-cols-2 gap-2 text-sm text-left mb-4" id="score-details" style="font-family: sans-serif; color: var(--text-normal);">
+                <div>Struktur Naskah:</div><div class="text-right" style="color: var(--text-highlight);" id="score-structure">0</div>
+                <div>Logika & Riset:</div><div class="text-right" style="color: var(--text-highlight);" id="score-logic">0</div>
+                <div>Kesesuaian Brief:</div><div class="text-right" style="color: var(--text-highlight);" id="score-char">0</div>
+                <div class="col-span-2 border-t my-1" style="border-color: var(--border-light);"></div>
+                <div class="font-bold" style="color: var(--accent-yellow);">TOTAL SKOR:</div><div class="text-right font-bold" style="color: var(--accent-yellow);" id="score-total">0</div>
+            </div>
+            <div class="p-3 text-sm font-sans mb-4 border text-left" id="eval-feedback" style="border-color: var(--border-light); line-height: 1.4;"></div>
+            <div class="flex justify-between mt-4">
+                <button class="retro-btn" id="btn-revisi" onclick="closeModal('modal-eval')">KEMBALI</button>
+                <button class="retro-btn primary hidden" id="btn-next" onclick="nextDay()">KASUS BERIKUTNYA</button>
+            </div>
+        </div>
+    </div>
 
-<div id="modal-eval" class="modal-overlay"><div class="modal-content" style="max-height:90vh;overflow-y:auto">
-<h2 id="eval-title" class="text-2xl mb-4 border-b pb-2" style="color:var(--text-highlight);border-color:var(--border-light)">EVALUASI KLIEN</h2>
-<div class="grid grid-cols-2 gap-2 text-sm text-left mb-4" id="score-details" style="font-family:sans-serif;color:var(--text-normal)">
-<div>Struktur Naskah:</div><div class="text-right" style="color:var(--text-highlight)" id="score-structure">0</div>
-<div>Logika & Riset:</div><div class="text-right" style="color:var(--text-highlight)" id="score-logic">0</div>
-<div>Kesesuaian Brief:</div><div class="text-right" style="color:var(--text-highlight)" id="score-char">0</div>
-<div class="col-span-2 border-t my-1" style="border-color:var(--border-light)"></div>
-<div class="font-bold" style="color:var(--accent-yellow)">TOTAL SKOR:</div><div class="text-right font-bold" style="color:var(--accent-yellow)" id="score-total">0</div>
-</div>
-<div class="p-3 text-sm font-sans mb-4 border text-left" id="eval-feedback" style="border-color:var(--border-light);line-height:1.4"></div>
-<div class="flex justify-between mt-4"><button class="retro-btn" id="btn-revisi" onclick="closeModal('modal-eval')">KEMBALI</button><button class="retro-btn primary hidden" id="btn-next" onclick="nextDay()">KASUS BERIKUTNYA</button></div>
-</div></div>
+    <!-- MODAL START / PROFILE -->
+    <div id="modal-start" class="modal-overlay active">
+        <div class="modal-content">
+            <h1 class="text-4xl mb-2">EDITOR SCRIPT</h1>
+            <p class="text-sm mb-6 font-sans" style="color: var(--text-muted);">
+                Setiap cerita memiliki masalah. Tugasmu memastikan setiap bagian memiliki alasan yang logis.
+            </p>
+            <div id="profile-stats" class="text-sm mb-6 hidden border p-3 text-left font-sans" style="color: var(--text-normal); border-color: var(--border-light);">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>Hari Dicapai:</div><div id="stat-day" class="text-right" style="color: var(--text-highlight);">1</div>
+                    <div>Kasus Selesai:</div><div id="stat-cases" class="text-right" style="color: var(--text-highlight);">0</div>
+                    <div>Rata-rata Skor:</div><div id="stat-score" class="text-right" style="color: var(--text-highlight);">0</div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center mt-6">
+                <button class="text-xs cursor-pointer hover:text-[var(--text-highlight)]" style="background:none; border:none; color:var(--text-muted);" onclick="resetSave()">[ RESET DATA ]</button>
+                <button class="retro-btn primary" id="btn-start-game" onclick="startGame()">MULAI KERJA</button>
+            </div>
+        </div>
+    </div>
 
-<div id="modal-start" class="modal-overlay active"><div class="modal-content">
-<h1 class="text-4xl mb-2">EDITOR SCRIPT</h1><p class="text-sm mb-6 font-sans" style="color:var(--text-muted)">Setiap cerita memiliki masalah. Tugasmu memastikan setiap bagian memiliki alasan yang logis.</p>
-<div id="profile-stats" class="text-sm mb-6 hidden border p-3 text-left font-sans" style="color:var(--text-normal);border-color:var(--border-light)"><div class="grid grid-cols-2 gap-2"><div>Hari Dicapai:</div><div id="stat-day" class="text-right" style="color:var(--text-highlight)">1</div><div>Kasus Selesai:</div><div id="stat-cases" class="text-right" style="color:var(--text-highlight)">0</div><div>Rata-rata Skor:</div><div id="stat-score" class="text-right" style="color:var(--text-highlight)">0</div></div></div>
-<div class="flex justify-between items-center mt-6"><button class="text-xs cursor-pointer hover:text-[var(--text-highlight)]" style="background:none;border:none;color:var(--text-muted)" onclick="resetSave()">[ RESET DATA ]</button><button class="retro-btn primary" id="btn-start-game" onclick="startGame()">MULAI KERJA</button></div>
-</div></div>
+    <!-- JAVASCRIPT -->
+    <script>
+        /* ==================================================
+           GLOSSARY
+           ================================================== */
+        const glossaryDB = {
+            "JAKSA": { def: "Pejabat yang berwenang mengajukan tuntutan/dakwaan terhadap terdakwa di pengadilan.", ex: "\"Jaksa membacakan dakwaan di sidang.\"" },
+            "ALIBI": { def: "Keterangan bukti bahwa tersangka berada di tempat lain saat kejadian kriminal terjadi.", ex: "\"Tersangka memiliki alibi kuat berupa rekaman CCTV.\"" },
+            "KLINIS": { def: "Pemeriksaan berdasarkan observasi langsung pada kondisi fisik pasien.", ex: "\"Pemeriksaan klinis menunjukkan hasil stabil.\"" },
+            "STETOSKOP": { def: "Alat medis untuk mendengarkan detak jantung dan paru-paru.", ex: "\"Dokter memeriksa detak jantungnya dengan stetoskop.\"" },
+            "GARIS POLISI": { def: "Pita peringatan untuk mengamankan TKP, hanya berwenang dipasang oleh Polisi.", ex: "\"Warga dilarang melewati batas garis polisi.\"" },
+            "IRONIS": { def: "Kejadian yang bertentangan 180 derajat dengan harapan atau pengetahuan karakter.", ex: "\"Sangat ironis, sang penipu justru tertipu.\"" },
+            "AUTOPSI": { def: "Pemeriksaan bedah pada mayat untuk mengetahui penyebab kematian.", ex: "\"Laporan autopsi membuktikan ada racun.\"" },
+            "PLEDOI": { def: "Nota pembelaan yang dibacakan oleh terdakwa/pengacaranya di pengadilan.", ex: "\"Pengacara mengajukan pledoi tebal.\"" },
+            "BARANG BUKTI": { def: "Benda dari tindak pidana yang disita secara hukum.", ex: "\"Pistol itu diamankan sebagai barang bukti utama.\"" },
+            "CLIFFHANGER": { def: "Akhir cerita yang menggantung dan menegangkan tanpa penyelesaian.", ex: "\"Film itu berakhir cliffhanger.\"" },
+            "RESEP": { def: "Catatan resmi dari dokter untuk apoteker mengenai obat.", ex: "\"Dokter menuliskan resep antibiotik.\"" }
+        };
 
-<script>
-/* ========================= GLOSSARY ========================= */
-const glossaryDB={
-"ALIBI":{def:"Alasan atau bukti bahwa seseorang berada di tempat lain ketika suatu kejadian berlangsung.",ex:"\"Rekaman kamera menjadi alibi Raka.\""},
-"BUKTI":{def:"Sesuatu yang membantu menunjukkan bahwa suatu kejadian benar terjadi atau membantu menemukan kebenaran.",ex:"\"Foto itu menjadi bukti penting.\""},
-"PETUNJUK":{def:"Informasi kecil yang membantu tokoh menemukan jawaban atau memecahkan masalah.",ex:"\"Ia menemukan petunjuk di dalam buku tua.\""},
-"MANTRA":{def:"Ucapan atau rangkaian kata yang dalam cerita fantasi digunakan untuk menghasilkan kekuatan tertentu.",ex:"\"Penyihir itu mengucapkan mantra pelindung.\""},
-"PORTAL":{def:"Pintu atau jalur ajaib yang menghubungkan dua tempat atau dunia.",ex:"\"Mereka masuk melalui portal bercahaya.\""},
-"RAMUAN":{def:"Campuran bahan yang digunakan untuk tujuan tertentu, misalnya dalam cerita fantasi sebagai obat atau sihir.",ex:"\"Ia membuat ramuan penyembuh.\""},
-"ROBOT":{def:"Mesin yang dapat melakukan tugas tertentu secara otomatis atau mengikuti perintah.",ex:"\"Robot kecil itu membantu mencari data.\""},
-"PROTOTIPE":{def:"Model awal dari suatu benda atau alat yang dibuat untuk diuji.",ex:"\"Siswa itu membawa prototipe alatnya.\""},
-"CLIFFHANGER":{def:"Akhir cerita yang sengaja dibuat menggantung agar penonton penasaran dengan kelanjutannya.",ex:"\"Pintu terbuka, lalu layar menjadi gelap: cliffhanger.\""},
-"TWIST":{def:"Perubahan atau fakta tak terduga yang mengubah cara penonton memahami cerita.",ex:"\"Di akhir cerita ada twist tentang identitas tokoh.\""},
-"SIMBOL":{def:"Benda, tanda, atau gambaran yang digunakan untuk mewakili makna tertentu dalam cerita.",ex:"\"Liontin itu menjadi simbol janji mereka.\""},
-"EKSPEDISI":{def:"Perjalanan yang dilakukan dengan tujuan tertentu, biasanya untuk mencari, mempelajari, atau menemukan sesuatu.",ex:"\"Mereka memulai ekspedisi ke hutan.\""},
-"OBSERVASI":{def:"Kegiatan memperhatikan sesuatu dengan teliti untuk mendapatkan informasi.",ex:"\"Tokoh itu melakukan observasi sebelum mengambil keputusan.\""},
-"DRONE":{def:"Pesawat atau alat terbang tanpa awak yang dikendalikan dari jarak jauh atau berjalan otomatis.",ex:"\"Drone membantu mencari jalan dari udara.\""},
-"KOORDINAT":{def:"Angka atau keterangan yang menunjukkan posisi suatu tempat.",ex:"\"Ia mencatat koordinat lokasi rahasia.\""},
-"RESEP":{def:"Catatan dari dokter mengenai obat yang perlu diberikan kepada pasien.",ex:"\"Dokter menuliskan resep untuk pasien.\""},
-"STETOSKOP":{def:"Alat medis untuk mendengarkan suara jantung dan paru-paru.",ex:"\"Dokter memeriksa pasien dengan stetoskop.\""},
-"JAKSA":{def:"Pejabat yang berwenang dalam proses penuntutan perkara di pengadilan.",ex:"\"Jaksa menyampaikan tuntutan di persidangan.\""}
-};
+        /* ==================================================
+           STORY TEMPLATE
+           ================================================== */
+        const storyTemplates = [
+            {
+                genre: "HOROR",
+                theme: "Ketakutan pada yang tak terlihat",
+                reqText: "Akhir cerita harus IRONIS.",
+                protagonists: ["POLISI", "DOKTER"],
+                locations: ["RUMAH SAKIT KOSONG", "GUDANG TUA", "RUMAH TUA"],
+                conflicts: ["terdengar langkah kaki mendekat perlahan", "semua lampu berkedip dan mati"],
+                ending: "IRONIS"
+            },
+            {
+                genre: "DRAMA KRIMINAL",
+                theme: "Keadilan yang terhalang kebohongan",
+                reqText: "Kewenangan hukum tidak boleh dilanggar.",
+                protagonists: ["JAKSA"],
+                locations: ["RUANG SIDANG"],
+                conflicts: ["saksi ahli tiba-tiba mengubah kesaksiannya", "alibi terdakwa dipalsukan"],
+                ending: "PENYELESAIAN TUNTUTAN"
+            },
+            {
+                genre: "THRILLER MEDIS",
+                theme: "Berpacu dengan waktu melawan kematian",
+                reqText: "Tensi memuncak di akhir cerita (Cliffhanger).",
+                protagonists: ["DOKTER"],
+                locations: ["RUANG OPERASI", "KLINIK DARURAT"],
+                conflicts: ["kondisi korban memburuk dalam hitungan detik", "pasien kejang hebat"],
+                ending: "CLIFFHANGER"
+            },
+            {
+                genre: "MISTERI",
+                theme: "Kebenaran bersembunyi di detail kecil",
+                reqText: "Tokoh harus mengamankan area TKP.",
+                protagonists: ["POLISI"],
+                locations: ["TKP PENEMUAN KORBAN", "GANG GELAP"],
+                conflicts: ["sebuah BARANG BUKTI hilang", "tersangka menolak bicara"],
+                ending: "TERBUKA (AMBIGU)"
+            }
+        ];
 
-/* ========================= STORY DATA ========================= */
-const storyTemplates=[
-{genre:"FANTASY",themes:["Rahasia dunia lain","Keberanian menemukan jalan pulang","Kekuatan sebuah pilihan"],characters:[
-{name:"NARA",role:"penjaga perpustakaan",traits:["penasaran","berani"],goal:"menemukan buku yang hilang"},
-{name:"RAKA",role:"siswa",traits:["ceroboh","pantang menyerah"],goal:"menyelamatkan sahabatnya"},
-{name:"LUNA",role:"penyihir muda",traits:["baik hati","mudah gugup"],goal:"mengendalikan kekuatan barunya"}],
-locations:["PERPUSTAKAAN TUA","HUTAN AJAIB","MENARA TERLANTAR"],
-conflicts:["sebuah PORTAL tiba-tiba terbuka","buku tua memancarkan cahaya aneh","makhluk misterius muncul dari balik pepohonan"],
-clues:["sebuah simbol bercahaya ditemukan di lantai","ada pesan tersembunyi di balik halaman buku","suara misterius menyebut nama tokoh utama"]},
-{genre:"PETUALANGAN",themes:["Berani mencoba","Persahabatan dalam perjalanan","Mencari sesuatu yang hilang"],characters:[
-{name:"DIO",role:"anggota klub sekolah",traits:["penasaran","optimistis"],goal:"menemukan kamera lama milik sekolah"},
-{name:"SARI",role:"fotografer muda",traits:["teliti","berani"],goal:"mencari tempat tersembunyi"},
-{name:"BIMA",role:"ketua kelompok",traits:["bertanggung jawab","mudah khawatir"],goal:"membawa kelompok pulang dengan aman"}],
-locations:["GUDANG SEKOLAH","HUTAN KOTA","GEDUNG TUA"],
-conflicts:["jalan keluar tertutup","peta yang mereka bawa ternyata tidak lengkap","hari mulai gelap sebelum tujuan ditemukan"],
-clues:["foto lama menunjukkan lokasi yang sama","sebuah tanda aneh muncul di dinding","mereka menemukan catatan perjalanan sebelumnya"]},
-{genre:"MISTERI SEKOLAH",themes:["Kebenaran ada di detail kecil","Jangan cepat mengambil kesimpulan","Rasa ingin tahu membawa jawaban"],characters:[
-{name:"ALYA",role:"anggota klub jurnalistik",traits:["teliti","penasaran"],goal:"menemukan siapa yang mengambil barang sekolah"},
-{name:"RIZKY",role:"ketua kelas",traits:["bertanggung jawab","tegas"],goal:"menyelesaikan masalah tanpa menuduh sembarangan"},
-{name:"MAYA",role:"siswa baru",traits:["pendiam","observatif"],goal:"mencari tahu rahasia sekolah"}],
-locations:["KELAS KOSONG","RUANG ARSIP SEKOLAH","KORIDOR SEKOLAH"],
-conflicts:["sebuah barang penting hilang","pesan anonim ditemukan di papan pengumuman","rekaman kamera berhenti tepat saat kejadian"],
-clues:["ada jejak kecil di dekat lemari","selembar kertas memiliki tulisan yang sama dengan pesan anonim","seorang siswa mengingat detail yang terlupakan orang lain"]},
-{genre:"FIKSI ILMIAH",themes:["Teknologi dan tanggung jawab","Penemuan yang mengubah segalanya","Memilih menggunakan teknologi dengan bijak"],characters:[
-{name:"RAKA",role:"siswa penemu",traits:["cerdas","penasaran"],goal:"menguji prototipe dengan aman"},
-{name:"TARA",role:"anggota klub sains",traits:["teliti","berani"],goal:"menghentikan mesin yang tidak terkendali"},
-{name:"NOVA",role:"robot pendamping",traits:["setia","logis"],goal:"melindungi tim"}],
-locations:["LABORATORIUM SEKOLAH","RUANG BAWAH TANAH","STASIUN PENELITIAN"],
-conflicts:["PROTOTIPE mulai bekerja sendiri","alarm berbunyi tanpa sebab","sistem utama kehilangan kendali"],
-clues:["KOORDINAT muncul di layar","sebuah catatan memperingatkan bahaya","DRONE menemukan sumber gangguan"]},
-{genre:"HOROR RINGAN",themes:["Menghadapi rasa takut","Jangan mudah percaya pada bayangan","Keberanian datang dari kebersamaan"],characters:[
-{name:"NINA",role:"siswa",traits:["penakut","peduli teman"],goal:"mencari temannya yang hilang"},
-{name:"ADIT",role:"anggota klub film",traits:["penasaran","berani"],goal:"mencari sumber suara misterius"},
-{name:"SENA",role:"penjaga gedung",traits:["tenang","waspada"],goal:"memastikan semua orang keluar dengan aman"}],
-locations:["GEDUNG SEKOLAH LAMA","BIOSKOP TERLANTAR","RUMAH KOSONG"],
-conflicts:["terdengar suara dari ruangan terkunci","lampu tiba-tiba mati","sebuah bayangan bergerak tanpa pemilik"],
-clues:["rekaman lama menunjukkan ruangan yang sama","pintu memiliki simbol aneh","ada suara dari balik dinding"]},
-{genre:"DRAMA PERSAHABATAN",themes:["Belajar memahami orang lain","Pilihan dan konsekuensinya","Persahabatan setelah kesalahpahaman"],characters:[
-{name:"DARA",role:"siswa",traits:["jujur","keras kepala"],goal:"memperbaiki kesalahpahaman dengan sahabat"},
-{name:"FARIS",role:"kapten tim sekolah",traits:["bertanggung jawab","mudah panik"],goal:"menjaga tim tetap bersama"},
-{name:"KEVIN",role:"anggota klub musik",traits:["percaya diri","sensitif"],goal:"berani mengatakan perasaannya"}],
-locations:["RUANG KELAS","LAPANGAN SEKOLAH","RUANG MUSIK"],
-conflicts:["sebuah pesan disalahpahami","anggota kelompok ingin pergi","rahasia kecil terbongkar"],
-clues:["pesan lama ternyata memiliki konteks berbeda","seorang teman melihat kejadian dari sisi lain","tokoh menemukan alasan sebenarnya"]},
-{genre:"KOMEDI PETUALANGAN",themes:["Kesalahan kecil menjadi masalah besar","Kerja sama menyelesaikan kekacauan","Tidak semua rencana berjalan sempurna"],characters:[
-{name:"JONI",role:"siswa",traits:["percaya diri","ceroboh"],goal:"menyelesaikan tugas kelompok tepat waktu"},
-{name:"LIA",role:"ketua kelompok",traits:["teratur","sabar"],goal:"menyelamatkan tugas kelompok"},
-{name:"BAGAS",role:"anggota klub komputer",traits:["iseng","kreatif"],goal:"memperbaiki kesalahan yang dibuat kelompok"}],
-locations:["RUANG KOMPUTER","KANTIN SEKOLAH","AULA SEKOLAH"],
-conflicts:["file tugas tiba-tiba hilang","rencana berubah karena listrik mati","barang penting tertukar"],
-clues:["file ternyata tersimpan dengan nama berbeda","sebuah catatan menunjukkan kesalahan terakhir","seseorang mengingat kejadian yang lucu tetapi penting"]}
-];
+        /* ==================================================
+           GAME STATE
+           ================================================== */
+        let gameState = {
+            day: 1,
+            casesCompleted: 0,
+            totalScore: 0,
+            history: [],
+            currentBible: null,
+            currentBlocks: [],
+            placedBlocks: [],
+            selectedBlockId: null,
+            hintUsed: false
+        };
 
-const endingTypes=[
-{id:"HAPPY",label:"HAPPY ENDING",brief:"Akhiri cerita dengan masalah utama berhasil diselesaikan dan tokoh memperoleh harapan baru."},
-{id:"SAD",label:"SAD ENDING",brief:"Akhiri cerita dengan tokoh menerima kehilangan atau kegagalan yang bermakna."},
-{id:"OPEN",label:"OPEN ENDING",brief:"Akhiri cerita dengan pertanyaan yang belum sepenuhnya terjawab."},
-{id:"HOPEFUL",label:"HOPEFUL ENDING",brief:"Akhiri cerita dengan keadaan belum sempurna, tetapi ada harapan untuk memperbaikinya."},
-{id:"TWIST",label:"TWIST ENDING",brief:"Akhiri cerita dengan fakta baru yang mengubah pemahaman penonton tentang kejadian sebelumnya."},
-{id:"BITTERSWEET",label:"BITTERSWEET ENDING",brief:"Akhiri cerita dengan keberhasilan sekaligus konsekuensi yang tidak mudah."},
-{id:"CLIFFHANGER",label:"CLIFFHANGER",brief:"Akhiri cerita pada momen penting yang membuat penonton ingin mengetahui kelanjutannya."}
-];
+        /* ==================================================
+           HELPER FUNCTIONS
+           ================================================== */
+        function pickRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
 
-const formatTypes=[
-{id:"CUT_TO",text:"Akhiri naskah dengan transisi CUT TO:"},
-{id:"FADE_OUT",text:"Akhiri naskah dengan transisi FADE OUT."},
-{id:"NO_TRANS",text:"Tidak perlu transisi; biarkan ending menjadi baris terakhir."},
-{id:"ANY_TRANS",text:"Gunakan CUT TO: atau FADE OUT sesuai alur."}
-];
+        /* ==================================================
+           GENERATE STORY BIBLE
+           ================================================== */
+        function generateStoryBible() {
+            let available = storyTemplates;
+            if (gameState.history.length > 0 && available.length > 1) {
+                const lastGen = gameState.history[gameState.history.length - 1].genre;
+                available = available.filter(t => t.genre !== lastGen);
+            }
+            if (available.length === 0) {
+                available = storyTemplates;
+            }
+            const t = pickRandom(available);
+            const formats = [
+                { id: 'CUT_TO', text: "Akhiri naskah dengan transisi CUT TO:" },
+                { id: 'FADE_OUT', text: "Akhiri naskah dengan transisi FADE OUT." },
+                { id: 'NO_TRANS', text: "-" },
+                { id: 'ANY_TRANS', text: "-" }
+            ];
+            const chosenFormat = pickRandom(formats);
+            return {
+                genre: t.genre,
+                theme: t.theme,
+                reqText: t.reqText,
+                protagonist: pickRandom(t.protagonists),
+                location: pickRandom(t.locations),
+                conflict: pickRandom(t.conflicts),
+                ending: t.ending,
+                formatId: chosenFormat.id,
+                formatText: chosenFormat.text
+            };
+        }
 
-let gameState={day:1,casesCompleted:0,totalScore:0,history:[],currentBible:null,currentBlocks:[],placedBlocks:[],selectedBlockId:null,hintUsed:false};
-function pickRandom(a){return a[Math.floor(Math.random()*a.length)]}
-function escapeHTML(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+        /* ==================================================
+           GENERATE BLOCKS
+           ================================================== */
+        function generateBlocksForBible(bible) {
+            let blocks = [];
+            let cid = 1;
+            const cb = (type, text, isCorrect, seq, req, err, hint) => ({
+                id: 'blk_' + cid++,
+                type,
+                text,
+                isCorrect,
+                sequenceOrder: seq,
+                required: req,
+                errorReason: err,
+                hint
+            });
 
-function generateStoryBible(){
-let available=storyTemplates;
-if(gameState.history.length){const last=gameState.history[gameState.history.length-1].genre;available=storyTemplates.filter(t=>t.genre!==last);if(!available.length)available=storyTemplates}
-const t=pickRandom(available), character=pickRandom(t.characters), ending=pickRandom(endingTypes), format=pickRandom(formatTypes), conflict=pickRandom(t.conflicts), clue=pickRandom(t.clues);
-const directions=[
-`Tokoh utama harus menunjukkan sifat ${character.traits.join(" dan ")} saat menghadapi masalah.`,
-`Sisipkan petunjuk yang membantu tokoh memahami masalah: ${clue}.`,
-`Tokoh harus mengambil keputusan yang berhubungan dengan tujuannya: ${character.goal}.`,
-`Konflik berkembang dari kejadian: ${conflict}.`,
-`Tunjukkan bahwa tindakan tokoh memiliki akibat bagi cerita.`
-];
-return{genre:t.genre,theme:pickRandom(t.themes),character,location:pickRandom(t.locations),conflict,clue,ending:ending.id,endingLabel:ending.label,reqText:pickRandom(directions),endingBrief:ending.brief,formatId:format.id,formatText:format.text};
-}
+            // SCENE
+            blocks.push(cb('SCENE HEADING', `INT. ${bible.location} - SIANG`, true, 1, true));
+            if (gameState.day >= 4) {
+                blocks.push(cb('SCENE HEADING', `EXT. JALAN RAYA - MALAM`, false, 0, false, "Lokasi Salah", "Perhatikan lokasi relevan sesuai profesi di kasus ini."));
+                blocks.push(cb('SCENE HEADING', `INT. RESTORAN CEPAT SAJI - PAGI`, false, 0, false, "Lokasi Salah", "Konteks adegan tidak terjadi di restoran."));
+            }
 
-function generateBlocksForBible(b){
-let blocks=[],cid=1;
-const cb=(type,text,isCorrect,seq,req=false,err="",hint="",tags={})=>({id:"blk_"+cid++,type,text,isCorrect,sequenceOrder:seq,required:req,errorReason:err,hint,tags});
-const c=b.character;
-blocks.push(cb("SCENE HEADING",`INT. ${b.location} - SIANG`,true,1,true));
-blocks.push(cb("CHARACTER",`${c.name}, seorang ${c.role}, terlihat ${c.traits[0]} dan ${c.traits[1]}.`,true,2,true,"","", {traits:c.traits}));
-blocks.push(cb("ACTION",`${c.name} memutuskan untuk ${c.goal}.`,true,3,true,"","", {goal:c.goal}));
-blocks.push(cb("ACTION",`Tiba-tiba, ${b.conflict}.`,true,4,true));
-blocks.push(cb("ACTION",`${c.name} memperhatikan ${b.clue}.`,true,5,true,"","", {clue:b.clue}));
-blocks.push(cb("DIALOGUE",`${c.name}\nAku harus tetap tenang dan mencari jalan keluar.`,true,6,true,"","", {traits:c.traits}));
-const endingMap={
-HAPPY:`${c.name} berhasil menyelesaikan masalah. Mereka tersenyum lega karena semuanya kembali baik.`,
-SAD:`${c.name} berhasil mencapai tujuannya, tetapi harus menerima bahwa sesuatu yang penting telah hilang.`,
-OPEN:`${c.name} menemukan jawaban sementara, tetapi satu pertanyaan besar masih belum terjawab.`,
-HOPEFUL:`Masalah belum sepenuhnya selesai, tetapi ${c.name} melihat kesempatan untuk memperbaikinya.`,
-TWIST:`Saat semuanya tampak selesai, ${c.name} menemukan fakta baru yang mengubah pemahamannya tentang kejadian tadi.`,
-BITTERSWEET:`${c.name} berhasil, tetapi keberhasilan itu membawa konsekuensi yang harus diterima.`,
-CLIFFHANGER:`${c.name} membuka jalan menuju jawaban—lalu terdengar suara dari tempat yang tidak terduga.`
-};
-blocks.push(cb("ACTION",endingMap[b.ending],true,7,true,"","", {ending:b.ending}));
-if(b.formatId==="CUT_TO")blocks.push(cb("TRANSITION","CUT TO:",true,8,true));
-else if(b.formatId==="FADE_OUT")blocks.push(cb("TRANSITION","FADE OUT.",true,8,true));
-else if(b.formatId==="ANY_TRANS")blocks.push(cb("TRANSITION",pickRandom(["CUT TO:","FADE OUT."]),true,8,true));
-/* distractors */
-blocks.push(cb("ACTION",`${c.name} tiba-tiba melakukan hal yang sama sekali tidak berhubungan dengan tujuan cerita.`,false,0,false,"Tidak relevan","Pilih tindakan yang membantu perkembangan cerita.",{distractor:true}));
-blocks.push(cb("DIALOGUE",`${c.name}\nAku tidak peduli dengan masalah ini dan pergi tanpa alasan.`,false,0,false,"Karakter tidak konsisten","Perhatikan sifat, tujuan, dan situasi tokoh.",{distractor:true}));
-blocks.push(cb("ACTION",`Masalah selesai sendiri tanpa tokoh melakukan apa pun.`,false,0,false,"Sebab-akibat lemah","Tokoh sebaiknya memiliki tindakan yang menyebabkan perubahan.",{distractor:true}));
-if(gameState.day>=4){
-blocks.push(cb("SCENE HEADING",`EXT. JALAN RAYA - MALAM`,false,0,false,"Lokasi tidak sesuai","Gunakan setting yang diberikan client brief.",{distractor:true}));
-blocks.push(cb("ACTION",`Tokoh langsung mendapatkan semua yang diinginkan tanpa menghadapi konflik.`,false,0,false,"Alur terlalu melompat","Cerita perlu menunjukkan konflik dan proses.",{distractor:true}));
-}
-if(b.ending!=="TWIST")blocks.push(cb("ACTION",`Ternyata semua kejadian hanyalah mimpi tanpa petunjuk sebelumnya.`,false,0,false,"Akhir terlalu mendadak","Ending harus sesuai arahan client brief.",{distractor:true}));
-if(b.formatId==="NO_TRANS")blocks.push(cb("TRANSITION","CUT TO:",false,0,false,"Format transisi","Client meminta tanpa transisi.",{distractor:true}));
-else blocks.push(cb("TRANSITION",b.formatId==="CUT_TO"?"FADE OUT.":"CUT TO:",false,0,false,"Format transisi","Perhatikan format akhir yang diminta client.",{distractor:true}));
-return blocks.sort(()=>Math.random()-.5);
-}
+            // Protagonist-specific
+            if (bible.protagonist === 'JAKSA') {
+                blocks.push(cb('ACTION', `Seorang JAKSA merapikan berkas di meja dengan gugup.`, true, 2, true));
+                blocks.push(cb('DIALOGUE', `JAKSA\nKita harus periksa ALIBI terdakwa dengan saksama.`, true, 3, true));
+                blocks.push(cb('ACTION', `JAKSA mengetuk palu dan memutuskan vonis penjara.`, false, 0, false, "Kewenangan", "Periksa batas wewenang profesi Jaksa di pengadilan."));
+                blocks.push(cb('DIALOGUE', `JAKSA\nSaya akan melakukan AUTOPSI sekarang juga.`, false, 0, false, "Kewenangan", "Jaksa bukan tenaga forensik."));
+                blocks.push(cb('ACTION', `Hakim menyuruh JAKSA membacakan PLEDOI.`, false, 0, false, "Kewenangan", "Pledoi adalah tugas terdakwa/pengacara pembela."));
+            } else if (bible.protagonist === 'DOKTER') {
+                blocks.push(cb('ACTION', `DOKTER memeriksa kondisi KLINIS pasien secara manual.`, true, 2, true));
+                blocks.push(cb('ACTION', `Ia mengambil STETOSKOP dan menarik napas panjang.`, true, 3, true));
+                blocks.push(cb('ACTION', `DOKTER mengeluarkan pistol dan memborgol pelaku.`, false, 0, false, "Kewenangan", "Dokter sipil tidak berwenang menangkap."));
+                blocks.push(cb('ACTION', `DOKTER memasang GARIS POLISI di sekitar ranjang.`, false, 0, false, "Kewenangan", "Tindakan ini wewenang kepolisian."));
+                blocks.push(cb('DIALOGUE', `DOKTER\nSaya akan mengajukan PLEDOI untuk pasien ini.`, false, 0, false, "Konteks", "Istilah hukum tak lazim dalam medis. Ia harusnya menulis RESEP."));
+            } else { // POLISI
+                blocks.push(cb('ACTION', `POLISI merunduk di bawah GARIS POLISI.`, true, 2, true));
+                blocks.push(cb('DIALOGUE', `POLISI\nArea ini steril. Amankan BARANG BUKTI!`, true, 3, true));
+                blocks.push(cb('ACTION', `POLISI melakukan pembedahan KLINIS pada mayat.`, false, 0, false, "Kewenangan", "Pembedahan ranah forensik (Autopsi)."));
+                blocks.push(cb('ACTION', `POLISI membacakan PLEDOI di depan saksi.`, false, 0, false, "Kewenangan", "Ini tugas pengacara di persidangan."));
+                blocks.push(cb('ACTION', `POLISI menuliskan RESEP untuk korban luka.`, false, 0, false, "Kewenangan", "Hanya dokter yang berhak meresepkan."));
+            }
 
-function setupNewCase(){
-gameState.currentBible=generateStoryBible();
-gameState.currentBlocks=generateBlocksForBible(gameState.currentBible);
-const reqCount=gameState.currentBlocks.filter(b=>b.required).length;
-gameState.placedBlocks=new Array(reqCount).fill(null);
-gameState.selectedBlockId=null;gameState.hintUsed=false;
-const badge=document.getElementById("hint-badge"),btn=document.getElementById("btn-open-hint");
-badge.style.display="flex";btn.classList.remove("hint-disabled");
-document.getElementById("glossary-empty").classList.remove("hidden");document.getElementById("glossary-content").classList.add("hidden");
-document.getElementById("btn-next").dataset.saved="false";
-updateUI();
-}
+            // CONFLICT
+            blocks.push(cb('ACTION', `Tiba-tiba, ${bible.conflict}.`, true, 4, true));
 
-function openHint(){if(!gameState.hintUsed)document.getElementById("modal-hint").classList.add("active")}
-function closeHint(){document.getElementById("modal-hint").classList.remove("active");gameState.hintUsed=true;document.getElementById("hint-badge").style.display="none";document.getElementById("btn-open-hint").classList.add("hint-disabled")}
+            // TRANSITION
+            let reqTrans = bible.formatId;
+            if (reqTrans === 'CUT_TO') {
+                blocks.push(cb('TRANSITION', `CUT TO:`, true, 5, true));
+                if (gameState.day >= 4) blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format Transisi", "Klien meminta CUT TO: secara spesifik."));
+            } else if (reqTrans === 'FADE_OUT') {
+                blocks.push(cb('TRANSITION', `FADE OUT.`, true, 5, true));
+                if (gameState.day >= 4) blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format Transisi", "Klien meminta FADE OUT secara spesifik."));
+            } else if (reqTrans === 'NO_TRANS') {
+                if (gameState.day >= 4) {
+                    blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format Transisi", "Naskah ini diminta tanpa transisi di akhir."));
+                    blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format Transisi", "Naskah ini diminta tanpa transisi di akhir."));
+                }
+            } else if (reqTrans === 'ANY_TRANS') {
+                blocks.push(cb('TRANSITION', pickRandom([`CUT TO:`, `FADE OUT.`]), true, 5, true));
+                if (gameState.day >= 4) blocks.push(cb('TRANSITION', `DISSOLVE TO:`, false, 0, false, "Format Transisi", "Gunakan transisi standar yang lazim seperti CUT TO atau FADE OUT."));
+            }
 
-function processTextForGlossary(text){
-let p=escapeHTML(text).replace(/\n/g,"<br>");
-const keys=Object.keys(glossaryDB).sort((a,b)=>b.length-a.length);
-for(const key of keys){
-const r=new RegExp(`(^|[^A-Za-zÀ-ÿ])(${key.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")})(?=$|[^A-Za-zÀ-ÿ])`,"gi");
-p=p.replace(r,`$1<span class="glossary-term-link" onclick="event.stopPropagation();openGlossary('${key}')">$2</span>`);
-}
-return p;
-}
-function openGlossary(term){const k=term.toUpperCase();if(!glossaryDB[k])return;document.getElementById("glossary-empty").classList.add("hidden");document.getElementById("glossary-content").classList.remove("hidden");document.getElementById("glossary-title").innerText=k;document.getElementById("glossary-def").innerText=glossaryDB[k].def;document.getElementById("glossary-ex").innerText=glossaryDB[k].ex)}
+            return blocks.sort(() => Math.random() - 0.5);
+        }
 
-function updateUI(){
-document.getElementById("level-display").innerText=`HARI ${String(gameState.day).padStart(2,"0")}`;
-document.getElementById("page-number").innerText=gameState.day===1?"":`HAL 2.`;
-const b=gameState.currentBible;
-document.getElementById("client-brief-content").innerHTML=`
-<div class="brief-line"><span class="label">GENRE</span><span class="value">: ${escapeHTML(b.genre)}</span></div>
-<div class="brief-line"><span class="label">TEMA</span><span class="value">: ${escapeHTML(b.theme)}</span></div>
-<div class="brief-line"><span class="label">PLOT</span><span class="value" style="color:var(--accent-yellow)">: ${escapeHTML(b.reqText)}</span></div>
-<div class="brief-line"><span class="label">ENDING</span><span class="value" style="color:var(--accent-yellow)">: ${escapeHTML(b.endingLabel)} — ${escapeHTML(b.endingBrief)}</span></div>
-<div class="brief-line"><span class="label">FORMAT</span><span class="value" style="color:var(--color-scene)">: ${escapeHTML(b.formatText)}</span></div>`;
-document.getElementById("checklist-container").innerHTML=`
-<div class="checklist-item" id="chk-blocks"><span class="checklist-box"></span>Sesuai plot klien</div>
-${b.formatId==="NO_TRANS"?'<div class="checklist-item" id="chk-trans"><span class="checklist-box"></span>Tanpa transisi</div>':b.formatId==="CUT_TO"||b.formatId==="FADE_OUT"?'<div class="checklist-item" id="chk-trans"><span class="checklist-box"></span>Transisi sesuai instruksi</div>':''}
-<div class="checklist-item" id="chk-logic"><span class="checklist-box"></span>Urutan cerita logis</div>
-<div class="checklist-item" id="chk-prof"><span class="checklist-box"></span>Karakter & perilaku sesuai cerita</div>`;
-if(gameState.hintUsed){document.getElementById("hint-badge").style.display="none";document.getElementById("btn-open-hint").classList.add("hint-disabled")}
-renderBlocksAndSlots();updateChecklist();
-}
+        /* ==================================================
+           SETUP NEW CASE
+           ================================================== */
+        function setupNewCase() {
+            gameState.currentBible = generateStoryBible();
+            gameState.currentBlocks = generateBlocksForBible(gameState.currentBible);
+            const reqCount = gameState.currentBlocks.filter(b => b.required).length;
+            gameState.placedBlocks = new Array(reqCount).fill(null);
+            gameState.selectedBlockId = null;
+            gameState.hintUsed = false;
 
-function getPlacedBlocks(){return gameState.placedBlocks.map(id=>gameState.currentBlocks.find(b=>b.id===id)).filter(Boolean)}
-function evaluatePlacement(){
-const placed=getPlacedBlocks(),required=gameState.currentBlocks.filter(b=>b.required);
-const allFilled=gameState.placedBlocks.length>0&&gameState.placedBlocks.every(Boolean);
-const allRequired=required.every(b=>gameState.placedBlocks.includes(b.id));
-const noWrong=placed.length===gameState.placedBlocks.length&&placed.every(b=>b.isCorrect);
-const logical=allFilled&&placed.length===required.length&&placed.every((b,i)=>b.sequenceOrder===i+1);
-const endingOK=placed.some(b=>b.tags&&b.tags.ending===gameState.currentBible.ending);
-const transBlocks=placed.filter(b=>b.type==="TRANSITION");
-const transOK=gameState.currentBible.formatId==="NO_TRANS"?transBlocks.length===0:(gameState.currentBible.formatId==="ANY_TRANS"?transBlocks.some(b=>b.isCorrect):transBlocks.some(b=>b.isCorrect));
-const charBlock=placed.find(b=>b.type==="CHARACTER");
-const characterOK=!!charBlock&&charBlock.isCorrect&&charBlock.tags&&Array.isArray(charBlock.tags.traits);
-return{allFilled,allRequired,noWrong,logical,endingOK,transOK,characterOK,complete:allFilled&&allRequired&&noWrong};
-}
+            document.getElementById('hint-badge').style.display = 'flex';
+            document.getElementById('btn-open-hint').classList.remove('hint-disabled');
+            document.getElementById('glossary-empty').classList.remove('hidden');
+            document.getElementById('glossary-content').classList.add('hidden');
+            updateUI();
+        }
 
-function updateChecklist(){
-const e=evaluatePlacement(),cBlocks=document.getElementById("chk-blocks"),cTrans=document.getElementById("chk-trans"),cLogic=document.getElementById("chk-logic"),cProf=document.getElementById("chk-prof");
-if(!cBlocks)return;
-cBlocks.classList.toggle("done",e.complete&&e.endingOK);
-if(cTrans)cTrans.classList.toggle("done",e.complete&&e.transOK);
-cLogic.classList.toggle("done",e.complete&&e.logical);
-cProf.classList.toggle("done",e.complete&&e.characterOK);
-}
+        /* ==================================================
+           HINT & GLOSSARY
+           ================================================== */
+        function openHint() {
+            if (gameState.hintUsed) return;
+            document.getElementById('modal-hint').classList.add('active');
+        }
 
-function renderBlocksAndSlots(){
-const bc=document.getElementById("block-container"),sc=document.getElementById("slots-container");bc.innerHTML="";sc.innerHTML="";
-gameState.currentBlocks.forEach(b=>{if(!gameState.placedBlocks.includes(b.id))bc.appendChild(createBlockEl(b,false))});
-gameState.placedBlocks.forEach((id,i)=>{
-const row=document.createElement("div");row.className="slot-row";const num=document.createElement("div");num.className="slot-number";num.innerText=i+1;
-const slot=document.createElement("div");slot.className="drop-slot";slot.dataset.index=i;
-slot.addEventListener("dragover",handleDragOver);slot.addEventListener("dragleave",handleDragLeave);slot.addEventListener("drop",handleDrop);slot.addEventListener("click",()=>handleSlotClick(i));
-if(id){const b=gameState.currentBlocks.find(x=>x.id===id);if(b){slot.appendChild(createBlockEl(b,true,i));slot.style.borderStyle="none";slot.style.background="transparent"}}
-row.append(num,slot);sc.appendChild(row);
-});
-requestAnimationFrame(()=>document.getElementById("block-container")?.dispatchEvent(new Event("scroll")));
-}
-function createBlockEl(b,isPlaced=false,slotIdx=null){
-const div=document.createElement("div");div.className="script-block";if(gameState.selectedBlockId===b.id)div.style.borderColor="var(--text-highlight)";div.draggable=true;div.id=b.id;div.dataset.type=b.type;
-div.innerHTML=`<div class="block-type-label">${escapeHTML(b.type)}</div><div class="block-text">${processTextForGlossary(b.text)}</div>`;
-div.addEventListener("dragstart",e=>handleDragStart(e,b.id,isPlaced,slotIdx));div.addEventListener("dragend",handleDragEnd);div.addEventListener("click",e=>{if(!e.target.classList.contains("glossary-term-link"))handleBlockClick(b.id)});return div;
-}
+        function closeHint() {
+            document.getElementById('modal-hint').classList.remove('active');
+            gameState.hintUsed = true;
+            document.getElementById('hint-badge').style.display = 'none';
+            document.getElementById('btn-open-hint').classList.add('hint-disabled');
+        }
 
-let draggedId=null,draggedFrom=null;
-function handleDragStart(e,id,isPlaced,idx){draggedId=id;draggedFrom=isPlaced?idx:null;e.dataTransfer.setData("text/plain",id);setTimeout(()=>e.target.style.opacity=".5",0)}
-function handleDragEnd(e){e.target.style.opacity="1";draggedId=null;draggedFrom=null}
-function handleDragOver(e){e.preventDefault();e.currentTarget.classList.add("drag-over")}
-function handleDragLeave(e){e.currentTarget.classList.remove("drag-over")}
-function handleDrop(e){e.preventDefault();e.currentTarget.classList.remove("drag-over");moveBlock(draggedId,parseInt(e.currentTarget.dataset.index),draggedFrom)}
-function handleDragOverPanel(e){e.preventDefault()}
-function handleDropToPanel(e){e.preventDefault();if(draggedId&&draggedFrom!==null)moveBlock(draggedId,null,draggedFrom)}
-function handleBlockClick(id){gameState.selectedBlockId=gameState.selectedBlockId===id?null:id;renderBlocksAndSlots()}
-function handleSlotClick(idx){
-if(gameState.selectedBlockId){const from=gameState.placedBlocks.indexOf(gameState.selectedBlockId);moveBlock(gameState.selectedBlockId,idx,from!==-1?from:null);gameState.selectedBlockId=null}
-else if(gameState.placedBlocks[idx]){gameState.selectedBlockId=gameState.placedBlocks[idx];renderBlocksAndSlots()}
-}
-function moveBlock(id,to,from){
-if(!id)return;
-if(to===null){if(from!==null)gameState.placedBlocks[from]=null}
-else{
-const existing=gameState.placedBlocks[to];
-if(from!==null){gameState.placedBlocks[from]=existing;gameState.placedBlocks[to]=id}
-else{
-/* FIX: inventory -> slot yang sudah terisi melakukan swap, bukan menghilangkan block lama */
-if(existing&&existing!==id){
-const inv=gameState.currentBlocks.find(b=>b.id===existing);
-gameState.placedBlocks[to]=id;
-renderBlocksAndSlots();
-return;
-}
-gameState.placedBlocks[to]=id;
-}}
-gameState.selectedBlockId=null;renderBlocksAndSlots();updateChecklist();
-}
-function clearBoard(){gameState.placedBlocks.fill(null);gameState.selectedBlockId=null;renderBlocksAndSlots();updateChecklist()}
+        function processTextForGlossary(text) {
+            let p = text;
+            for (const key in glossaryDB) {
+                const r = new RegExp(`\\b(${key})\\b`, 'gi');
+                p = p.replace(r, `<span class="glossary-term-link" onclick="event.stopPropagation(); openGlossary('${key}')">$&</span>`);
+            }
+            return p;
+        }
 
-function checkScript(){
-const pIds=gameState.placedBlocks.filter(Boolean);
-if(!pIds.length){alert("Naskah kosong!");return}
-if(!gameState.placedBlocks.every(Boolean)){alert("Masih ada bagian naskah yang kosong! Harap isi semua slot yang tersedia sebelum memeriksa.");return}
-const e=evaluatePlacement();let sSt=100,sLg=100,sCh=100,msgs=[];
-if(!e.allRequired){sSt-=35;msgs.push("- <strong>STRUKTUR:</strong> Masih ada bagian utama yang belum masuk.")}
-if(!e.logical){sLg-=30;msgs.push("- <strong>URUTAN:</strong> Susun dari pembukaan, karakter, tindakan, konflik, petunjuk, dialog, lalu ending.")}
-if(!e.noWrong){sLg-=20;sCh-=35;msgs.push("- <strong>LOGIKA:</strong> Ada block yang tidak cocok dengan cerita.")}
-if(!e.endingOK){sCh-=30;msgs.push("- <strong>ENDING:</strong> Ending belum sesuai arahan client.")}
-if(!e.transOK){sSt-=20;msgs.push("- <strong>FORMAT:</strong> Perhatikan instruksi transisi.")}
-if(!e.characterOK){sCh-=20;msgs.push("- <strong>KARAKTER:</strong> Pastikan tindakan dan dialog menunjukkan sifat/tujuan tokoh.")}
-sSt=Math.max(0,sSt);sLg=Math.max(0,sLg);sCh=Math.max(0,sCh);
-const total=Math.round((sSt+sLg+sCh+(e.complete?100:0))/4);
-document.getElementById("score-structure").innerText=sSt;document.getElementById("score-logic").innerText=sLg;document.getElementById("score-char").innerText=sCh;document.getElementById("score-total").innerText=total;
-const fb=document.getElementById("eval-feedback"),next=document.getElementById("btn-next");
-if(e.complete&&e.logical&&e.endingOK&&e.transOK&&e.characterOK&&total>=80){
-fb.style.borderColor="var(--color-scene)";fb.style.color="var(--color-scene)";fb.innerHTML="<strong>STATUS: DISETUJUI.</strong><br><br>Naskah tersusun lengkap, alurnya logis, karakter konsisten, dan arahan client terpenuhi.";
-next.classList.remove("hidden");document.getElementById("btn-revisi").innerText="TUTUP";
-if(next.dataset.saved!=="true"){gameState.casesCompleted++;gameState.totalScore+=total;gameState.history.push({genre:gameState.currentBible.genre});saveData();next.dataset.saved="true"}
-}else{
-fb.style.borderColor="var(--color-char)";fb.style.color="var(--color-char)";fb.innerHTML="<strong>STATUS: REVISI DIBUTUHKAN.</strong><br><br>"+(msgs.length?msgs.join("<br><br>"):"Periksa kembali hubungan antarblock.");
-next.classList.add("hidden");document.getElementById("btn-revisi").innerText="REVISI NASKAH";
-}
-updateChecklist();document.getElementById("modal-eval").classList.add("active");
-}
+        function openGlossary(term) {
+            const key = term.toUpperCase();
+            if (glossaryDB[key]) {
+                document.getElementById('glossary-empty').classList.add('hidden');
+                document.getElementById('glossary-content').classList.remove('hidden');
+                document.getElementById('glossary-title').innerText = key;
+                document.getElementById('glossary-def').innerText = glossaryDB[key].def;
+                document.getElementById('glossary-ex').innerText = glossaryDB[key].ex;
+            }
+        }
 
-function nextDay(){gameState.day++;document.getElementById("modal-eval").classList.remove("active");setupNewCase();saveData()}
-function closeModal(id){document.getElementById(id).classList.remove("active")}
-function saveData(){localStorage.setItem("edsave",JSON.stringify({d:gameState.day,c:gameState.casesCompleted,s:gameState.totalScore,h:gameState.history}))}
-function loadData(){const sv=localStorage.getItem("edsave");if(!sv)return false;try{const d=JSON.parse(sv);gameState.day=Number(d.d)||1;gameState.casesCompleted=Number(d.c)||0;gameState.totalScore=Number(d.s)||0;gameState.history=Array.isArray(d.h)?d.h:[];return true}catch(e){localStorage.removeItem("edsave");return false}}
-function resetSave(){if(confirm("Hapus progress?")){localStorage.removeItem("edsave");location.reload()}}
-function showProfile(){document.getElementById("stat-day").innerText=gameState.day;document.getElementById("stat-cases").innerText=gameState.casesCompleted;document.getElementById("stat-score").innerText=gameState.casesCompleted?Math.round(gameState.totalScore/gameState.casesCompleted):0;document.getElementById("profile-stats").classList.remove("hidden");document.getElementById("modal-start").classList.add("active");document.getElementById("btn-start-game").innerText="LANJUTKAN"}
-function startGame(){document.getElementById("modal-start").classList.remove("active");if(!gameState.currentBlocks.length)setupNewCase()}
+        /* ==================================================
+           UPDATE UI & RENDER
+           ================================================== */
+        function updateUI() {
+            document.getElementById('level-display').innerText = `HARI 0${gameState.day}`;
+            document.getElementById('page-number').innerText = gameState.day === 1 ? "" : `HAL 2.`;
 
-function initW95Scrollbars(){
-const container=document.getElementById("block-container"),scrollbar=document.getElementById("script-scrollbar");if(!container||!scrollbar)return;const track=scrollbar.querySelector(".w95-scroll-track"),thumb=scrollbar.querySelector(".w95-scroll-thumb");if(!track||!thumb)return;
-function updateScrollbar(){const sh=container.scrollHeight,ch=container.clientHeight,max=Math.max(0,sh-ch);if(max<=0){scrollbar.classList.add("disabled");thumb.style.height="100%";thumb.style.transform="translate3d(0,0,0)";return}scrollbar.classList.remove("disabled");const th=track.clientHeight,ratio=ch/sh,min=window.matchMedia("(pointer:coarse)").matches?50:40,h=Math.min(Math.max(min,th*ratio),th);thumb.style.height=`${h}px`;const maxTop=Math.max(0,th-h),top=(container.scrollTop/max)*maxTop;thumb.style.transform=`translate3d(0,${top}px,0)`}
-container.addEventListener("scroll",updateScrollbar,{passive:true});window.addEventListener("resize",updateScrollbar);
-const observer=new MutationObserver(()=>requestAnimationFrame(updateScrollbar));observer.observe(container,{childList:true,subtree:true,attributes:true,characterData:true});
-let dragging=false,startY=0,startScroll=0;
-thumb.addEventListener("pointerdown",e=>{if(scrollbar.classList.contains("disabled"))return;if(e.pointerType==="mouse"&&e.button!==0)return;dragging=true;startY=e.clientY;startScroll=container.scrollTop;thumb.classList.add("dragging");try{thumb.setPointerCapture(e.pointerId)}catch(_){}e.preventDefault();e.stopPropagation()});
-thumb.addEventListener("pointermove",e=>{if(!dragging)return;e.preventDefault();e.stopPropagation();const dy=e.clientY-startY,th=track.clientHeight,h=thumb.offsetHeight,maxTop=Math.max(0,th-h),max=Math.max(0,container.scrollHeight-container.clientHeight);if(maxTop<=0||max<=0)return;container.scrollTop=Math.max(0,Math.min(startScroll+dy*(max/maxTop),max))});
-const up=e=>{if(!dragging)return;dragging=false;thumb.classList.remove("dragging");try{thumb.releasePointerCapture(e.pointerId)}catch(_){}requestAnimationFrame(updateScrollbar);e.preventDefault();e.stopPropagation()};
-thumb.addEventListener("pointerup",up);thumb.addEventListener("pointercancel",up);
-track.addEventListener("pointerdown",e=>{if(e.target===thumb||scrollbar.classList.contains("disabled"))return;const r=track.getBoundingClientRect(),y=e.clientY-r.top,tr=thumb.getBoundingClientRect(),tt=tr.top-r.top,tb=tt+thumb.offsetHeight,amt=container.clientHeight*.85;if(y<tt)container.scrollBy({top:-amt,behavior:"smooth"});else if(y>tb)container.scrollBy({top:amt,behavior:"smooth"});e.preventDefault()});
-requestAnimationFrame(updateScrollbar);setTimeout(updateScrollbar,100);setTimeout(updateScrollbar,300);
-}
-window.onload=()=>{if(loadData())document.getElementById("btn-start-game").innerText="LANJUTKAN";initW95Scrollbars()};
-</script>
+            document.getElementById('client-brief-content').innerHTML = `
+                <div class="brief-line"><span class="label">GENRE</span><span class="value">: ${gameState.currentBible.genre}</span></div>
+                <div class="brief-line"><span class="label">TEMA</span><span class="value">: ${gameState.currentBible.theme}</span></div>
+                <div class="brief-line"><span class="label">PLOT</span><span class="value" style="color: var(--accent-yellow);">: ${gameState.currentBible.reqText}</span></div>
+                <div class="brief-line"><span class="label">FORMAT</span><span class="value" style="color: var(--color-scene);">: ${gameState.currentBible.formatText}</span></div>
+            `;
+
+            let checklistHTML = '';
+            if (gameState.currentBible.reqText !== "-") {
+                checklistHTML += `<div class="checklist-item" id="chk-blocks"><span class="checklist-box"></span>Sesuai plot klien</div>`;
+            }
+            if (gameState.currentBible.formatId === 'NO_TRANS') {
+                checklistHTML += `<div class="checklist-item" id="chk-trans"><span class="checklist-box"></span>Tanpa transisi</div>`;
+            } else if (gameState.currentBible.formatId === 'CUT_TO' || gameState.currentBible.formatId === 'FADE_OUT') {
+                checklistHTML += `<div class="checklist-item" id="chk-trans"><span class="checklist-box"></span>Transisi sesuai instruksi</div>`;
+            }
+            checklistHTML += `
+                <div class="checklist-item" id="chk-logic"><span class="checklist-box"></span>Urutan logis</div>
+                <div class="checklist-item" id="chk-prof"><span class="checklist-box"></span>Karakter sesuai profesi</div>
+            `;
+            document.getElementById('checklist-container').innerHTML = checklistHTML;
+
+            if (gameState.hintUsed) {
+                document.getElementById('hint-badge').style.display = 'none';
+                document.getElementById('btn-open-hint').classList.add('hint-disabled');
+            }
+
+            renderBlocksAndSlots();
+            updateChecklist();
+        }
+
+        function renderBlocksAndSlots() {
+            const bc = document.getElementById('block-container');
+            const sc = document.getElementById('slots-container');
+            bc.innerHTML = '';
+            sc.innerHTML = '';
+
+            gameState.currentBlocks.forEach(b => {
+                if (!gameState.placedBlocks.includes(b.id)) {
+                    bc.appendChild(createBlockEl(b, false));
+                }
+            });
+
+            for (let i = 0; i < gameState.placedBlocks.length; i++) {
+                const row = document.createElement('div');
+                row.className = 'slot-row';
+                const num = document.createElement('div');
+                num.className = 'slot-number';
+                num.innerText = i + 1;
+                const slot = document.createElement('div');
+                slot.className = 'drop-slot';
+                slot.dataset.index = i;
+
+                slot.addEventListener('dragover', handleDragOver);
+                slot.addEventListener('dragleave', handleDragLeave);
+                slot.addEventListener('drop', handleDrop);
+                slot.addEventListener('click', () => handleSlotClick(i));
+
+                const pId = gameState.placedBlocks[i];
+                if (pId) {
+                    const block = gameState.currentBlocks.find(x => x.id === pId);
+                    if (block) {
+                        slot.appendChild(createBlockEl(block, true, i));
+                        slot.style.borderStyle = 'none';
+                        slot.style.background = 'transparent';
+                    }
+                }
+                row.appendChild(num);
+                row.appendChild(slot);
+                sc.appendChild(row);
+            }
+
+            requestAnimationFrame(() => {
+                const container = document.getElementById('block-container');
+                if (container) container.dispatchEvent(new Event('scroll'));
+            });
+        }
+
+        function createBlockEl(b, isPlaced = false, slotIdx = null) {
+            const div = document.createElement('div');
+            div.className = 'script-block';
+            if (gameState.selectedBlockId === b.id) div.style.borderColor = 'var(--text-highlight)';
+            div.draggable = true;
+            div.id = b.id;
+            div.dataset.type = b.type;
+            div.innerHTML = `
+                <div class="block-type-label">${b.type}</div>
+                <div class="block-text">${processTextForGlossary(b.text.replace(/\n/g, '<br>'))}</div>
+            `;
+            div.addEventListener('dragstart', e => handleDragStart(e, b.id, isPlaced, slotIdx));
+            div.addEventListener('dragend', handleDragEnd);
+            div.addEventListener('click', e => {
+                if (!e.target.classList.contains('glossary-term-link')) handleBlockClick(b.id);
+            });
+            return div;
+        }
+
+        /* ==================================================
+           DRAG & DROP
+           ================================================== */
+        let draggedId = null;
+        let draggedFrom = null;
+
+        function handleDragStart(e, id, isPlaced, idx) {
+            draggedId = id;
+            draggedFrom = isPlaced ? idx : null;
+            e.dataTransfer.setData('text/plain', id);
+            setTimeout(() => { e.target.style.opacity = '0.5'; }, 0);
+        }
+
+        function handleDragEnd(e) {
+            e.target.style.opacity = '1';
+            draggedId = null;
+            draggedFrom = null;
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('drag-over');
+            moveBlock(draggedId, parseInt(e.currentTarget.dataset.index), draggedFrom);
+        }
+
+        function handleDragOverPanel(e) { e.preventDefault(); }
+
+        function handleDropToPanel(e) {
+            e.preventDefault();
+            if (draggedId && draggedFrom !== null) moveBlock(draggedId, null, draggedFrom);
+        }
+
+        function handleBlockClick(id) {
+            gameState.selectedBlockId = gameState.selectedBlockId === id ? null : id;
+            renderBlocksAndSlots();
+        }
+
+        function handleSlotClick(idx) {
+            if (gameState.selectedBlockId) {
+                let fromIdx = gameState.placedBlocks.indexOf(gameState.selectedBlockId);
+                moveBlock(gameState.selectedBlockId, idx, fromIdx !== -1 ? fromIdx : null);
+                gameState.selectedBlockId = null;
+            } else if (gameState.placedBlocks[idx]) {
+                gameState.selectedBlockId = gameState.placedBlocks[idx];
+                renderBlocksAndSlots();
+            }
+        }
+
+        function moveBlock(bId, toIdx, fromIdx) {
+            if (!bId) return;
+            if (toIdx === null) {
+                if (fromIdx !== null) gameState.placedBlocks[fromIdx] = null;
+            } else {
+                const ex = gameState.placedBlocks[toIdx];
+                if (fromIdx !== null) {
+                    gameState.placedBlocks[fromIdx] = ex;
+                    gameState.placedBlocks[toIdx] = bId;
+                } else {
+                    gameState.placedBlocks[toIdx] = bId;
+                }
+            }
+            renderBlocksAndSlots();
+            updateChecklist();
+        }
+
+        function clearBoard() {
+            gameState.placedBlocks.fill(null);
+            gameState.selectedBlockId = null;
+            renderBlocksAndSlots();
+            updateChecklist();
+        }
+
+        /* ==================================================
+           CHECKLIST & CHECK SCRIPT
+           ================================================== */
+        function updateChecklist() {
+            const pIds = gameState.placedBlocks.filter(i => i !== null);
+            const rCount = gameState.currentBlocks.filter(b => b.required).length;
+            const cBlocks = document.getElementById('chk-blocks');
+            const cTrans = document.getElementById('chk-trans');
+            const cLogic = document.getElementById('chk-logic');
+            const cProf = document.getElementById('chk-prof');
+            if (!cLogic || !cProf) return;
+
+            let placedReq = 0;
+            gameState.currentBlocks.forEach(b => {
+                if (b.required && pIds.includes(b.id)) placedReq++;
+            });
+
+            if (placedReq >= rCount && pIds.length === gameState.placedBlocks.length) {
+                if (cBlocks) cBlocks.classList.add('done');
+                if (cTrans) {
+                    if (gameState.currentBible.formatId === 'NO_TRANS') {
+                        let hasTrans = pIds.some(id => gameState.currentBlocks.find(x => x.id === id).type === 'TRANSITION');
+                        if (!hasTrans) cTrans.classList.add('done');
+                        else cTrans.classList.remove('done');
+                    } else {
+                        let hasCorrectTrans = pIds.some(id => {
+                            const b = gameState.currentBlocks.find(x => x.id === id);
+                            return b.type === 'TRANSITION' && b.isCorrect;
+                        });
+                        if (hasCorrectTrans) cTrans.classList.add('done');
+                        else cTrans.classList.remove('done');
+                    }
+                }
+                let sErr = false;
+                let hErr = false;
+                let lSeq = -1;
+                pIds.forEach(id => {
+                    const b = gameState.currentBlocks.find(x => x.id === id);
+                    if (b.sequenceOrder > 0) {
+                        if (b.sequenceOrder < lSeq) sErr = true;
+                        lSeq = b.sequenceOrder;
+                    }
+                    if (!b.isCorrect) hErr = true;
+                });
+                if (!sErr) cLogic.classList.add('done'); else cLogic.classList.remove('done');
+                if (!hErr) cProf.classList.add('done'); else cProf.classList.remove('done');
+            } else {
+                if (cBlocks) cBlocks.classList.remove('done');
+                if (cTrans) cTrans.classList.remove('done');
+                cLogic.classList.remove('done');
+                cProf.classList.remove('done');
+            }
+        }
+
+        function checkScript() {
+            const pIds = gameState.placedBlocks.filter(i => i !== null);
+            if (pIds.length === 0) { alert("Naskah kosong!"); return; }
+            if (pIds.length < gameState.placedBlocks.length) {
+                alert("Masih ada bagian naskah yang kosong! Harap isi semua slot yang tersedia sebelum memeriksa.");
+                return;
+            }
+
+            let sSt = 100, sLg = 100, sCh = 100;
+            let msgs = [], aReq = true, lSeq = -1, hErr = false, sErr = false;
+
+            gameState.currentBlocks.filter(b => b.required).forEach(rb => {
+                if (!pIds.includes(rb.id)) aReq = false;
+            });
+
+            if (!aReq) {
+                sSt -= 30;
+                msgs.push("- <strong>Kekurangan adegan kunci.</strong> Pastikan requirement klien terpenuhi.");
+            }
+
+            pIds.forEach(id => {
+                const b = gameState.currentBlocks.find(x => x.id === id);
+                if (b && b.sequenceOrder > 0) {
+                    if (b.sequenceOrder < lSeq) sErr = true;
+                    lSeq = b.sequenceOrder;
+                }
+                if (b && !b.isCorrect) {
+                    hErr = true;
+                    sCh -= 40;
+                    sLg -= 20;
+                    msgs.push(`- <strong>KONTINUITAS/LOGIKA:</strong> ${b.hint}`);
+                }
+            });
+
+            if (sErr) {
+                sLg -= 30;
+                msgs.push("- <strong>URUTAN ADEGAN SALAH:</strong> Kejadian melompat atau sebab-akibat rancu.");
+            }
+
+            updateChecklist();
+
+            sSt = Math.max(0, sSt);
+            sLg = Math.max(0, sLg);
+            sCh = Math.max(0, sCh);
+            const tot = Math.round((sSt + sLg + sCh + (aReq ? 100 : 0)) / 4);
+
+            document.getElementById('score-structure').innerText = sSt;
+            document.getElementById('score-logic').innerText = sLg;
+            document.getElementById('score-char').innerText = sCh;
+            document.getElementById('score-total').innerText = tot;
+
+            const fB = document.getElementById('eval-feedback');
+            const bNx = document.getElementById('btn-next');
+
+            if (tot >= 80 && !hErr && aReq && !sErr) {
+                fB.style.borderColor = "var(--color-scene)";
+                fB.style.color = "var(--color-scene)";
+                fB.innerHTML = "<strong>STATUS: DISETUJUI.</strong><br><br>Naskah solid, logis, dan karakter bertindak sesuai dengan kapasitas/kewenangannya.";
+                bNx.classList.remove('hidden');
+                document.getElementById('btn-revisi').innerText = "TUTUP";
+                if (bNx.dataset.saved !== "true") {
+                    gameState.casesCompleted++;
+                    gameState.totalScore += tot;
+                    gameState.history.push({ genre: gameState.currentBible.genre });
+                    saveData();
+                    bNx.dataset.saved = "true";
+                }
+            } else {
+                fB.style.borderColor = "var(--color-char)";
+                fB.style.color = "var(--color-char)";
+                fB.innerHTML = "<strong>STATUS: REVISI DIBUTUHKAN.</strong><br><br>" + msgs.join("<br><br>");
+                bNx.classList.add('hidden');
+                document.getElementById('btn-revisi').innerText = "REVISI NASKAH";
+            }
+            document.getElementById('modal-eval').classList.add('active');
+        }
+
+        /* ==================================================
+           SYSTEM & SAVE
+           ================================================== */
+        function nextDay() {
+            gameState.day++;
+            document.getElementById('modal-eval').classList.remove('active');
+            document.getElementById('btn-next').dataset.saved = "false";
+            setupNewCase();
+            saveData();
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        function saveData() {
+            localStorage.setItem('edsave', JSON.stringify({
+                d: gameState.day,
+                c: gameState.casesCompleted,
+                s: gameState.totalScore,
+                h: gameState.history
+            }));
+        }
+
+        function loadData() {
+            const sv = localStorage.getItem('edsave');
+            if (sv) {
+                const d = JSON.parse(sv);
+                gameState.day = d.d;
+                gameState.casesCompleted = d.c;
+                gameState.totalScore = d.s;
+                gameState.history = d.h || [];
+                return true;
+            }
+            return false;
+        }
+
+        function resetSave() {
+            if (confirm("Hapus progress?")) {
+                localStorage.removeItem('edsave');
+                location.reload();
+            }
+        }
+
+        function showProfile() {
+            document.getElementById('stat-day').innerText = gameState.day;
+            document.getElementById('stat-cases').innerText = gameState.casesCompleted;
+            document.getElementById('stat-score').innerText = gameState.casesCompleted > 0 ? Math.round(gameState.totalScore / gameState.casesCompleted) : 0;
+            document.getElementById('profile-stats').classList.remove('hidden');
+            document.getElementById('modal-start').classList.add('active');
+            document.getElementById('btn-start-game').innerText = "LANJUTKAN";
+        }
+
+        function startGame() {
+            document.getElementById('modal-start').classList.remove('active');
+            if (gameState.currentBlocks.length === 0) setupNewCase();
+        }
+
+        /* ==================================================
+           CUSTOM SCROLLBAR INITIALIZATION
+           ================================================== */
+        function initW95Scrollbars() {
+            const container = document.getElementById('block-container');
+            const scrollbar = document.getElementById('script-scrollbar');
+            if (!container || !scrollbar) return;
+            const track = scrollbar.querySelector('.w95-scroll-track');
+            const thumb = scrollbar.querySelector('.w95-scroll-thumb');
+            if (!track || !thumb) return;
+
+            function updateScrollbar() {
+                const scrollHeight = container.scrollHeight;
+                const clientHeight = container.clientHeight;
+                const maxScrollTop = Math.max(0, scrollHeight - clientHeight);
+                if (maxScrollTop <= 0 || scrollHeight <= clientHeight) {
+                    scrollbar.classList.add('disabled');
+                    thumb.style.height = '100%';
+                    thumb.style.transform = 'translate3d(0, 0, 0)';
+                    return;
+                }
+                scrollbar.classList.remove('disabled');
+                const trackHeight = track.clientHeight;
+                const ratio = clientHeight / scrollHeight;
+                const minThumbHeight = window.matchMedia('(pointer: coarse)').matches ? 50 : 40;
+                const thumbHeight = Math.max(minThumbHeight, trackHeight * ratio);
+                const finalThumbHeight = Math.min(thumbHeight, trackHeight);
+                thumb.style.height = `${finalThumbHeight}px`;
+                const maxThumbTop = Math.max(0, trackHeight - finalThumbHeight);
+                let scrollTop = Math.max(0, Math.min(container.scrollTop, maxScrollTop));
+                const scrollRatio = maxScrollTop > 0 ? scrollTop / maxScrollTop : 0;
+                const thumbTop = scrollRatio * maxThumbTop;
+                thumb.style.transform = `translate3d(0, ${thumbTop}px, 0)`;
+            }
+
+            container.addEventListener('scroll', updateScrollbar, { passive: true });
+            window.addEventListener('resize', updateScrollbar);
+            const observer = new MutationObserver(() => requestAnimationFrame(updateScrollbar));
+            observer.observe(container, { childList: true, subtree: true, attributes: true, characterData: true });
+
+            let isDragging = false;
+            let pointerStartY = 0;
+            let scrollStartTop = 0;
+
+            function onPointerDown(e) {
+                if (scrollbar.classList.contains('disabled')) return;
+                if (e.pointerType === 'mouse' && e.button !== 0) return;
+                isDragging = true;
+                pointerStartY = e.clientY;
+                scrollStartTop = container.scrollTop;
+                thumb.classList.add('dragging');
+                try { thumb.setPointerCapture(e.pointerId); } catch (err) {}
+                e.preventDefault(); e.stopPropagation();
+            }
+
+            function onPointerMove(e) {
+                if (!isDragging) return;
+                e.preventDefault(); e.stopPropagation();
+                const deltaY = e.clientY - pointerStartY;
+                const trackHeight = track.clientHeight;
+                const thumbHeight = thumb.offsetHeight;
+                const maxThumbTop = Math.max(0, trackHeight - thumbHeight);
+                const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight);
+                if (maxThumbTop <= 0 || maxScrollTop <= 0) return;
+                const scrollPerPixel = maxScrollTop / maxThumbTop;
+                let newScrollTop = scrollStartTop + (deltaY * scrollPerPixel);
+                newScrollTop = Math.max(0, Math.min(newScrollTop, maxScrollTop));
+                container.scrollTop = newScrollTop;
+            }
+
+            function onPointerUp(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                thumb.classList.remove('dragging');
+                try { thumb.releasePointerCapture(e.pointerId); } catch (err) {}
+                requestAnimationFrame(updateScrollbar);
+                e.preventDefault(); e.stopPropagation();
+            }
+
+            thumb.addEventListener('pointerdown', onPointerDown);
+            thumb.addEventListener('pointermove', onPointerMove);
+            thumb.addEventListener('pointerup', onPointerUp);
+            thumb.addEventListener('pointercancel', onPointerUp);
+
+            track.addEventListener('pointerdown', function(e) {
+                if (e.target === thumb || scrollbar.classList.contains('disabled')) return;
+                const rect = track.getBoundingClientRect();
+                const clickY = e.clientY - rect.top;
+                const thumbRect = thumb.getBoundingClientRect();
+                const thumbTop = thumbRect.top - rect.top;
+                const thumbBottom = thumbTop + thumb.offsetHeight;
+                const pageAmount = container.clientHeight * 0.85;
+                if (clickY < thumbTop) {
+                    container.scrollBy({ top: -pageAmount, behavior: 'smooth' });
+                } else if (clickY > thumbBottom) {
+                    container.scrollBy({ top: pageAmount, behavior: 'smooth' });
+                }
+                e.preventDefault();
+            });
+
+            requestAnimationFrame(() => updateScrollbar());
+            setTimeout(updateScrollbar, 100);
+            setTimeout(updateScrollbar, 300);
+        }
+
+        window.onload = function() {
+            if (loadData()) {
+                document.getElementById('btn-start-game').innerText = "LANJUTKAN";
+            }
+            initW95Scrollbars();
+        };
+    </script>
 </body>
 </html>
