@@ -2,455 +2,1225 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
     <title>EDITOR SCRIPT: Permainan Penyuntingan Naskah</title>
-    <!-- Polyfill for touch drag-and-drop -->
+
+    <!-- Polyfill untuk drag-and-drop di layar sentuh -->
     <script src="https://unpkg.com/drag-drop-touch"></script>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
+
+    <!-- Font -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=VT323&display=swap"
+        rel="stylesheet"
+    >
+
     <style>
+
         /* ==================================================
-           RETRO COLOR VARIABLES
+           VARIABEL WARNA RETRO
            ================================================== */
+
         :root {
             --bg-app: #1e1e1c;
             --bg-panel: #2a2a28;
             --border-dark: #121211;
             --border-light: #4a4a47;
+
             --text-muted: #88867c;
             --text-normal: #b5b3a6;
             --text-highlight: #e0ddcc;
+
             --paper-bg: #e6dfc8;
             --paper-border: #b0a688;
             --paper-text: #2a2926;
             --paper-dashed: #b5aa8b;
+
             --block-bg: #d9d1ba;
             --block-border: #999075;
+
             --accent-yellow: #d6b054;
             --color-scene: #7fa37f;
             --color-char: #b56c6c;
+
             --font-ui: 'VT323', monospace;
             --font-script: 'Courier Prime', monospace;
         }
+
+
         /* ==================================================
            RESET
            ================================================== */
-        * { box-sizing: border-box; }
-        html, body {
-            width: 100%; height: 100%; margin: 0; padding: 0;
-            overflow: hidden;
+
+        * {
+            box-sizing: border-box;
         }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Mencegah munculnya scroll global */
+        }
+
+
+        /* ==================================================
+           BODY
+           ================================================== */
+
         body {
             background-color: var(--bg-app);
             color: var(--text-normal);
             font-family: var(--font-ui);
+
+            /* MEMAKSA VIEWPORT: Ini memperbaiki bug terpotong di bagian bawah */
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
             display: flex;
             flex-direction: column;
+
             user-select: none;
             overscroll-behavior: none;
         }
+
+
         /* ==================================================
            CRT SCANLINE
            ================================================== */
+
         body::after {
-            content: ""; display: block; position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            content: "";
+
+            display: block;
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            background:
+                linear-gradient(
+                    rgba(18, 16, 16, 0) 50%,
+                    rgba(0, 0, 0, 0.1) 50%
+                );
+
             background-size: 100% 4px;
-            z-index: 100; pointer-events: none; opacity: 0.3;
+
+            z-index: 100;
+
+            pointer-events: none;
+
+            opacity: 0.3;
         }
+
+
         /* ==================================================
-           CUSTOM SCROLLBAR (WINDOWS 95 RETRO DARK)
+           CUSTOM SCROLLBAR
+           WINDOWS 95 RETRO DARK
+           FIXED + TOUCH STABLE
            ================================================== */
+
         .retro-scrollbar {
-            position: relative; width: 100%; height: 100%;
-            overflow-y: scroll !important; overflow-x: hidden;
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll !important;
+            overflow-x: hidden;
             overscroll-behavior: none;
-            scrollbar-width: none; -ms-overflow-style: none;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
             touch-action: pan-y;
         }
-        .retro-scrollbar::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
-        .scroll-container { flex: 1; position: relative; min-height: 0; overflow: hidden; }
-        .w95-scrollbar {
-            position: absolute; top: 2px; right: 2px; bottom: 2px; width: 14px;
-            background: var(--bg-app); z-index: 50; box-sizing: border-box;
-            border-left: 2px solid var(--border-dark); user-select: none;
-            -webkit-user-select: none; touch-action: none; pointer-events: auto;
+
+        .retro-scrollbar::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
         }
+
+
+        /* ==================================================
+           AREA PEMBUNGKUS SCROLL
+           ================================================== */
+
+        .scroll-container {
+            flex: 1;
+            position: relative;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+
+        /* ==================================================
+           CUSTOM SCROLLBAR TRACK
+           ================================================== */
+
+        .w95-scrollbar {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            bottom: 2px;
+            width: 14px;
+            background: var(--bg-app);
+            z-index: 50;
+            box-sizing: border-box;
+            border-left: 2px solid var(--border-dark);
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
+            pointer-events: auto;
+        }
+
+
+        /* ==================================================
+           TRACK
+           ================================================== */
+
         .w95-scroll-track {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: #161514; box-sizing: border-box; cursor: pointer;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #161514;
+            box-sizing: border-box;
+            cursor: pointer;
             touch-action: none;
         }
+
+
+        /* Pola retro pada track */
         .w95-scroll-track::before {
-            content: ""; position: absolute; inset: 0;
-            background-image: linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%),
-                              linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%);
-            background-size: 4px 4px; background-position: 0 0, 2px 2px;
-            opacity: 0.5; pointer-events: none;
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(
+                    45deg,
+                    #2a2a28 25%,
+                    transparent 25%,
+                    transparent 75%,
+                    #2a2a28 75%
+                ),
+                linear-gradient(
+                    45deg,
+                    #2a2a28 25%,
+                    transparent 25%,
+                    transparent 75%,
+                    #2a2a28 75%
+                );
+            background-size: 4px 4px;
+            background-position: 0 0, 2px 2px;
+            opacity: 0.5;
+            pointer-events: none;
         }
+
+
+        /* ==================================================
+           THUMB
+           ================================================== */
+
         .w95-scroll-thumb {
-            position: absolute; left: 1px; right: 1px; top: 0; height: 40px; min-height: 40px;
-            background: var(--border-light); box-sizing: border-box; cursor: grab;
-            z-index: 2; border: 1px solid var(--border-dark);
-            border-top: 1px solid #6a6a66; border-left: 1px solid #6a6a66;
-            user-select: none; -webkit-user-select: none; touch-action: none;
+            position: absolute;
+            left: 1px;
+            right: 1px;
+            top: 0;
+            height: 40px;
+            min-height: 40px;
+            background: var(--border-light);
+            box-sizing: border-box;
+            cursor: grab;
+            z-index: 2;
+            border: 1px solid var(--border-dark);
+            border-top: 1px solid #6a6a66;
+            border-left: 1px solid #6a6a66;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: none;
             will-change: transform;
         }
+
+
         .w95-scroll-thumb.dragging {
-            cursor: grabbing; background: #3b3a36;
-            border-top: 1px solid var(--border-dark); border-left: 1px solid var(--border-dark);
-            border-right: 1px solid #6a6a66; border-bottom: 1px solid #6a6a66;
+            cursor: grabbing;
+            background: #3b3a36;
+            border-top: 1px solid var(--border-dark);
+            border-left: 1px solid var(--border-dark);
+            border-right: 1px solid #6a6a66;
+            border-bottom: 1px solid #6a6a66;
         }
+
+
+        /* ==================================================
+           GRIP THUMB
+           ================================================== */
+
         .w95-scroll-thumb::after {
-            content: ""; position: absolute; left: 2px; right: 2px; top: 50%;
-            height: 2px; transform: translateY(-50%); background: var(--bg-panel);
+            content: "";
+            position: absolute;
+            left: 2px;
+            right: 2px;
+            top: 50%;
+            height: 2px;
+            transform: translateY(-50%);
+            background: var(--bg-panel);
             box-shadow: 0 -2px 0 var(--border-dark), 0 2px 0 var(--border-dark);
             pointer-events: none;
         }
-        .w95-scrollbar.disabled { opacity: 0.3; }
-        .w95-scrollbar.disabled .w95-scroll-thumb { cursor: default; }
-        #block-container { padding: 18px; padding-right: 38px; }
-        @media (pointer: coarse) {
-            .w95-scrollbar { width: 18px; }
-            .w95-scroll-thumb { min-height: 50px; }
-            #block-container { padding: 18px; padding-right: 42px; }
-        }
+
+
         /* ==================================================
-           MAIN LAYOUT
+           SCROLLBAR DISABLED
            ================================================== */
+
+        .w95-scrollbar.disabled {
+            opacity: 0.3;
+        }
+        .w95-scrollbar.disabled .w95-scroll-thumb {
+            cursor: default;
+        }
+
+
+        /* ==================================================
+           PADDING CONTENT
+           ================================================== */
+
+        #block-container {
+            padding: 18px;
+            padding-right: 38px;
+        }
+
+
+        /* ==================================================
+           TOUCH DEVICE
+           ================================================== */
+
+        @media (pointer: coarse) {
+            .w95-scrollbar {
+                width: 18px;
+            }
+            .w95-scroll-thumb {
+                min-height: 50px;
+            }
+            #block-container {
+                padding: 18px;
+                padding-right: 42px;
+            }
+        }
+
+
+        /* ==================================================
+           LAYOUT UTAMA
+           ================================================== */
+
         #game-layout {
-            display: flex; flex-direction: column; width: 100%; height: 100%;
-            padding: 10px; gap: 10px; position: relative; z-index: 10;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%; /* Diganti dari 100vh ke 100% agar mengikuti parent */
+            padding: 10px;
+            gap: 10px;
+            position: relative;
+            z-index: 10;
         }
+
+
+        /* ==================================================
+           HEADER
+           ================================================== */
+
         header {
-            display: flex; align-items: stretch; justify-content: space-between;
-            background: var(--bg-panel); border: 2px solid var(--border-dark);
-            padding: 10px 20px; height: auto; min-height: 80px; flex-shrink: 0;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.3); gap: 15px;
+            display: flex;
+            align-items: stretch;
+            justify-content: space-between;
+            background: var(--bg-panel);
+            border: 2px solid var(--border-dark);
+            padding: 10px 20px;
+            height: auto;
+            min-height: 80px;
+            flex-shrink: 0;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            gap: 15px;
         }
-        .header-left { display: flex; flex-direction: row; align-items: center; gap: 15px; min-width: auto; }
+
+
+        /* ==================================================
+           HEADER KIRI
+           ================================================== */
+
+        .header-left {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+            min-width: auto;
+        }
+
         .settings-btn {
-            color: var(--text-muted); font-size: 28px; cursor: pointer;
-            transition: color 0.2s; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted);
+            font-size: 28px;
+            cursor: pointer;
+            transition: color 0.2s;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .settings-btn:hover { color: var(--text-highlight); }
-        .title-area { display: flex; flex-direction: column; justify-content: center; }
+
+        .settings-btn:hover {
+            color: var(--text-highlight);
+        }
+
+        .title-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
         .header-left h1 {
-            margin: 0; font-size: 2rem; color: var(--text-highlight);
-            letter-spacing: 2px; font-weight: normal; line-height: 1.1;
+            margin: 0;
+            font-size: 2rem;
+            color: var(--text-highlight);
+            letter-spacing: 2px;
+            font-weight: normal;
+            line-height: 1.1;
         }
-        .header-left .day-text { font-size: 1.1rem; color: var(--text-muted); }
+
+        .header-left .day-text {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+        }
+
+
+        /* ==================================================
+           HEADER TENGAH
+           ================================================== */
+
         .header-center {
-            flex: 1; max-width: 800px; display: flex; gap: 10px; align-items: stretch;
-            background: transparent; border: none; padding: 0; justify-content: center;
+            flex: 1;
+            max-width: 800px;
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            background: transparent;
+            border: none;
+            padding: 0;
+            justify-content: center;
         }
+
         .client-avatar {
-            width: 70px; flex-shrink: 0; background: #3b3a36;
-            border: 2px solid var(--border-dark); border-radius: 4px;
-            display: flex; align-items: flex-end; justify-content: center;
-            overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            width: 70px;
+            flex-shrink: 0;
+            background: #3b3a36;
+            border: 2px solid var(--border-dark);
+            border-radius: 4px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
-        .client-avatar svg { width: 85%; height: auto; margin-bottom: -5px; fill: #1c1c1a; }
+
+        .client-avatar svg {
+            width: 85%;
+            height: auto;
+            margin-bottom: -5px;
+            fill: #1c1c1a;
+        }
+
         .client-brief-box {
-            flex: 1; max-width: 500px; border: 2px solid var(--border-dark);
-            background: var(--bg-app); display: flex; flex-direction: column;
-            border-radius: 4px; overflow-y: auto; overflow-x: hidden; min-height: 0;
-        }
-        .client-brief-box .brief-title {
-            background: rgba(255,255,255,0.03); border-bottom: 2px solid var(--border-dark);
-            padding: 4px 10px; font-size: 0.9rem; color: var(--text-muted); letter-spacing: 1px;
-        }
-        .client-brief-box .brief-content {
-            padding: 6px 10px; display: flex; flex-direction: column; gap: 4px;
-            font-size: 0.85rem; font-family: var(--font-ui);
-            text-transform: uppercase; color: var(--text-normal);
-        }
-        .brief-line { display: flex; align-items: flex-start; line-height: 1.3; }
-        .brief-line .label { color: var(--text-muted); margin-right: 8px; font-weight: bold; min-width: 80px; }
-        .brief-line .value { color: var(--text-highlight); flex: 1; word-wrap: break-word; white-space: normal; }
-        .header-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; min-width: auto; }
-        .retro-btn {
-            background: var(--bg-panel); border: 2px solid var(--border-dark);
-            color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.1rem;
-            padding: 6px 14px; cursor: pointer; text-transform: uppercase;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
-            transition: transform 0.1s, box-shadow 0.1s;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .retro-btn:active { transform: translate(2px,2px); box-shadow: none; }
-        .retro-btn.primary { background: #b56c6c; color: #fff; border-color: #5c2f2f; }
-        #main-area { display: flex; flex: 1; gap: 10px; overflow: hidden; min-height: 0; }
-        .panel {
-            background: var(--bg-panel); border: 2px solid var(--border-dark);
-            display: flex; flex-direction: column; box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            flex: 1;
+            max-width: 500px;
+            border: 2px solid var(--border-dark);
+            background: var(--bg-app);
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
+            overflow-y: auto;
+            overflow-x: hidden;
             min-height: 0;
         }
-        #left-panel { width: 290px; flex-shrink: 0; position: relative; }
-        .panel-header {
-            padding: 15px; border-bottom: 2px solid var(--border-dark);
-            background: rgba(0,0,0,0.2); flex-shrink: 0;
+
+        .client-brief-box .brief-title {
+            background: rgba(255,255,255,0.03);
+            border-bottom: 2px solid var(--border-dark);
+            padding: 4px 10px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
         }
-        .panel-title { font-size: 1.4rem; color: var(--text-highlight); letter-spacing: 1px; margin: 0; }
-        .panel-subtitle { font-size: 0.9rem; color: var(--text-muted); }
+
+        .client-brief-box .brief-content {
+            padding: 6px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.85rem;
+            font-family: var(--font-ui);
+            text-transform: uppercase;
+            color: var(--text-normal);
+        }
+
+        .brief-line {
+            display: flex;
+            align-items: flex-start;
+            line-height: 1.3;
+        }
+
+        .brief-line .label {
+            color: var(--text-muted);
+            margin-right: 8px;
+            font-weight: bold;
+            min-width: 80px;
+        }
+
+        .brief-line .value {
+            color: var(--text-highlight);
+            flex: 1;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+
+        /* ==================================================
+           HEADER KANAN
+           ================================================== */
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            min-width: auto;
+        }
+
+        .retro-btn {
+            background: var(--bg-panel);
+            border: 2px solid var(--border-dark);
+            color: var(--text-highlight);
+            font-family: var(--font-ui);
+            font-size: 1.1rem;
+            padding: 6px 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .retro-btn:active {
+            transform: translate(2px,2px);
+            box-shadow: none;
+        }
+
+        .retro-btn.primary {
+            background: #b56c6c;
+            color: #fff;
+            border-color: #5c2f2f;
+        }
+
+
+        /* ==================================================
+           MAIN AREA
+           ================================================== */
+
+        #main-area {
+            display: flex;
+            flex: 1;
+            gap: 10px;
+            overflow: hidden;
+            min-height: 0;
+        }
+
+        .panel {
+            background: var(--bg-panel);
+            border: 2px solid var(--border-dark);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            min-height: 0;
+        }
+
+
+        /* ==================================================
+           PANEL KIRI
+           ================================================== */
+
+        #left-panel {
+            width: 290px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .panel-header {
+            padding: 15px;
+            border-bottom: 2px solid var(--border-dark);
+            background: rgba(0,0,0,0.2);
+            flex-shrink: 0;
+        }
+
+        .panel-title {
+            font-size: 1.4rem;
+            color: var(--text-highlight);
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .panel-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+
         /* ==================================================
            SCRIPT BLOCK
            ================================================== */
+
         .script-block {
-            background: var(--block-bg); border: 2px solid var(--block-border);
-            color: var(--paper-text); font-family: var(--font-script);
-            font-size: 0.85rem; margin-bottom: 12px; display: flex;
-            flex-direction: column; cursor: grab;
+            background: var(--block-bg);
+            border: 2px solid var(--block-border);
+            color: var(--paper-text);
+            font-family: var(--font-script);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            cursor: grab;
             box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
-            transition: transform 0.1s; width: 100%; position: relative;
-            z-index: 1; padding: 10px 12px; box-sizing: border-box;
-        }
-        .script-block:active {
-            cursor: grabbing; transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
-        }
-        .block-type-label {
-            font-family: var(--font-ui); font-size: 0.85rem; text-transform: uppercase;
-            margin-bottom: 4px; letter-spacing: 1px; opacity: 0.8;
-            font-weight: bold; color: var(--paper-text);
-        }
-        .block-text { line-height: 1.3; text-align: left; }
-        #center-panel {
-            flex: 1; background: #1c1c1b; border: 2px solid var(--border-dark);
-            display: flex; flex-direction: column; align-items: center;
-            padding: 15px; overflow-y: auto; overflow-x: hidden;
-        }
-        .paper-sheet {
-            background: var(--paper-bg); width: 100%; max-width: 750px;
-            height: auto; min-height: 100%; border: 1px solid var(--paper-border);
-            box-shadow: 4px 4px 0 rgba(0,0,0,0.5); display: flex;
-            flex-direction: column; color: var(--paper-text); padding: 25px 35px;
+            transition: transform 0.1s;
+            width: 100%;
             position: relative;
-        }
-        .paper-header {
-            display: flex; justify-content: space-between;
-            font-family: var(--font-ui); font-size: 1.4rem; color: #333;
-            margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.1);
-            padding-bottom: 6px; flex-shrink: 0;
-        }
-        .paper-header .title { flex: 1; text-align: center; font-weight: bold; }
-        .paper-header .page-num { width: 60px; text-align: right; }
-        .slot-row { display: flex; align-items: stretch; margin-bottom: 8px; min-height: 50px; width: 100%; }
-        .slot-number {
-            width: 30px; font-family: var(--font-script);
-            color: #777; font-size: 1rem; padding-top: 10px;
-            text-align: left; flex-shrink: 0;
-        }
-        .drop-slot {
-            flex: 1; border: 2px dashed var(--paper-dashed);
-            display: flex; align-items: stretch;
-            transition: background 0.2s, border-color 0.2s;
-            min-height: 50px; background: rgba(0,0,0,0.02); width: 100%;
-        }
-        .drop-slot.drag-over { background: rgba(0,0,0,0.08); border-color: #555; }
-        .drop-slot > .script-block {
-            margin-bottom: 0; width: 100%; box-shadow: none;
-            background: transparent; border: 1px solid var(--paper-dashed);
-            padding: 8px 10px;
-        }
-        .drop-slot > .script-block .block-text { text-align: justify; }
-        .drop-slot > .script-block[data-type="TRANSITION"] .block-text { text-align: right !important; }
-        #right-panel {
-            width: 240px; flex-shrink: 0; padding: 18px;
-            display: flex; flex-direction: column;
-        }
-        .right-panel-content {
-            flex: 1 1 0; overflow-y: auto; display: flex;
-            flex-direction: column; min-height: 0; padding-bottom: 10px;
-        }
-        .right-section-title {
-            font-size: 1.2rem; color: var(--text-highlight); margin-bottom: 12px;
-            border-bottom: 2px solid var(--border-light); padding-bottom: 6px;
-            display: flex; justify-content: space-between; align-items: center;
-            flex-shrink: 0;
-        }
-        .checklist-item {
-            display: flex; align-items: flex-start; margin-bottom: 10px;
-            color: var(--text-muted); font-family: sans-serif;
-            font-size: 0.85rem; width: 100%; box-sizing: border-box;
-        }
-        .checklist-box {
-            width: 14px; height: 14px; border: 2px solid var(--text-muted);
-            margin-right: 10px; margin-top: 2px; position: relative;
-            flex-shrink: 0; background: #1a1a1a;
-        }
-        .checklist-item.done .checklist-box::after {
-            content: "✔"; color: var(--color-scene);
-            position: absolute; top: -4px; left: 1px;
-            font-size: 14px; font-family: var(--font-ui);
-        }
-        .checklist-item.done { color: var(--text-normal); }
-        .hint-section {
-            margin: 10px 0 15px 0; width: 100%; display: block;
-            flex-shrink: 0; box-sizing: border-box;
-        }
-        .hint-btn-style {
-            width: 100%; display: flex; justify-content: center; align-items: center;
-            font-size: 0.95rem; padding: 10px; border: 2px solid var(--border-light);
-            background: rgba(0,0,0,0.25); color: var(--text-highlight);
-            font-family: var(--font-ui); letter-spacing: 1px; position: relative;
-            cursor: pointer; transition: background 0.1s, color 0.1s;
+            z-index: 1;
+            padding: 10px 12px;
             box-sizing: border-box;
         }
-        .hint-btn-style:hover:not(.hint-disabled) { background: rgba(255,255,255,0.05); color: #fff; }
-        .hint-btn-style:active:not(.hint-disabled) { transform: translate(1px,1px); }
+
+        .script-block:active {
+            cursor: grabbing;
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+        }
+
+        .block-type-label {
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            font-weight: bold;
+            color: var(--paper-text);
+        }
+
+        .block-text {
+            line-height: 1.3;
+            text-align: left;
+        }
+
+
+        /* ==================================================
+           PANEL TENGAH
+           ================================================== */
+
+        #center-panel {
+            flex: 1;
+            background: #1c1c1b;
+            border: 2px solid var(--border-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+
+        .paper-sheet {
+            background: var(--paper-bg);
+            width: 100%;
+            max-width: 750px;
+            height: auto;
+            min-height: 100%;
+            border: 1px solid var(--paper-border);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            color: var(--paper-text);
+            padding: 25px 35px;
+            position: relative;
+        }
+
+        .paper-header {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-ui);
+            font-size: 1.4rem;
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid rgba(0,0,0,0.1);
+            padding-bottom: 6px;
+            flex-shrink: 0;
+        }
+
+        .paper-header .title {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .paper-header .page-num {
+            width: 60px;
+            text-align: right;
+        }
+
+
+        /* ==================================================
+           SLOT
+           ================================================== */
+
+        .slot-row {
+            display: flex;
+            align-items: stretch;
+            margin-bottom: 8px;
+            min-height: 50px;
+            width: 100%;
+        }
+
+        .slot-number {
+            width: 30px;
+            font-family: var(--font-script);
+            color: #777;
+            font-size: 1rem;
+            padding-top: 10px;
+            text-align: left;
+            flex-shrink: 0;
+        }
+
+        .drop-slot {
+            flex: 1;
+            border: 2px dashed var(--paper-dashed);
+            display: flex;
+            align-items: stretch;
+            transition: background 0.2s, border-color 0.2s;
+            min-height: 50px;
+            background: rgba(0,0,0,0.02);
+            width: 100%;
+        }
+
+        .drop-slot.drag-over {
+            background: rgba(0,0,0,0.08);
+            border-color: #555;
+        }
+
+        .drop-slot > .script-block {
+            margin-bottom: 0;
+            width: 100%;
+            box-shadow: none;
+            background: transparent;
+            border: 1px solid var(--paper-dashed);
+            padding: 8px 10px;
+        }
+
+        .drop-slot > .script-block .block-text {
+            text-align: justify;
+        }
+
+        .drop-slot > .script-block[data-type="TRANSITION"] .block-text {
+            text-align: right !important;
+        }
+
+
+        /* ==================================================
+           PANEL KANAN
+           ================================================== */
+
+        #right-panel {
+            width: 240px;
+            flex-shrink: 0;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .right-panel-content {
+            flex: 1 1 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            padding-bottom: 10px; 
+        }
+
+        .right-section-title {
+            font-size: 1.2rem;
+            color: var(--text-highlight);
+            margin-bottom: 12px;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+
+        /* ==================================================
+           CHECKLIST
+           ================================================== */
+
+        .checklist-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+            font-family: sans-serif;
+            font-size: 0.85rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .checklist-box {
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--text-muted);
+            margin-right: 10px;
+            margin-top: 2px;
+            position: relative;
+            flex-shrink: 0;
+            background: #1a1a1a;
+        }
+
+        .checklist-item.done .checklist-box::after {
+            content: "✔";
+            color: var(--color-scene);
+            position: absolute;
+            top: -4px;
+            left: 1px;
+            font-size: 14px;
+            font-family: var(--font-ui);
+        }
+
+        .checklist-item.done {
+            color: var(--text-normal);
+        }
+
+
+        /* ==================================================
+           HINT
+           ================================================== */
+
+        .hint-section {
+            margin: 10px 0 15px 0;
+            width: 100%;
+            display: block;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
+        .hint-btn-style {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.95rem;
+            padding: 10px;
+            border: 2px solid var(--border-light);
+            background: rgba(0,0,0,0.25);
+            color: var(--text-highlight);
+            font-family: var(--font-ui);
+            letter-spacing: 1px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.1s, color 0.1s;
+            box-sizing: border-box;
+        }
+
+        .hint-btn-style:hover:not(.hint-disabled) {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+        }
+
+        .hint-btn-style:active:not(.hint-disabled) {
+            transform: translate(1px,1px);
+        }
+
         .notification-badge {
-            position: absolute; top: -6px; right: -6px; background: var(--color-char);
-            color: white; border-radius: 50%; width: 18px; height: 18px;
-            font-size: 0.7rem; display: flex; align-items: center; justify-content: center;
-            border: 2px solid var(--bg-panel); font-family: sans-serif;
-            font-weight: bold; box-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: var(--color-char);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-panel);
+            font-family: sans-serif;
+            font-weight: bold;
+            box-shadow: 1px 1px 0 rgba(0,0,0,0.5);
             pointer-events: none;
         }
-        .hint-disabled { opacity: 0.3; pointer-events: none; border-style: solid !important; }
+
+        .hint-disabled {
+            opacity: 0.3;
+            pointer-events: none;
+            border-style: solid !important;
+        }
+
+
+        /* ==================================================
+           KAMUS
+           ================================================== */
+
         .glossary-term-link {
-            color: #5a8ca8; cursor: pointer; text-decoration: none;
-            font-weight: bold; border-bottom: 1px dotted #5a8ca8;
+            color: #5a8ca8;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 1px dotted #5a8ca8;
         }
-        .glossary-term-link:hover { background: rgba(90,140,168,0.2); }
+
+        .glossary-term-link:hover {
+            background: rgba(90,140,168,0.2);
+        }
+
         .kamus-tab-container {
-            display: flex; flex-direction: column; width: 100%;
-            margin-top: 5px; flex-shrink: 0; flex: 1; box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 5px;
+            flex-shrink: 0;
+            flex: 1;
+            box-sizing: border-box;
         }
+
         .kamus-tab-title {
-            background: rgba(255,255,255,0.05); border: 2px solid var(--border-light);
-            border-bottom: none; border-radius: 6px 6px 0 0; padding: 4px 12px;
-            display: inline-block; width: max-content; font-size: 1.1rem;
-            margin-bottom: 0; color: var(--accent-yellow); font-family: var(--font-ui);
+            background: rgba(255,255,255,0.05);
+            border: 2px solid var(--border-light);
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+            padding: 4px 12px;
+            display: inline-block;
+            width: max-content;
+            font-size: 1.1rem;
+            margin-bottom: 0;
+            color: var(--accent-yellow);
+            font-family: var(--font-ui);
         }
+
         .kamus-tab-content {
-            border: 2px solid var(--border-light); background: rgba(0,0,0,0.15);
-            border-radius: 0 6px 6px 6px; padding: 10px; flex: 1;
-            display: flex; flex-direction: column; width: 100%; box-sizing: border-box;
+            border: 2px solid var(--border-light);
+            background: rgba(0,0,0,0.15);
+            border-radius: 0 6px 6px 6px;
+            padding: 10px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            box-sizing: border-box;
         }
-        #glossary-content { display: flex; flex-direction: column; font-family: sans-serif; color: var(--text-normal); }
+
+        #glossary-content {
+            display: flex;
+            flex-direction: column;
+            font-family: sans-serif;
+            color: var(--text-normal);
+        }
+
         .g-term-title {
-            color: #5a8ca8; font-family: var(--font-ui); font-size: 0.85rem;
-            text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;
-            border-bottom: 1px solid #5a8ca8; padding-bottom: 2px;
+            color: #5a8ca8;
+            font-family: var(--font-ui);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #5a8ca8;
+            padding-bottom: 2px;
         }
-        .g-def-text { font-size: 0.75rem; line-height: 1.3; margin-bottom: 10px; }
+
+        .g-def-text {
+            font-size: 0.75rem;
+            line-height: 1.3;
+            margin-bottom: 10px;
+        }
+
         .g-example-title {
-            color: #5a8ca8; font-family: var(--font-ui); font-size: 0.8rem;
-            letter-spacing: 1px; margin-bottom: 2px;
+            color: #5a8ca8;
+            font-family: var(--font-ui);
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            margin-bottom: 2px;
         }
+
         .g-example-text {
-            color: var(--text-muted); font-style: italic;
-            background: rgba(0,0,0,0.2); padding: 6px;
-            border-left: 2px solid #5a8ca8; font-size: 0.7rem;
+            color: var(--text-muted);
+            font-style: italic;
+            background: rgba(0,0,0,0.2);
+            padding: 6px;
+            border-left: 2px solid #5a8ca8;
+            font-size: 0.7rem;
         }
+
+
+        /* ==================================================
+           PAGINATION
+           ================================================== */
+
         .pagination-area {
-            display: flex; align-items: center; justify-content: center;
-            gap: 10px; margin-top: auto; padding-top: 15px;
-            border-top: 2px dashed var(--border-light); flex-shrink: 0;
-            width: 100%; box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: auto; 
+            padding-top: 15px;
+            border-top: 2px dashed var(--border-light);
+            flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
         }
+
         .nav-arrow {
-            width: 30px; height: 30px; background: var(--bg-panel);
-            border: 2px solid var(--border-dark); display: flex;
-            align-items: center; justify-content: center;
-            color: var(--text-muted); cursor: pointer; font-size: 1rem;
+            width: 30px;
+            height: 30px;
+            background: var(--bg-panel);
+            border: 2px solid var(--border-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
         }
-        .nav-arrow:hover { color: var(--text-highlight); }
-        .page-thumb-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; }
+
+        .nav-arrow:hover {
+            color: var(--text-highlight);
+        }
+
+        .page-thumb-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
         .page-thumb {
-            width: 35px; height: 42px; background: #8e8877;
-            border: 2px solid var(--border-dark); display: flex;
-            align-items: flex-start; padding: 2px 4px;
-            font-size: 0.8rem; color: #333; cursor: pointer;
+            width: 35px;
+            height: 42px;
+            background: #8e8877;
+            border: 2px solid var(--border-dark);
+            display: flex;
+            align-items: flex-start;
+            padding: 2px 4px;
+            font-size: 0.8rem;
+            color: #333;
+            cursor: pointer;
             box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
         }
-        .page-thumb.active { background: var(--paper-bg); box-shadow: none; transform: translate(1px,1px); }
+
+        .page-thumb.active {
+            background: var(--paper-bg);
+            box-shadow: none;
+            transform: translate(1px,1px);
+        }
+
         .page-indicator {
-            position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; border-left: 5px solid transparent;
-            border-right: 5px solid transparent; border-top: 5px solid var(--accent-yellow);
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid var(--accent-yellow);
             display: none;
         }
-        .page-thumb.active + .page-indicator { display: block; }
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.85); z-index: 1000;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.2s;
+
+        .page-thumb.active + .page-indicator {
+            display: block;
         }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+
+        /* ==================================================
+           MODAL
+           ================================================== */
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.85);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
         .modal-content {
-            background: var(--bg-panel); border: 2px solid var(--text-highlight);
-            padding: 25px; max-width: 550px; width: 90%;
-            color: var(--text-highlight); text-align: center;
+            background: var(--bg-panel);
+            border: 2px solid var(--text-highlight);
+            padding: 25px;
+            max-width: 550px;
+            width: 90%;
+            color: var(--text-highlight);
+            text-align: center;
             box-shadow: 5px 5px 0 rgba(0,0,0,0.5);
         }
-        #landscape-warning { display: none; }
-        @media screen and (orientation: portrait), screen and (max-aspect-ratio: 9/10) {
-            #landscape-warning {
-                display: flex !important; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-                background-color: var(--bg-app); z-index: 999999; flex-direction: column;
-                align-items: center; justify-content: center; color: var(--text-highlight);
-                text-align: center; padding: 20px;
-            }
-            #landscape-warning svg { animation: rotatePhone 2s infinite ease-in-out; margin-bottom: 20px; }
-            #game-layout, body > .modal-overlay { display: none !important; }
-            body { overflow: hidden !important; }
+
+
+        /* ==================================================
+           LANDSCAPE WARNING
+           ================================================== */
+
+        #landscape-warning {
+            display: none;
         }
+
+        @media screen and (orientation: portrait),
+               screen and (max-aspect-ratio: 9/10) {
+
+            #landscape-warning {
+                display: flex !important;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: var(--bg-app);
+                z-index: 999999;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: var(--text-highlight);
+                text-align: center;
+                padding: 20px;
+            }
+
+            #landscape-warning svg {
+                animation: rotatePhone 2s infinite ease-in-out;
+                margin-bottom: 20px;
+            }
+
+            #game-layout,
+            body > .modal-overlay {
+                display: none !important;
+            }
+
+            body {
+                overflow: hidden !important;
+            }
+        }
+
         @keyframes rotatePhone {
             0% { transform: rotate(0deg); }
             50% { transform: rotate(-90deg); }
             100% { transform: rotate(-90deg); }
         }
+
+
+        /* ==================================================
+           MOBILE LANDSCAPE
+           ================================================== */
+
         @media screen and (max-height: 600px) and (orientation: landscape),
                screen and (max-width: 950px) and (orientation: landscape) {
-            header { padding: 5px 10px; min-height: 50px; gap: 8px; }
+
+            header {
+                padding: 5px 10px;
+                min-height: 50px;
+                gap: 8px;
+            }
+
             .header-left { gap: 8px; }
             .header-left h1 { font-size: 1.2rem; }
             .header-left .day-text { font-size: 0.9rem; }
             .settings-btn { font-size: 24px; }
             .client-avatar { width: 45px; }
-            .client-brief-box .brief-title { padding: 2px 6px; font-size: 0.75rem; }
-            .client-brief-box .brief-content { padding: 4px 6px; font-size: 0.7rem; gap: 2px; }
+
+            .client-brief-box .brief-title {
+                padding: 2px 6px;
+                font-size: 0.75rem;
+            }
+
+            .client-brief-box .brief-content {
+                padding: 4px 6px;
+                font-size: 0.7rem;
+                gap: 2px;
+            }
+
             .brief-line .label { min-width: 50px; }
             .header-right { gap: 5px; }
             .retro-btn { font-size: 0.8rem; padding: 4px 8px; }
             .hide-mobile { display: none; }
+
             #left-panel { width: 280px; }
             #right-panel { width: 200px; padding: 10px; }
             .panel-header { padding: 8px 10px; }
             .panel-title { font-size: 1.1rem; }
             .panel-subtitle { font-size: 0.75rem; }
+
             #block-container { padding: 10px; padding-right: 32px; }
             .w95-scrollbar { width: 18px; }
             .w95-scroll-thumb { min-height: 50px; }
             .script-block { padding: 6px 8px; margin-bottom: 8px; font-size: 0.75rem; }
             .block-type-label { font-size: 0.7rem; margin-bottom: 2px; }
+
             #center-panel { padding: 8px 5px; }
             .paper-sheet { padding: 15px 20px; max-width: 100%; border-width: 0; box-shadow: none; border-radius: 4px; }
             .paper-header { font-size: 1.1rem; margin-bottom: 12px; padding-bottom: 4px; }
             .slot-row { min-height: 35px; margin-bottom: 6px; }
             .drop-slot { min-height: 35px; }
             .slot-number { width: 20px; padding-top: 5px; font-size: 0.8rem; }
+
             .right-section-title { font-size: 0.9rem; margin-bottom: 8px; }
             .checklist-item { font-size: 0.75rem; margin-bottom: 6px; line-height: 1.2; }
             .checklist-box { width: 12px; height: 12px; margin-right: 6px; }
             .checklist-item.done .checklist-box::after { font-size: 12px; top: -5px; left: 0px; }
+            
             .kamus-tab-title { font-size: 0.9rem; padding: 2px 8px; }
             .kamus-tab-content { padding: 6px; min-height: 80px; }
             .g-term-title { font-size: 0.75rem; margin-bottom: 2px; }
             .g-def-text { font-size: 0.7rem; line-height: 1.2; margin-bottom: 6px; }
             .g-example-title { font-size: 0.7rem; }
             .g-example-text { font-size: 0.65rem; padding: 4px; }
+
             .pagination-area { margin-top: 10px; padding-top: 10px; gap: 5px; }
             .nav-arrow { width: 24px; height: 24px; font-size: 0.8rem; }
             .page-thumb { width: 25px; height: 35px; font-size: 0.7rem; padding: 2px; }
             .page-indicator { border-width: 4px; top: -6px; }
         }
+
+
+        /* ==================================================
+           UTILITY
+           ================================================== */
+
         .hidden { display: none !important; }
         .text-2xl { font-size: 1.5rem; line-height: 2rem; }
         .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
@@ -479,23 +1249,47 @@
         .border { border-width: 1px; border-style: solid; }
         .cursor-pointer { cursor: pointer; }
         .hover\:text-\[var\(--text-highlight\)\]:hover { color: var(--text-highlight); }
+
     </style>
 </head>
+
+
 <body>
-    <!-- LANDSCAPE WARNING -->
+
+    <!-- ==================================================
+         LANDSCAPE WARNING
+         ================================================== -->
     <div id="landscape-warning">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg
+            width="80"
+            height="80"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+        >
             <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
             <line x1="12" y1="18" x2="12.01" y2="18"></line>
         </svg>
         <h2 class="text-2xl font-bold mb-2">PUTAR PERANGKAT</h2>
-        <p class="text-sm" style="color: var(--text-muted);">Game ini membutuhkan tampilan Mendatar (Landscape).</p>
+        <p class="text-sm" style="color: var(--text-muted);">
+            Game ini membutuhkan tampilan Mendatar (Landscape).
+        </p>
     </div>
 
-    <!-- GAME LAYOUT -->
+
+    <!-- ==================================================
+         GAME LAYOUT
+         ================================================== -->
     <div id="game-layout">
-        <!-- HEADER -->
+
+        <!-- ==================================================
+             HEADER
+             ================================================== -->
         <header>
+            <!-- HEADER KIRI -->
             <div class="header-left">
                 <div class="settings-btn" onclick="showProfile()" title="Profil & Progress">⚙</div>
                 <div class="title-area">
@@ -503,6 +1297,8 @@
                     <div class="day-text" id="level-display">HARI 01</div>
                 </div>
             </div>
+
+            <!-- HEADER TENGAH -->
             <div class="header-center">
                 <div class="client-avatar">
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -517,6 +1313,8 @@
                     <div class="brief-content" id="client-brief-content"></div>
                 </div>
             </div>
+
+            <!-- HEADER KANAN -->
             <div class="header-right">
                 <button class="retro-btn" onclick="clearBoard()" title="Kembalikan semua blok ke inventory">
                     ⟲ <span class="hide-mobile">RESET</span>
@@ -527,9 +1325,14 @@
             </div>
         </header>
 
-        <!-- MAIN AREA -->
+        <!-- ==================================================
+             MAIN AREA
+             ================================================== -->
         <div id="main-area">
-            <!-- LEFT PANEL: BLOCK INVENTORY -->
+
+            <!-- ==================================================
+                 PANEL KIRI
+                 ================================================== -->
             <div id="left-panel" class="panel">
                 <div class="panel-header">
                     <h2 class="panel-title">SCRIPT BLOCKS</h2>
@@ -537,6 +1340,7 @@
                 </div>
                 <div class="scroll-container">
                     <div class="retro-scrollbar" id="block-container" ondragover="handleDragOverPanel(event)" ondrop="handleDropToPanel(event)"></div>
+                    <!-- CUSTOM SCROLLBAR -->
                     <div class="w95-scrollbar" id="script-scrollbar">
                         <div class="w95-scroll-track">
                             <div class="w95-scroll-thumb"></div>
@@ -545,7 +1349,9 @@
                 </div>
             </div>
 
-            <!-- CENTER PANEL: SCRIPT PAPER -->
+            <!-- ==================================================
+                 PANEL TENGAH
+                 ================================================== -->
             <div id="center-panel" class="panel">
                 <div class="paper-sheet" id="script-paper">
                     <div class="paper-header">
@@ -556,17 +1362,24 @@
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: CHECKLIST, HINTS, DICTIONARY -->
+            <!-- ==================================================
+                 PANEL KANAN
+                 ================================================== -->
             <div id="right-panel" class="panel">
+                
                 <div class="right-panel-content">
                     <div class="right-section-title" style="margin-bottom: 8px;">CHECKLIST</div>
                     <div id="checklist-container"></div>
+
+                    <!-- HINT -->
                     <div class="hint-section">
                         <button id="btn-open-hint" class="hint-btn-style" onclick="openHint()">
                             <span>HINT</span>
                             <div id="hint-badge" class="notification-badge">1</div>
                         </button>
                     </div>
+
+                    <!-- KAMUS -->
                     <div class="kamus-tab-container">
                         <div class="kamus-tab-title">KAMUS</div>
                         <div class="kamus-tab-content">
@@ -582,6 +1395,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- PAGINATION -->
                 <div class="pagination-area">
                     <div class="nav-arrow">◄</div>
@@ -594,11 +1408,15 @@
                     </div>
                     <div class="nav-arrow">►</div>
                 </div>
+
             </div>
         </div>
     </div>
 
-    <!-- MODAL HINT -->
+
+    <!-- ==================================================
+         MODAL HINT
+         ================================================== -->
     <div id="modal-hint" class="modal-overlay">
         <div class="modal-content" style="max-width: 650px; text-align: left;">
             <h2 class="text-2xl mb-4 border-b pb-2" style="color: var(--accent-yellow); border-color: var(--border-light); text-align: center;">ANATOMI NASKAH</h2>
@@ -631,7 +1449,10 @@
         </div>
     </div>
 
-    <!-- MODAL EVALUASI -->
+
+    <!-- ==================================================
+         MODAL EVALUASI
+         ================================================== -->
     <div id="modal-eval" class="modal-overlay">
         <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
             <h2 id="eval-title" class="text-2xl mb-4 border-b pb-2" style="color: var(--text-highlight); border-color: var(--border-light);">EVALUASI KLIEN</h2>
@@ -650,7 +1471,10 @@
         </div>
     </div>
 
-    <!-- MODAL START / PROFILE -->
+
+    <!-- ==================================================
+         MODAL START / PROFILE
+         ================================================== -->
     <div id="modal-start" class="modal-overlay active">
         <div class="modal-content">
             <h1 class="text-4xl mb-2">EDITOR SCRIPT</h1>
@@ -671,8 +1495,12 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT -->
+
+    <!-- ==================================================
+         JAVASCRIPT
+         ================================================== -->
     <script>
+
         /* ==================================================
            GLOSSARY
            ================================================== */
@@ -689,6 +1517,7 @@
             "CLIFFHANGER": { def: "Akhir cerita yang menggantung dan menegangkan tanpa penyelesaian.", ex: "\"Film itu berakhir cliffhanger.\"" },
             "RESEP": { def: "Catatan resmi dari dokter untuk apoteker mengenai obat.", ex: "\"Dokter menuliskan resep antibiotik.\"" }
         };
+
 
         /* ==================================================
            STORY TEMPLATE
@@ -732,6 +1561,7 @@
             }
         ];
 
+
         /* ==================================================
            GAME STATE
            ================================================== */
@@ -747,26 +1577,32 @@
             hintUsed: false
         };
 
+
         /* ==================================================
-           HELPER FUNCTIONS
+           RANDOM
            ================================================== */
         function pickRandom(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
+
         /* ==================================================
-           GENERATE STORY BIBLE
+           GENERATE STORY
            ================================================== */
         function generateStoryBible() {
             let available = storyTemplates;
+
             if (gameState.history.length > 0 && available.length > 1) {
                 const lastGen = gameState.history[gameState.history.length - 1].genre;
                 available = available.filter(t => t.genre !== lastGen);
             }
+
             if (available.length === 0) {
                 available = storyTemplates;
             }
+
             const t = pickRandom(available);
+
             const formats = [
                 { id: 'CUT_TO', text: "Akhiri naskah dengan transisi CUT TO:" },
                 { id: 'FADE_OUT', text: "Akhiri naskah dengan transisi FADE OUT." },
@@ -774,6 +1610,7 @@
                 { id: 'ANY_TRANS', text: "-" }
             ];
             const chosenFormat = pickRandom(formats);
+
             return {
                 genre: t.genre,
                 theme: t.theme,
@@ -787,12 +1624,14 @@
             };
         }
 
+
         /* ==================================================
            GENERATE BLOCKS
            ================================================== */
         function generateBlocksForBible(bible) {
             let blocks = [];
             let cid = 1;
+
             const cb = (type, text, isCorrect, seq, req, err, hint) => ({
                 id: 'blk_' + cid++,
                 type,
@@ -804,27 +1643,32 @@
                 hint
             });
 
-            // SCENE
+            /* SCENE */
             blocks.push(cb('SCENE HEADING', `INT. ${bible.location} - SIANG`, true, 1, true));
+
             if (gameState.day >= 4) {
                 blocks.push(cb('SCENE HEADING', `EXT. JALAN RAYA - MALAM`, false, 0, false, "Lokasi Salah", "Perhatikan lokasi relevan sesuai profesi di kasus ini."));
                 blocks.push(cb('SCENE HEADING', `INT. RESTORAN CEPAT SAJI - PAGI`, false, 0, false, "Lokasi Salah", "Konteks adegan tidak terjadi di restoran."));
             }
 
-            // Protagonist-specific
+            /* JAKSA */
             if (bible.protagonist === 'JAKSA') {
                 blocks.push(cb('ACTION', `Seorang JAKSA merapikan berkas di meja dengan gugup.`, true, 2, true));
                 blocks.push(cb('DIALOGUE', `JAKSA\nKita harus periksa ALIBI terdakwa dengan saksama.`, true, 3, true));
                 blocks.push(cb('ACTION', `JAKSA mengetuk palu dan memutuskan vonis penjara.`, false, 0, false, "Kewenangan", "Periksa batas wewenang profesi Jaksa di pengadilan."));
                 blocks.push(cb('DIALOGUE', `JAKSA\nSaya akan melakukan AUTOPSI sekarang juga.`, false, 0, false, "Kewenangan", "Jaksa bukan tenaga forensik."));
                 blocks.push(cb('ACTION', `Hakim menyuruh JAKSA membacakan PLEDOI.`, false, 0, false, "Kewenangan", "Pledoi adalah tugas terdakwa/pengacara pembela."));
-            } else if (bible.protagonist === 'DOKTER') {
+            }
+            /* DOKTER */
+            else if (bible.protagonist === 'DOKTER') {
                 blocks.push(cb('ACTION', `DOKTER memeriksa kondisi KLINIS pasien secara manual.`, true, 2, true));
                 blocks.push(cb('ACTION', `Ia mengambil STETOSKOP dan menarik napas panjang.`, true, 3, true));
                 blocks.push(cb('ACTION', `DOKTER mengeluarkan pistol dan memborgol pelaku.`, false, 0, false, "Kewenangan", "Dokter sipil tidak berwenang menangkap."));
                 blocks.push(cb('ACTION', `DOKTER memasang GARIS POLISI di sekitar ranjang.`, false, 0, false, "Kewenangan", "Tindakan ini wewenang kepolisian."));
                 blocks.push(cb('DIALOGUE', `DOKTER\nSaya akan mengajukan PLEDOI untuk pasien ini.`, false, 0, false, "Konteks", "Istilah hukum tak lazim dalam medis. Ia harusnya menulis RESEP."));
-            } else { // POLISI
+            }
+            /* POLISI */
+            else {
                 blocks.push(cb('ACTION', `POLISI merunduk di bawah GARIS POLISI.`, true, 2, true));
                 blocks.push(cb('DIALOGUE', `POLISI\nArea ini steril. Amankan BARANG BUKTI!`, true, 3, true));
                 blocks.push(cb('ACTION', `POLISI melakukan pembedahan KLINIS pada mayat.`, false, 0, false, "Kewenangan", "Pembedahan ranah forensik (Autopsi)."));
@@ -832,23 +1676,26 @@
                 blocks.push(cb('ACTION', `POLISI menuliskan RESEP untuk korban luka.`, false, 0, false, "Kewenangan", "Hanya dokter yang berhak meresepkan."));
             }
 
-            // CONFLICT
+            /* CONFLICT */
             blocks.push(cb('ACTION', `Tiba-tiba, ${bible.conflict}.`, true, 4, true));
 
-            // TRANSITION
+            /* TRANSITION */
             let reqTrans = bible.formatId;
             if (reqTrans === 'CUT_TO') {
                 blocks.push(cb('TRANSITION', `CUT TO:`, true, 5, true));
                 if (gameState.day >= 4) blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format Transisi", "Klien meminta CUT TO: secara spesifik."));
-            } else if (reqTrans === 'FADE_OUT') {
+            } 
+            else if (reqTrans === 'FADE_OUT') {
                 blocks.push(cb('TRANSITION', `FADE OUT.`, true, 5, true));
                 if (gameState.day >= 4) blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format Transisi", "Klien meminta FADE OUT secara spesifik."));
-            } else if (reqTrans === 'NO_TRANS') {
+            }
+            else if (reqTrans === 'NO_TRANS') {
                 if (gameState.day >= 4) {
                     blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format Transisi", "Naskah ini diminta tanpa transisi di akhir."));
                     blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format Transisi", "Naskah ini diminta tanpa transisi di akhir."));
                 }
-            } else if (reqTrans === 'ANY_TRANS') {
+            }
+            else if (reqTrans === 'ANY_TRANS') {
                 blocks.push(cb('TRANSITION', pickRandom([`CUT TO:`, `FADE OUT.`]), true, 5, true));
                 if (gameState.day >= 4) blocks.push(cb('TRANSITION', `DISSOLVE TO:`, false, 0, false, "Format Transisi", "Gunakan transisi standar yang lazim seperti CUT TO atau FADE OUT."));
             }
@@ -856,8 +1703,9 @@
             return blocks.sort(() => Math.random() - 0.5);
         }
 
+
         /* ==================================================
-           SETUP NEW CASE
+           SETUP CASE
            ================================================== */
         function setupNewCase() {
             gameState.currentBible = generateStoryBible();
@@ -866,13 +1714,15 @@
             gameState.placedBlocks = new Array(reqCount).fill(null);
             gameState.selectedBlockId = null;
             gameState.hintUsed = false;
-
+            
             document.getElementById('hint-badge').style.display = 'flex';
             document.getElementById('btn-open-hint').classList.remove('hint-disabled');
             document.getElementById('glossary-empty').classList.remove('hidden');
             document.getElementById('glossary-content').classList.add('hidden');
+            
             updateUI();
         }
+
 
         /* ==================================================
            HINT & GLOSSARY
@@ -909,6 +1759,7 @@
             }
         }
 
+
         /* ==================================================
            UPDATE UI & RENDER
            ================================================== */
@@ -936,6 +1787,7 @@
                 <div class="checklist-item" id="chk-logic"><span class="checklist-box"></span>Urutan logis</div>
                 <div class="checklist-item" id="chk-prof"><span class="checklist-box"></span>Karakter sesuai profesi</div>
             `;
+
             document.getElementById('checklist-container').innerHTML = checklistHTML;
 
             if (gameState.hintUsed) {
@@ -950,6 +1802,7 @@
         function renderBlocksAndSlots() {
             const bc = document.getElementById('block-container');
             const sc = document.getElementById('slots-container');
+
             bc.innerHTML = '';
             sc.innerHTML = '';
 
@@ -962,9 +1815,11 @@
             for (let i = 0; i < gameState.placedBlocks.length; i++) {
                 const row = document.createElement('div');
                 row.className = 'slot-row';
+                
                 const num = document.createElement('div');
                 num.className = 'slot-number';
                 num.innerText = i + 1;
+
                 const slot = document.createElement('div');
                 slot.className = 'drop-slot';
                 slot.dataset.index = i;
@@ -983,6 +1838,7 @@
                         slot.style.background = 'transparent';
                     }
                 }
+
                 row.appendChild(num);
                 row.appendChild(slot);
                 sc.appendChild(row);
@@ -1012,6 +1868,7 @@
             });
             return div;
         }
+
 
         /* ==================================================
            DRAG & DROP
@@ -1048,7 +1905,7 @@
         }
 
         function handleDragOverPanel(e) { e.preventDefault(); }
-
+        
         function handleDropToPanel(e) {
             e.preventDefault();
             if (draggedId && draggedFrom !== null) moveBlock(draggedId, null, draggedFrom);
@@ -1094,16 +1951,19 @@
             updateChecklist();
         }
 
+
         /* ==================================================
            CHECKLIST & CHECK SCRIPT
            ================================================== */
         function updateChecklist() {
             const pIds = gameState.placedBlocks.filter(i => i !== null);
             const rCount = gameState.currentBlocks.filter(b => b.required).length;
+
             const cBlocks = document.getElementById('chk-blocks');
             const cTrans = document.getElementById('chk-trans');
             const cLogic = document.getElementById('chk-logic');
             const cProf = document.getElementById('chk-prof');
+
             if (!cLogic || !cProf) return;
 
             let placedReq = 0;
@@ -1127,9 +1987,11 @@
                         else cTrans.classList.remove('done');
                     }
                 }
+                
                 let sErr = false;
                 let hErr = false;
                 let lSeq = -1;
+
                 pIds.forEach(id => {
                     const b = gameState.currentBlocks.find(x => x.id === id);
                     if (b.sequenceOrder > 0) {
@@ -1138,6 +2000,7 @@
                     }
                     if (!b.isCorrect) hErr = true;
                 });
+
                 if (!sErr) cLogic.classList.add('done'); else cLogic.classList.remove('done');
                 if (!hErr) cProf.classList.add('done'); else cProf.classList.remove('done');
             } else {
@@ -1150,7 +2013,11 @@
 
         function checkScript() {
             const pIds = gameState.placedBlocks.filter(i => i !== null);
-            if (pIds.length === 0) { alert("Naskah kosong!"); return; }
+
+            if (pIds.length === 0) {
+                alert("Naskah kosong!");
+                return;
+            }
             if (pIds.length < gameState.placedBlocks.length) {
                 alert("Masih ada bagian naskah yang kosong! Harap isi semua slot yang tersedia sebelum memeriksa.");
                 return;
@@ -1186,12 +2053,13 @@
                 sLg -= 30;
                 msgs.push("- <strong>URUTAN ADEGAN SALAH:</strong> Kejadian melompat atau sebab-akibat rancu.");
             }
-
+            
             updateChecklist();
 
             sSt = Math.max(0, sSt);
             sLg = Math.max(0, sLg);
             sCh = Math.max(0, sCh);
+
             const tot = Math.round((sSt + sLg + sCh + (aReq ? 100 : 0)) / 4);
 
             document.getElementById('score-structure').innerText = sSt;
@@ -1208,6 +2076,7 @@
                 fB.innerHTML = "<strong>STATUS: DISETUJUI.</strong><br><br>Naskah solid, logis, dan karakter bertindak sesuai dengan kapasitas/kewenangannya.";
                 bNx.classList.remove('hidden');
                 document.getElementById('btn-revisi').innerText = "TUTUP";
+
                 if (bNx.dataset.saved !== "true") {
                     gameState.casesCompleted++;
                     gameState.totalScore += tot;
@@ -1224,6 +2093,7 @@
             }
             document.getElementById('modal-eval').classList.add('active');
         }
+
 
         /* ==================================================
            SYSTEM & SAVE
@@ -1281,6 +2151,7 @@
             if (gameState.currentBlocks.length === 0) setupNewCase();
         }
 
+
         /* ==================================================
            CUSTOM SCROLLBAR INITIALIZATION
            ================================================== */
@@ -1296,6 +2167,7 @@
                 const scrollHeight = container.scrollHeight;
                 const clientHeight = container.clientHeight;
                 const maxScrollTop = Math.max(0, scrollHeight - clientHeight);
+
                 if (maxScrollTop <= 0 || scrollHeight <= clientHeight) {
                     scrollbar.classList.add('disabled');
                     thumb.style.height = '100%';
@@ -1303,16 +2175,19 @@
                     return;
                 }
                 scrollbar.classList.remove('disabled');
+
                 const trackHeight = track.clientHeight;
                 const ratio = clientHeight / scrollHeight;
                 const minThumbHeight = window.matchMedia('(pointer: coarse)').matches ? 50 : 40;
                 const thumbHeight = Math.max(minThumbHeight, trackHeight * ratio);
                 const finalThumbHeight = Math.min(thumbHeight, trackHeight);
                 thumb.style.height = `${finalThumbHeight}px`;
+
                 const maxThumbTop = Math.max(0, trackHeight - finalThumbHeight);
                 let scrollTop = Math.max(0, Math.min(container.scrollTop, maxScrollTop));
                 const scrollRatio = maxScrollTop > 0 ? scrollTop / maxScrollTop : 0;
                 const thumbTop = scrollRatio * maxThumbTop;
+                
                 thumb.style.transform = `translate3d(0, ${thumbTop}px, 0)`;
             }
 
@@ -1344,6 +2219,7 @@
                 const thumbHeight = thumb.offsetHeight;
                 const maxThumbTop = Math.max(0, trackHeight - thumbHeight);
                 const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight);
+
                 if (maxThumbTop <= 0 || maxScrollTop <= 0) return;
                 const scrollPerPixel = maxScrollTop / maxThumbTop;
                 let newScrollTop = scrollStartTop + (deltaY * scrollPerPixel);
@@ -1373,6 +2249,7 @@
                 const thumbTop = thumbRect.top - rect.top;
                 const thumbBottom = thumbTop + thumb.offsetHeight;
                 const pageAmount = container.clientHeight * 0.85;
+
                 if (clickY < thumbTop) {
                     container.scrollBy({ top: -pageAmount, behavior: 'smooth' });
                 } else if (clickY > thumbBottom) {
@@ -1392,6 +2269,9 @@
             }
             initW95Scrollbars();
         };
+
     </script>
 </body>
 </html>
+
+
