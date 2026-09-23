@@ -127,6 +127,7 @@
 
         /* ==================================================
            CUSTOM SCROLLBAR
+           WINDOWS 95 RETRO DARK
            ================================================== */
 
         .retro-scrollbar {
@@ -148,10 +149,6 @@
         }
 
 
-        /* ==================================================
-           SCROLL CONTAINER
-           ================================================== */
-
         .scroll-container {
             flex: 1;
             position: relative;
@@ -160,17 +157,11 @@
         }
 
 
-        /* ==================================================
-           WINDOWS 95 SCROLLBAR
-           ================================================== */
-
         .w95-scrollbar {
             position: absolute;
-
             top: 2px;
             right: 2px;
             bottom: 2px;
-
             width: 14px;
 
             background: var(--bg-app);
@@ -189,6 +180,7 @@
             pointer-events: auto;
         }
 
+
         .w95-scroll-track {
             position: absolute;
 
@@ -205,6 +197,7 @@
 
             touch-action: none;
         }
+
 
         .w95-scroll-track::before {
             content: "";
@@ -230,12 +223,14 @@
                 );
 
             background-size: 4px 4px;
+
             background-position: 0 0, 2px 2px;
 
             opacity: 0.5;
 
             pointer-events: none;
         }
+
 
         .w95-scroll-thumb {
             position: absolute;
@@ -256,6 +251,7 @@
             z-index: 2;
 
             border: 1px solid var(--border-dark);
+
             border-top: 1px solid #6a6a66;
             border-left: 1px solid #6a6a66;
 
@@ -266,6 +262,7 @@
 
             will-change: transform;
         }
+
 
         .w95-scroll-thumb.dragging {
             cursor: grabbing;
@@ -278,6 +275,7 @@
             border-right: 1px solid #6a6a66;
             border-bottom: 1px solid #6a6a66;
         }
+
 
         .w95-scroll-thumb::after {
             content: "";
@@ -302,6 +300,7 @@
             pointer-events: none;
         }
 
+
         .w95-scrollbar.disabled {
             opacity: 0.3;
         }
@@ -311,10 +310,6 @@
         }
 
 
-        /* ==================================================
-           BLOCK CONTAINER
-           ================================================== */
-
         #block-container {
             padding: 18px;
             padding-right: 38px;
@@ -322,43 +317,8 @@
 
 
         /* ==================================================
-           MODAL SCROLL AREA
-           ================================================== */
-
-        #modal-block-scrollarea {
-            padding: 18px;
-            padding-right: 38px;
-        }
-
-
-        /* ==================================================
-           TOUCH
-           ================================================== */
-
-        @media (pointer: coarse) {
-
-            .w95-scrollbar {
-                width: 18px;
-            }
-
-            .w95-scroll-thumb {
-                min-height: 50px;
-            }
-
-            #block-container {
-                padding: 18px;
-                padding-right: 42px;
-            }
-
-            #modal-block-scrollarea {
-                padding: 18px;
-                padding-right: 42px;
-            }
-        }
-
-
-        /* ==================================================
-           GAME LAYOUT
+           LAYOUT UTAMA
+           LANDSCAPE
            ================================================== */
 
         #game-layout {
@@ -371,9 +331,11 @@
             flex-direction: column;
 
             padding: 10px;
+
             gap: 10px;
 
             position: relative;
+
             z-index: 10;
         }
 
@@ -422,6 +384,7 @@
             gap: 15px;
         }
 
+
         .settings-btn {
             color: var(--text-muted);
 
@@ -439,16 +402,20 @@
             justify-content: center;
         }
 
+
         .settings-btn:hover {
             color: var(--text-highlight);
         }
 
+
         .title-area {
             display: flex;
+
             flex-direction: column;
 
             justify-content: center;
         }
+
 
         .header-left h1 {
             margin: 0;
@@ -463,6 +430,7 @@
 
             line-height: 1.1;
         }
+
 
         .header-left .day-text {
             font-size: 1.1rem;
@@ -483,7 +451,10 @@
             align-items: stretch;
 
             justify-content: center;
+
+            min-width: 0;
         }
+
 
         .client-avatar {
             width: 70px;
@@ -508,6 +479,7 @@
                 inset 0 0 10px rgba(0,0,0,0.5);
         }
 
+
         .client-avatar svg {
             width: 85%;
 
@@ -517,6 +489,7 @@
 
             fill: #1c1c1a;
         }
+
 
         .client-brief-box {
             flex: 1;
@@ -534,13 +507,16 @@
             border-radius: 4px;
 
             overflow-y: auto;
+
             overflow-x: hidden;
 
             min-height: 0;
         }
 
+
         .client-brief-box .brief-title {
-            background: rgba(255,255,255,0.03);
+            background:
+                rgba(255,255,255,0.03);
 
             border-bottom:
                 2px solid var(--border-dark);
@@ -553,6 +529,7 @@
 
             letter-spacing: 1px;
         }
+
 
         .client-brief-box .brief-content {
             padding: 6px 10px;
@@ -572,6 +549,7 @@
             color: var(--text-normal);
         }
 
+
         .brief-line {
             display: flex;
 
@@ -579,6 +557,7 @@
 
             line-height: 1.3;
         }
+
 
         .brief-line .label {
             color: var(--text-muted);
@@ -589,6 +568,7 @@
 
             min-width: 80px;
         }
+
 
         .brief-line .value {
             color: var(--text-highlight);
@@ -614,6 +594,7 @@
 
             gap: 10px;
         }
+
 
         .retro-btn {
             background: var(--bg-panel);
@@ -646,11 +627,13 @@
             gap: 5px;
         }
 
+
         .retro-btn:active {
             transform: translate(2px,2px);
 
             box-shadow: none;
         }
+
 
         .retro-btn.primary {
             background: #b56c6c;
@@ -663,6 +646,7 @@
 
         /* ==================================================
            MAIN AREA
+           LANDSCAPE
            ================================================== */
 
         #main-area {
@@ -682,6 +666,7 @@
             overflow: hidden;
         }
 
+
         .panel {
             background: var(--bg-panel);
 
@@ -691,6 +676,7 @@
                 2px 2px 0 rgba(0,0,0,0.3);
 
             min-width: 0;
+
             min-height: 0;
 
             display: flex;
@@ -707,16 +693,19 @@
             position: relative;
         }
 
+
         .panel-header {
             padding: 15px;
 
             border-bottom:
                 2px solid var(--border-dark);
 
-            background: rgba(0,0,0,0.2);
+            background:
+                rgba(0,0,0,0.2);
 
             flex-shrink: 0;
         }
+
 
         .panel-title {
             font-size: 1.4rem;
@@ -727,6 +716,7 @@
 
             margin: 0;
         }
+
 
         .panel-subtitle {
             font-size: 0.9rem;
@@ -775,6 +765,7 @@
             box-sizing: border-box;
         }
 
+
         .script-block:active {
             cursor: grabbing;
 
@@ -785,13 +776,6 @@
                 1px 1px 0 rgba(0,0,0,0.3);
         }
 
-        .script-block.selected {
-            border-color: var(--accent-yellow);
-
-            box-shadow:
-                0 0 0 2px var(--accent-yellow),
-                3px 3px 0 rgba(0,0,0,0.3);
-        }
 
         .block-type-label {
             font-family: var(--font-ui);
@@ -811,6 +795,7 @@
             color: var(--paper-text);
         }
 
+
         .block-text {
             line-height: 1.3;
 
@@ -819,7 +804,7 @@
 
 
         /* ==================================================
-           CENTER PANEL
+           PANEL TENGAH
            ================================================== */
 
         #center-panel {
@@ -844,6 +829,7 @@
             position: relative;
         }
 
+
         .paper-sheet {
             background: var(--paper-bg);
 
@@ -855,8 +841,7 @@
 
             min-height: 100%;
 
-            border:
-                1px solid var(--paper-border);
+            border: 1px solid var(--paper-border);
 
             box-shadow:
                 4px 4px 0 rgba(0,0,0,0.5);
@@ -871,6 +856,7 @@
 
             position: relative;
         }
+
 
         .paper-header {
             display: flex;
@@ -893,6 +879,7 @@
             flex-shrink: 0;
         }
 
+
         .paper-header .title {
             flex: 1;
 
@@ -900,6 +887,7 @@
 
             font-weight: bold;
         }
+
 
         .paper-header .page-num {
             width: 60px;
@@ -924,6 +912,7 @@
             width: 100%;
         }
 
+
         .slot-number {
             width: 30px;
 
@@ -939,6 +928,7 @@
 
             flex-shrink: 0;
         }
+
 
         .drop-slot {
             flex: 1;
@@ -962,12 +952,14 @@
             width: 100%;
         }
 
+
         .drop-slot.drag-over {
             background:
                 rgba(0,0,0,0.08);
 
             border-color: #555;
         }
+
 
         .drop-slot > .script-block {
             margin-bottom: 0;
@@ -984,11 +976,14 @@
             padding: 8px 10px;
         }
 
+
         .drop-slot > .script-block .block-text {
             text-align: justify;
         }
 
-        .drop-slot > .script-block[data-type="TRANSITION"]
+
+        .drop-slot >
+        .script-block[data-type="TRANSITION"]
         .block-text {
             text-align: right !important;
         }
@@ -999,7 +994,7 @@
            ================================================== */
 
         #right-panel {
-            padding: 15px;
+            padding: 18px;
 
             display: flex;
 
@@ -1007,6 +1002,7 @@
 
             position: relative;
         }
+
 
         .right-panel-content {
             flex: 1 1 0;
@@ -1022,17 +1018,18 @@
             padding-bottom: 10px;
         }
 
+
         .right-section-title {
             font-size: 1.2rem;
 
             color: var(--text-highlight);
 
-            margin-bottom: 8px;
+            margin-bottom: 12px;
 
             border-bottom:
                 2px solid var(--border-light);
 
-            padding-bottom: 4px;
+            padding-bottom: 6px;
 
             display: flex;
 
@@ -1066,6 +1063,7 @@
             box-sizing: border-box;
         }
 
+
         .checklist-box {
             width: 14px;
 
@@ -1085,6 +1083,7 @@
             background: #1a1a1a;
         }
 
+
         .checklist-item.done
         .checklist-box::after {
             content: "✔";
@@ -1094,12 +1093,14 @@
             position: absolute;
 
             top: -4px;
+
             left: 1px;
 
             font-size: 14px;
 
             font-family: var(--font-ui);
         }
+
 
         .checklist-item.done {
             color: var(--text-normal);
@@ -1121,6 +1122,7 @@
 
             box-sizing: border-box;
         }
+
 
         .hint-btn-style {
             width: 100%;
@@ -1158,6 +1160,7 @@
             box-sizing: border-box;
         }
 
+
         .hint-btn-style:hover:not(.hint-disabled) {
             background:
                 rgba(255,255,255,0.05);
@@ -1165,10 +1168,12 @@
             color: #fff;
         }
 
+
         .hint-btn-style:active:not(.hint-disabled) {
             transform:
                 translate(1px,1px);
         }
+
 
         .notification-badge {
             position: absolute;
@@ -1190,6 +1195,7 @@
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             border:
@@ -1204,6 +1210,7 @@
 
             pointer-events: none;
         }
+
 
         .hint-disabled {
             opacity: 0.3;
@@ -1231,10 +1238,12 @@
                 1px dotted #5a8ca8;
         }
 
+
         .glossary-term-link:hover {
             background:
                 rgba(90,140,168,0.2);
         }
+
 
         .kamus-tab-container {
             display: flex;
@@ -1252,9 +1261,10 @@
             box-sizing: border-box;
         }
 
+
         .kamus-tab-title {
             background:
-                rgba(255,255,255,.05);
+                rgba(255,255,255,0.05);
 
             border:
                 2px solid var(--border-light);
@@ -1280,12 +1290,13 @@
             font-family: var(--font-ui);
         }
 
+
         .kamus-tab-content {
             border:
                 2px solid var(--border-light);
 
             background:
-                rgba(0,0,0,.15);
+                rgba(0,0,0,0.15);
 
             border-radius:
                 0 6px 6px 6px;
@@ -1303,6 +1314,7 @@
             box-sizing: border-box;
         }
 
+
         #glossary-content {
             display: flex;
 
@@ -1313,12 +1325,13 @@
             color: var(--text-normal);
         }
 
+
         .g-term-title {
             color: #5a8ca8;
 
             font-family: var(--font-ui);
 
-            font-size: .85rem;
+            font-size: 0.85rem;
 
             text-transform: uppercase;
 
@@ -1332,25 +1345,28 @@
             padding-bottom: 2px;
         }
 
+
         .g-def-text {
-            font-size: .75rem;
+            font-size: 0.75rem;
 
             line-height: 1.3;
 
             margin-bottom: 10px;
         }
 
+
         .g-example-title {
             color: #5a8ca8;
 
             font-family: var(--font-ui);
 
-            font-size: .8rem;
+            font-size: 0.8rem;
 
             letter-spacing: 1px;
 
             margin-bottom: 2px;
         }
+
 
         .g-example-text {
             color: var(--text-muted);
@@ -1358,14 +1374,14 @@
             font-style: italic;
 
             background:
-                rgba(0,0,0,.2);
+                rgba(0,0,0,0.2);
 
             padding: 6px;
 
             border-left:
                 2px solid #5a8ca8;
 
-            font-size: .7rem;
+            font-size: 0.7rem;
         }
 
 
@@ -1396,6 +1412,7 @@
             box-sizing: border-box;
         }
 
+
         .nav-arrow {
             width: 30px;
             height: 30px;
@@ -1418,9 +1435,11 @@
             font-size: 1rem;
         }
 
+
         .nav-arrow:hover {
             color: var(--text-highlight);
         }
+
 
         .page-thumb-wrapper {
             position: relative;
@@ -1431,6 +1450,7 @@
 
             align-items: center;
         }
+
 
         .page-thumb {
             width: 35px;
@@ -1447,15 +1467,16 @@
 
             padding: 2px 4px;
 
-            font-size: .8rem;
+            font-size: 0.8rem;
 
             color: #333;
 
             cursor: pointer;
 
             box-shadow:
-                2px 2px 0 rgba(0,0,0,.3);
+                2px 2px 0 rgba(0,0,0,0.3);
         }
+
 
         .page-thumb.active {
             background: var(--paper-bg);
@@ -1465,6 +1486,7 @@
             transform:
                 translate(1px,1px);
         }
+
 
         .page-indicator {
             position: absolute;
@@ -1491,134 +1513,9 @@
             display: none;
         }
 
-        .page-thumb.active + .page-indicator {
-            display: block;
-        }
 
-
-        /* ==================================================
-           PORTRAIT PAGINATION
-           ================================================== */
-
-        .pagination-area-portrait {
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            gap: 10px;
-
-            margin-top: 0;
-
-            padding-top: 0;
-
-            flex-shrink: 0;
-
-            width: auto;
-
-            box-sizing: border-box;
-        }
-
-        .nav-arrow-portrait {
-            width: 35px;
-            height: 35px;
-
-            background: var(--bg-panel);
-
-            border:
-                2px solid var(--border-dark);
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            color: var(--text-muted);
-
-            cursor: pointer;
-
-            font-size: 1.2rem;
-        }
-
-        .nav-arrow-portrait:hover {
-            color: var(--text-highlight);
-        }
-
-        .page-thumb-wrapper-portrait {
-            position: relative;
-
-            display: flex;
-
-            flex-direction: column;
-
-            align-items: center;
-        }
-
-        .page-thumb-portrait {
-            width: 45px;
-            height: 55px;
-
-            background: #8e8877;
-
-            border:
-                2px solid var(--border-dark);
-
-            display: flex;
-
-            align-items: flex-start;
-
-            justify-content: center;
-
-            padding-top: 3px;
-
-            font-size: 1rem;
-
-            color: #333;
-
-            cursor: pointer;
-
-            box-shadow:
-                2px 2px 0 rgba(0,0,0,0.3);
-        }
-
-        .page-thumb-portrait.active {
-            background: var(--paper-bg);
-
-            box-shadow: none;
-
-            transform:
-                translate(1px,1px);
-        }
-
-        .page-indicator-portrait {
-            position: absolute;
-
-            top: -8px;
-
-            left: 50%;
-
-            transform:
-                translateX(-50%);
-
-            width: 0;
-            height: 0;
-
-            border-left:
-                5px solid transparent;
-
-            border-right:
-                5px solid transparent;
-
-            border-top:
-                5px solid var(--accent-yellow);
-
-            display: none;
-        }
-
-        .page-thumb-portrait.active
-        + .page-indicator-portrait {
+        .page-thumb.active +
+        .page-indicator {
             display: block;
         }
 
@@ -1636,7 +1533,7 @@
             bottom: 0;
 
             background:
-                rgba(0,0,0,.85);
+                rgba(0,0,0,0.85);
 
             z-index: 1000;
 
@@ -1651,14 +1548,16 @@
             pointer-events: none;
 
             transition:
-                opacity .2s;
+                opacity 0.2s;
         }
+
 
         .modal-overlay.active {
             opacity: 1;
 
             pointer-events: auto;
         }
+
 
         .modal-content {
             background: var(--bg-panel);
@@ -1677,20 +1576,7 @@
             text-align: center;
 
             box-shadow:
-                5px 5px 0 rgba(0,0,0,.5);
-        }
-
-
-        /* ==================================================
-           PORTRAIT PAPER PREVIEW
-           ================================================== */
-
-        #portrait-paper-preview {
-            display: none;
-        }
-
-        #portrait-bottom-area {
-            display: none;
+                5px 5px 0 rgba(0,0,0,0.5);
         }
 
 
@@ -1702,121 +1588,144 @@
             display: none !important;
         }
 
+
         .text-2xl {
             font-size: 1.5rem;
             line-height: 2rem;
         }
+
 
         .text-4xl {
             font-size: 2.25rem;
             line-height: 2.5rem;
         }
 
+
         .mb-2 {
-            margin-bottom: .5rem;
+            margin-bottom: 0.5rem;
         }
+
 
         .mb-4 {
             margin-bottom: 1rem;
         }
 
+
         .mb-6 {
             margin-bottom: 1.5rem;
         }
+
 
         .mt-4 {
             margin-top: 1rem;
         }
 
+
         .mt-6 {
             margin-top: 1.5rem;
         }
 
+
         .text-sm {
-            font-size: .875rem;
+            font-size: 0.875rem;
             line-height: 1.25rem;
         }
 
+
         .text-xs {
-            font-size: .75rem;
+            font-size: 0.75rem;
             line-height: 1rem;
         }
+
 
         .text-center {
             text-align: center;
         }
 
+
         .text-left {
             text-align: left;
         }
+
 
         .text-right {
             text-align: right;
         }
 
+
         .font-bold {
             font-weight: 700;
         }
 
-        .font-sans {
-            font-family: sans-serif;
-        }
 
         .flex {
             display: flex;
         }
 
+
         .justify-between {
             justify-content: space-between;
         }
+
 
         .justify-center {
             justify-content: center;
         }
 
+
         .items-center {
             align-items: center;
         }
 
+
         .grid {
             display: grid;
         }
+
 
         .grid-cols-2 {
             grid-template-columns:
                 repeat(2,minmax(0,1fr));
         }
 
+
         .gap-2 {
-            gap: .5rem;
+            gap: 0.5rem;
         }
+
 
         .p-3 {
-            padding: .75rem;
+            padding: 0.75rem;
         }
 
+
         .pb-2 {
-            padding-bottom: .5rem;
+            padding-bottom: 0.5rem;
         }
+
 
         .border-b {
             border-bottom-width: 1px;
             border-style: solid;
         }
 
+
         .border-t {
             border-top-width: 1px;
             border-style: solid;
         }
+
 
         .border {
             border-width: 1px;
             border-style: solid;
         }
 
+
         .cursor-pointer {
             cursor: pointer;
         }
+
 
         .hover\:text-\[var\(--text-highlight\)\]:hover {
             color: var(--text-highlight);
@@ -1824,26 +1733,313 @@
 
 
         /* ==================================================
-           ==================================================
+           LANDSCAPE RESPONSIVE
+           ================================================== */
+
+        @media screen
+        and (max-height: 600px)
+        and (orientation: landscape),
+        screen
+        and (max-width: 950px)
+        and (orientation: landscape) {
+
+            #game-header {
+                padding: 5px 10px;
+
+                min-height: 50px;
+
+                gap: 8px;
+            }
+
+
+            .header-left {
+                gap: 8px;
+            }
+
+
+            .header-left h1 {
+                font-size: 1.2rem;
+            }
+
+
+            .header-left .day-text {
+                font-size: 0.9rem;
+            }
+
+
+            .settings-btn {
+                font-size: 24px;
+            }
+
+
+            .client-avatar {
+                width: 45px;
+            }
+
+
+            .client-brief-box .brief-title {
+                padding: 2px 6px;
+
+                font-size: 0.75rem;
+            }
+
+
+            .client-brief-box .brief-content {
+                padding: 4px 6px;
+
+                font-size: 0.7rem;
+
+                gap: 2px;
+            }
+
+
+            .brief-line .label {
+                min-width: 50px;
+            }
+
+
+            .header-right {
+                gap: 5px;
+            }
+
+
+            .retro-btn {
+                font-size: 0.8rem;
+
+                padding: 4px 8px;
+            }
+
+
+            .hide-mobile {
+                display: none;
+            }
+
+
+            #main-area {
+                grid-template-columns:
+                    280px
+                    minmax(0,1fr)
+                    200px;
+            }
+
+
+            #right-panel {
+                padding: 10px;
+            }
+
+
+            .panel-header {
+                padding: 8px 10px;
+            }
+
+
+            .panel-title {
+                font-size: 1.1rem;
+            }
+
+
+            .panel-subtitle {
+                font-size: 0.75rem;
+            }
+
+
+            #block-container {
+                padding: 10px;
+
+                padding-right: 32px;
+            }
+
+
+            .w95-scrollbar {
+                width: 18px;
+            }
+
+
+            .w95-scroll-thumb {
+                min-height: 50px;
+            }
+
+
+            .script-block {
+                padding: 6px 8px;
+
+                margin-bottom: 8px;
+
+                font-size: 0.75rem;
+            }
+
+
+            .block-type-label {
+                font-size: 0.7rem;
+
+                margin-bottom: 2px;
+            }
+
+
+            #center-panel {
+                padding: 8px 5px;
+            }
+
+
+            .paper-sheet {
+                padding: 15px 20px;
+
+                max-width: 100%;
+
+                border-width: 0;
+
+                box-shadow: none;
+
+                border-radius: 4px;
+            }
+
+
+            .paper-header {
+                font-size: 1.1rem;
+
+                margin-bottom: 12px;
+
+                padding-bottom: 4px;
+            }
+
+
+            .slot-row {
+                min-height: 35px;
+
+                margin-bottom: 6px;
+            }
+
+
+            .drop-slot {
+                min-height: 35px;
+            }
+
+
+            .slot-number {
+                width: 20px;
+
+                padding-top: 5px;
+
+                font-size: 0.8rem;
+            }
+
+
+            .right-section-title {
+                font-size: 0.9rem;
+
+                margin-bottom: 8px;
+            }
+
+
+            .checklist-item {
+                font-size: 0.75rem;
+
+                margin-bottom: 6px;
+
+                line-height: 1.2;
+            }
+
+
+            .checklist-box {
+                width: 12px;
+                height: 12px;
+
+                margin-right: 6px;
+            }
+
+
+            .checklist-item.done
+            .checklist-box::after {
+                font-size: 12px;
+
+                top: -5px;
+
+                left: 0;
+            }
+
+
+            .kamus-tab-title {
+                font-size: 0.9rem;
+
+                padding: 2px 8px;
+            }
+
+
+            .kamus-tab-content {
+                padding: 6px;
+
+                min-height: 80px;
+            }
+
+
+            .g-term-title {
+                font-size: 0.75rem;
+
+                margin-bottom: 2px;
+            }
+
+
+            .g-def-text {
+                font-size: 0.7rem;
+
+                line-height: 1.2;
+
+                margin-bottom: 6px;
+            }
+
+
+            .g-example-title {
+                font-size: 0.7rem;
+            }
+
+
+            .g-example-text {
+                font-size: 0.65rem;
+
+                padding: 4px;
+            }
+
+
+            .pagination-area {
+                margin-top: 10px;
+
+                padding-top: 10px;
+
+                gap: 5px;
+            }
+
+
+            .nav-arrow {
+                width: 24px;
+                height: 24px;
+
+                font-size: 0.8rem;
+            }
+
+
+            .page-thumb {
+                width: 25px;
+                height: 35px;
+
+                font-size: 0.7rem;
+
+                padding: 2px;
+            }
+
+
+            .page-indicator {
+                border-width: 4px;
+
+                top: -6px;
+            }
+        }
+
+
+        /* ==================================================
            PORTRAIT MODE
-           ==================================================
            
-           STRUKTUR:
-           
-           ┌─────────────────────────────┐
-           │ HEADER TIPIS                │
-           ├─────────────────────────────┤
-           │ CLIENT BRIEF                │
-           ├─────────────────────────────┤
-           │                             │
-           │      SCRIPT / PAPER         │
-           │                             │
-           ├──────────────┬──────────────┤
-           │ SCRIPT       │ CHECKLIST    │
-           │ BLOCKS       │              │
-           └──────────────┴──────────────┘
-           
-           ==================================================
+           HANYA MENGUBAH LAYOUT.
+           FITUR / WARNA / TEKS / GAME LOGIC TETAP.
            ================================================== */
 
         @media screen and (orientation: portrait) {
@@ -1852,6 +2048,7 @@
             body {
                 overflow: hidden;
             }
+
 
             body {
                 position: fixed;
@@ -1863,13 +2060,11 @@
             }
 
 
-            /* ----------------------------------------------
-               GAME LAYOUT
-               ---------------------------------------------- */
-
             #game-layout {
                 width: 100%;
                 height: 100dvh;
+
+                min-height: 0;
 
                 padding: 6px;
 
@@ -1877,50 +2072,57 @@
 
                 display: grid;
 
+                grid-template-columns: 1fr;
+
                 grid-template-rows:
-                    52px
-                    minmax(55px, 72px)
-                    minmax(0, 1fr)
-                    38%;
+                    auto
+                    auto
+                    minmax(0,1fr)
+                    minmax(0,0.42fr);
 
                 overflow: hidden;
             }
 
 
-            /* ----------------------------------------------
-               HEADER TIPIS
-               ---------------------------------------------- */
+            /* ------------------------------------------
+               HEADER PORTRAIT
+               ------------------------------------------ */
 
             #game-header {
-                min-height: 0;
+                width: 100%;
 
-                height: 52px;
+                min-height: 48px;
 
-                padding:
-                    5px 10px;
-
-                gap: 0;
+                height: auto;
 
                 display: grid;
 
                 grid-template-columns:
-                    1fr;
+                    minmax(150px,0.65fr)
+                    minmax(0,1.35fr);
 
-                grid-template-rows:
-                    1fr;
+                grid-template-rows: 48px;
+
+                gap: 6px;
+
+                padding: 4px 8px;
 
                 align-items: center;
             }
 
+
             .header-left {
-                gap: 10px;
+                min-width: 0;
+
+                gap: 8px;
             }
+
 
             .settings-btn {
                 width: 34px;
                 height: 34px;
 
-                font-size: 23px;
+                font-size: 22px;
 
                 border:
                     2px solid var(--border-dark);
@@ -1929,178 +2131,149 @@
                     rgba(255,255,255,0.03);
             }
 
+
             .header-left h1 {
                 font-size: 1.35rem;
 
-                letter-spacing: 1.5px;
+                letter-spacing: 1px;
+
+                white-space: nowrap;
             }
+
 
             .header-left .day-text {
-                font-size: .8rem;
+                font-size: 0.8rem;
             }
 
-            /*
-             * Pada portrait, tombol RESET dan PERIKSA
-             * tetap tersedia melalui area atas kecil.
-             */
-
-            .header-right {
-                position: absolute;
-
-                right: 8px;
-
-                top: 8px;
-
-                gap: 4px;
-            }
-
-            .header-right .retro-btn {
-                font-size: .72rem;
-
-                padding:
-                    3px 6px;
-            }
-
-            .header-right .retro-btn:first-child {
-                display: none;
-            }
 
             .header-center {
-                position: absolute;
-
-                top: 58px;
-
-                left: 6px;
-                right: 6px;
-
-                height: 68px;
-
-                display: flex;
-
-                align-items: stretch;
-
-                justify-content: stretch;
-
-                gap: 6px;
-
-                z-index: 20;
-            }
-
-            .client-avatar {
-                width: 54px;
-
-                min-width: 54px;
-
-                height: 68px;
-            }
-
-            .client-brief-box {
-                max-width: none;
+                min-width: 0;
 
                 width: 100%;
 
-                height: 68px;
+                height: 100%;
+
+                gap: 5px;
             }
+
+
+            .client-avatar {
+                display: none;
+            }
+
+
+            .client-brief-box {
+                width: 100%;
+
+                max-width: none;
+
+                height: 100%;
+
+                overflow: hidden;
+
+                border-width: 1px;
+            }
+
 
             .client-brief-box .brief-title {
                 padding:
-                    2px 7px;
+                    1px 6px;
 
-                font-size: .78rem;
+                font-size: 0.7rem;
+
+                line-height: 1;
             }
+
 
             .client-brief-box .brief-content {
                 padding:
-                    3px 7px;
+                    2px 6px;
 
-                gap: 2px;
+                gap: 1px;
 
-                font-size: .68rem;
+                font-size: 0.65rem;
 
-                overflow-y: auto;
+                line-height: 1;
             }
+
 
             .brief-line {
-                line-height: 1.15;
+                line-height: 1.05;
+
+                white-space: nowrap;
+
+                overflow: hidden;
             }
 
+
             .brief-line .label {
-                min-width: 52px;
+                min-width: auto;
 
                 margin-right: 5px;
             }
 
 
-            /* ----------------------------------------------
-               MAIN AREA PORTRAIT
-               ---------------------------------------------- */
-
-            #main-area {
-
-                /*
-                 * Tengah di atas.
-                 * Dua panel bawah sama besar.
-                 */
-
-                grid-column: 1;
-
-                grid-row: 3 / 5;
-
-                width: 100%;
-                height: 100%;
-
-                min-height: 0;
-
-                display: grid;
-
-                grid-template-columns:
-                    minmax(0, 1fr)
-                    minmax(0, 1fr);
-
-                grid-template-rows:
-                    minmax(0, 1fr)
-                    38%;
-
-                grid-template-areas:
-                    "center center"
-                    "left right";
-
-                gap: 6px;
-
+            .brief-line .value {
                 overflow: hidden;
 
-                padding-top: 78px;
+                text-overflow: ellipsis;
+
+                white-space: nowrap;
             }
 
 
-            /* ----------------------------------------------
-               CENTER = SCRIPT PAPER
-               ---------------------------------------------- */
+            .header-right {
+                display: none;
+            }
+
+
+            /* ------------------------------------------
+               MAIN AREA PORTRAIT
+               ------------------------------------------ */
+
+            #main-area {
+                width: 100%;
+
+                min-height: 0;
+
+                display: contents;
+            }
+
+
+            /* ------------------------------------------
+               SCRIPT PAPER
+               ------------------------------------------ */
 
             #center-panel {
-                grid-area: center;
+                grid-column: 1;
+
+                grid-row: 3;
 
                 width: 100%;
-                height: 100%;
 
                 min-height: 0;
 
                 padding: 6px;
 
                 overflow-y: auto;
+
                 overflow-x: hidden;
+
+                border:
+                    2px solid var(--border-dark);
 
                 align-items: center;
             }
+
 
             .paper-sheet {
                 width: 100%;
 
                 max-width: none;
 
-                min-height: max-content;
+                min-height: 100%;
 
-                height: auto;
+                height: max-content;
 
                 padding:
                     16px 18px;
@@ -2109,82 +2282,196 @@
                     1px solid var(--paper-border);
 
                 box-shadow:
-                    3px 3px 0 rgba(0,0,0,.45);
+                    3px 3px 0 rgba(0,0,0,0.45);
             }
 
+
             .paper-header {
-                font-size: 1.15rem;
+                font-size: 1.25rem;
 
                 margin-bottom: 12px;
 
-                padding-bottom: 4px;
+                padding-bottom: 5px;
             }
+
 
             .paper-header .page-num {
-                width: 40px;
+                width: 50px;
             }
 
+
             .slot-row {
-                min-height: 42px;
+                min-height: 44px;
 
                 margin-bottom: 7px;
             }
 
+
             .slot-number {
-                width: 22px;
+                width: 24px;
 
                 padding-top: 7px;
 
-                font-size: .82rem;
+                font-size: 0.85rem;
             }
 
+
             .drop-slot {
-                min-height: 42px;
+                min-height: 44px;
             }
+
 
             .drop-slot > .script-block {
                 padding:
-                    7px 8px;
-            }
-
-            .script-block {
-                font-size: .76rem;
-
-                margin-bottom: 8px;
-
-                padding:
-                    8px 9px;
-            }
-
-            .block-type-label {
-                font-size: .72rem;
-
-                margin-bottom: 3px;
+                    7px 9px;
             }
 
 
-            /* ----------------------------------------------
-               SCRIPT BLOCKS BAWAH KIRI
-               ---------------------------------------------- */
+            /* ------------------------------------------
+               BOTTOM AREA
+               SCRIPT BLOCKS + CHECKLIST
+               ------------------------------------------ */
 
-            #left-panel {
-                grid-area: left;
+            #left-panel,
+            #right-panel {
+                min-height: 0;
 
                 width: 100%;
-                height: 100%;
+            }
 
-                min-height: 0;
+
+            #left-panel {
+                grid-column: 1;
+
+                grid-row: 4;
+
+                display: flex;
+
+                flex-direction: column;
 
                 overflow: hidden;
             }
 
-            #left-panel .panel-header {
-                height: 36px;
 
-                min-height: 36px;
+            #right-panel {
+                grid-column: 1;
 
+                grid-row: 4;
+
+                display: none;
+            }
+
+
+            /*
+               Pada portrait, panel bawah dibagi dua
+               menggunakan pseudo layout container.
+            */
+
+            #game-layout::after {
+                content: "";
+
+                display: none;
+            }
+
+
+            /*
+               Keduanya tetap berada pada area bawah:
+               panel kiri = 50%
+               panel kanan = 50%
+            */
+
+            #main-area {
+                position: relative;
+            }
+
+
+            /* Script Blocks dibuat selebar setengah bawah */
+            #left-panel {
+                width: calc(50% - 3px);
+
+                position: fixed;
+
+                left: 6px;
+
+                bottom: 6px;
+
+                height: calc(
+                    (100dvh
+                    - 6px
+                    - 48px
+                    - 6px
+                    - 6px
+                    - 6px
+                    - 0px) * 0.42
+                );
+
+                max-height: 42%;
+
+                z-index: 20;
+            }
+
+
+            /* Checklist dibuat setengah bawah */
+            #right-panel {
+                width: calc(50% - 3px);
+
+                position: fixed;
+
+                right: 6px;
+
+                bottom: 6px;
+
+                height: calc(
+                    (100dvh
+                    - 6px
+                    - 48px
+                    - 6px
+                    - 6px
+                    - 6px
+                    - 0px) * 0.42
+                );
+
+                max-height: 42%;
+
+                padding: 10px;
+
+                z-index: 20;
+            }
+
+
+            /*
+               Area kosong di antara brief dan bottom panels
+               digunakan oleh paper.
+            */
+
+            #center-panel {
+                position: fixed;
+
+                top: 112px;
+
+                left: 6px;
+
+                right: 6px;
+
+                bottom: 42%;
+
+                width: auto;
+
+                height: auto;
+
+                z-index: 5;
+            }
+
+
+            /* ------------------------------------------
+               PANEL HEADER PORTRAIT
+               ------------------------------------------ */
+
+            .panel-header {
                 padding:
-                    5px 8px;
+                    7px 10px;
+
+                min-height: 35px;
 
                 display: flex;
 
@@ -2193,27 +2480,43 @@
                 justify-content: space-between;
             }
 
-            #left-panel .panel-title {
-                font-size: 1rem;
+
+            .panel-title {
+                font-size: 1.05rem;
+
+                line-height: 1;
             }
 
-            #left-panel .panel-subtitle {
-                font-size: .68rem;
+
+            .panel-subtitle {
+                font-size: 0.7rem;
+
+                line-height: 1;
             }
 
-            #left-panel .scroll-container {
+
+            /* ------------------------------------------
+               SCRIPT INVENTORY PORTRAIT
+               ------------------------------------------ */
+
+            .scroll-container {
                 min-height: 0;
 
-                height: 100%;
+                flex: 1;
             }
+
 
             #block-container {
                 padding:
-                    8px 20px 8px 8px !important;
+                    8px !important;
+
+                padding-right:
+                    28px !important;
             }
 
-            #left-panel .script-block {
-                font-size: .72rem;
+
+            .script-block {
+                font-size: 0.75rem;
 
                 padding:
                     7px 8px;
@@ -2221,74 +2524,73 @@
                 margin-bottom: 7px;
             }
 
-            #left-panel .block-type-label {
-                font-size: .68rem;
+
+            .block-type-label {
+                font-size: 0.72rem;
+
+                margin-bottom: 3px;
             }
 
-            #left-panel .block-text {
+
+            .block-text {
                 line-height: 1.2;
             }
 
-            #left-panel .w95-scrollbar {
+
+            .w95-scrollbar {
                 width: 14px;
 
-                right: 1px;
+                right: 2px;
             }
 
 
-            /* ----------------------------------------------
-               CHECKLIST BAWAH KANAN
-               ---------------------------------------------- */
-
-            #right-panel {
-                grid-area: right;
-
-                width: 100%;
-                height: 100%;
-
-                min-height: 0;
-
-                padding: 8px;
-
-                overflow: hidden;
+            .w95-scroll-thumb {
+                min-height: 45px;
             }
 
-            .right-panel-content {
-                min-height: 0;
+
+            /* ------------------------------------------
+               CHECKLIST PORTRAIT
+               ------------------------------------------ */
+
+            #right-panel .right-panel-content {
+                padding-bottom: 4px;
 
                 overflow-y: auto;
-
-                padding-bottom: 4px;
             }
+
 
             .right-section-title {
                 font-size: 1rem;
 
                 margin-bottom: 7px;
 
-                padding-bottom: 3px;
+                padding-bottom: 4px;
             }
 
-            .checklist-item {
-                font-size: .67rem;
 
-                line-height: 1.05;
+            .checklist-item {
+                font-size: 0.72rem;
+
+                line-height: 1.1;
 
                 margin-bottom: 6px;
             }
 
+
             .checklist-box {
-                width: 11px;
-                height: 11px;
+                width: 12px;
+                height: 12px;
 
                 margin-right: 6px;
 
                 margin-top: 1px;
             }
 
+
             .checklist-item.done
             .checklist-box::after {
-                font-size: 11px;
+                font-size: 12px;
 
                 top: -5px;
 
@@ -2296,129 +2598,123 @@
             }
 
 
-            /* ----------------------------------------------
-               HINT PORTRAIT
-               ---------------------------------------------- */
-
             .hint-section {
                 margin:
                     5px 0 8px 0;
             }
 
+
             .hint-btn-style {
-                font-size: .75rem;
+                font-size: 0.8rem;
 
-                padding:
-                    5px 6px;
+                padding: 5px;
             }
 
-            .notification-badge {
-                width: 15px;
-                height: 15px;
-
-                font-size: .6rem;
-
-                top: -5px;
-                right: -5px;
-            }
-
-
-            /* ----------------------------------------------
-               KAMUS PORTRAIT
-               ---------------------------------------------- */
 
             .kamus-tab-container {
                 margin-top: 2px;
 
-                min-height: 70px;
+                min-height: 0;
             }
+
 
             .kamus-tab-title {
-                font-size: .82rem;
+                font-size: 0.9rem;
 
                 padding:
-                    2px 7px;
+                    3px 8px;
             }
+
 
             .kamus-tab-content {
-                padding: 6px;
+                padding: 7px;
 
-                min-height: 60px;
+                min-height: 0;
             }
 
-            #glossary-empty {
-                font-size: .6rem !important;
-
-                line-height: 1.1rem;
-            }
 
             .g-term-title {
-                font-size: .7rem;
+                font-size: 0.72rem;
 
-                margin-bottom: 2px;
+                margin-bottom: 3px;
             }
+
 
             .g-def-text {
-                font-size: .62rem;
+                font-size: 0.68rem;
 
-                line-height: 1.15;
+                line-height: 1.2;
 
-                margin-bottom: 5px;
+                margin-bottom: 6px;
             }
+
 
             .g-example-title {
-                font-size: .65rem;
+                font-size: 0.68rem;
             }
 
+
             .g-example-text {
-                font-size: .58rem;
+                font-size: 0.62rem;
 
                 padding: 4px;
             }
 
 
-            /* ----------------------------------------------
-               PAGINATION
-               ---------------------------------------------- */
+            /* ------------------------------------------
+               HIDE LANDSCAPE-ONLY PAGINATION
+               ------------------------------------------ */
 
-            .pagination-area {
+            #right-panel .pagination-area {
                 display: none;
             }
 
 
-            /* ----------------------------------------------
-               HIDE MOBILE LABEL
-               ---------------------------------------------- */
+            /* ------------------------------------------
+               PORTRAIT MODALS
+               ------------------------------------------ */
 
-            .hide-mobile {
-                display: none;
+            .modal-content {
+                max-height: 90dvh;
+
+                overflow-y: auto;
+
+                padding: 18px;
+
+                width: 92%;
+            }
+
+
+            .modal-content .text-4xl {
+                font-size: 2rem;
             }
         }
 
 
         /* ==================================================
-           PORTRAIT LAYAR SANGAT PENDEK
+           VERY SMALL PORTRAIT
            ================================================== */
 
-        @media screen and
-               (orientation: portrait) and
-               (max-height: 650px) {
-
-            #game-layout {
-                grid-template-rows:
-                    46px
-                    58px
-                    minmax(0, 1fr)
-                    40%;
-            }
+        @media screen
+        and (orientation: portrait)
+        and (max-height: 700px) {
 
             #game-header {
-                height: 46px;
+                min-height: 44px;
+
+                grid-template-rows: 44px;
             }
 
+
             .header-left h1 {
-                font-size: 1.2rem;
+                font-size: 1.15rem;
             }
+
+
+            .header-left .day-text {
+                font-size: 0.7rem;
+            }
+
 
             .settings-btn {
                 width: 30px;
@@ -2427,358 +2723,122 @@
                 font-size: 20px;
             }
 
-            .header-center {
-                top: 51px;
 
-                height: 57px;
+            .client-brief-box .brief-content {
+                font-size: 0.58rem;
             }
 
-            .client-avatar {
-                width: 46px;
-                min-width: 46px;
 
-                height: 57px;
+            #center-panel {
+                top: 102px;
             }
 
-            .client-brief-box {
-                height: 57px;
-            }
-
-            #main-area {
-                padding-top: 63px;
-            }
 
             .paper-sheet {
                 padding:
-                    11px 13px;
+                    12px 14px;
             }
 
+
             .paper-header {
-                font-size: 1rem;
+                font-size: 1.05rem;
 
                 margin-bottom: 8px;
             }
 
+
             .slot-row {
-                min-height: 34px;
+                min-height: 38px;
 
                 margin-bottom: 5px;
             }
 
+
             .drop-slot {
-                min-height: 34px;
+                min-height: 38px;
             }
 
-            .slot-number {
-                width: 18px;
 
-                padding-top: 5px;
-
-                font-size: .72rem;
-            }
-
-            #left-panel .panel-header {
-                height: 30px;
-
-                min-height: 30px;
+            .script-block {
+                font-size: 0.68rem;
 
                 padding:
-                    3px 6px;
+                    5px 7px;
             }
 
-            #left-panel .panel-title,
-            .right-section-title {
-                font-size: .85rem;
+
+            .block-type-label {
+                font-size: 0.65rem;
             }
 
-            #left-panel .panel-subtitle {
-                font-size: .6rem;
+
+            #left-panel,
+            #right-panel {
+                max-height: 40%;
             }
+
+
+            #left-panel {
+                height: 40%;
+            }
+
 
             #right-panel {
-                padding: 6px;
-            }
-
-            .checklist-item {
-                font-size: .6rem;
-
-                margin-bottom: 4px;
-            }
-
-            .hint-btn-style {
-                font-size: .68rem;
-
-                padding: 4px;
+                height: 40%;
             }
         }
 
 
         /* ==================================================
-           LANDSCAPE LAYAR KECIL
+           TOUCH DEVICE
            ================================================== */
 
-        @media screen and
-               (max-height:600px) and
-               (orientation:landscape),
-               screen and
-               (max-width:950px) and
-               (orientation:landscape) {
-
-            #game-header {
-                padding:
-                    5px 10px;
-
-                min-height: 50px;
-
-                gap: 8px;
-            }
-
-            .header-left {
-                gap: 8px;
-            }
-
-            .header-left h1 {
-                font-size: 1.2rem;
-            }
-
-            .header-left .day-text {
-                font-size: .9rem;
-            }
-
-            .settings-btn {
-                font-size: 24px;
-            }
-
-            .client-avatar {
-                width: 45px;
-            }
-
-            .client-brief-box .brief-title {
-                padding:
-                    2px 6px;
-
-                font-size: .75rem;
-            }
-
-            .client-brief-box .brief-content {
-                padding:
-                    4px 6px;
-
-                font-size: .7rem;
-
-                gap: 2px;
-            }
-
-            .brief-line .label {
-                min-width: 50px;
-            }
-
-            .header-right {
-                gap: 5px;
-            }
-
-            .retro-btn {
-                font-size: .8rem;
-
-                padding:
-                    4px 8px;
-            }
-
-            .hide-mobile {
-                display: none;
-            }
-
-            #left-panel {
-                width: 280px;
-            }
-
-            #right-panel {
-                width: 200px;
-
-                padding: 10px;
-            }
-
-            .panel-header {
-                padding:
-                    8px 10px;
-            }
-
-            .panel-title {
-                font-size: 1.1rem;
-            }
-
-            .panel-subtitle {
-                font-size: .75rem;
-            }
-
-            #block-container {
-                padding:
-                    10px;
-
-                padding-right: 32px;
-            }
+        @media (pointer: coarse) {
 
             .w95-scrollbar {
                 width: 18px;
             }
 
+
             .w95-scroll-thumb {
                 min-height: 50px;
             }
 
-            .script-block {
+
+            #block-container {
                 padding:
-                    6px 8px;
+                    18px;
 
-                margin-bottom: 8px;
-
-                font-size: .75rem;
+                padding-right:
+                    42px;
             }
+        }
 
-            .block-type-label {
-                font-size: .7rem;
 
-                margin-bottom: 2px;
-            }
+        /* ==================================================
+           LANDSCAPE + TOUCH
+           ================================================== */
 
-            #center-panel {
+        @media screen
+        and (orientation: landscape)
+        and (pointer: coarse) {
+
+            #block-container {
                 padding:
-                    8px 5px;
+                    10px;
+
+                padding-right:
+                    32px;
             }
 
-            .paper-sheet {
-                padding:
-                    15px 20px;
 
-                max-width: 100%;
-
-                border-width: 0;
-
-                box-shadow: none;
-
-                border-radius: 4px;
+            .w95-scrollbar {
+                width: 18px;
             }
 
-            .paper-header {
-                font-size: 1.1rem;
 
-                margin-bottom: 12px;
-
-                padding-bottom: 4px;
-            }
-
-            .slot-row {
-                min-height: 35px;
-
-                margin-bottom: 6px;
-            }
-
-            .drop-slot {
-                min-height: 35px;
-            }
-
-            .slot-number {
-                width: 20px;
-
-                padding-top: 5px;
-
-                font-size: .8rem;
-            }
-
-            .right-section-title {
-                font-size: .9rem;
-
-                margin-bottom: 8px;
-            }
-
-            .checklist-item {
-                font-size: .75rem;
-
-                margin-bottom: 6px;
-
-                line-height: 1.2;
-            }
-
-            .checklist-box {
-                width: 12px;
-                height: 12px;
-
-                margin-right: 6px;
-            }
-
-            .checklist-item.done
-            .checklist-box::after {
-                font-size: 12px;
-
-                top: -5px;
-                left: 0;
-            }
-
-            .kamus-tab-title {
-                font-size: .9rem;
-
-                padding:
-                    2px 8px;
-            }
-
-            .kamus-tab-content {
-                padding: 6px;
-
-                min-height: 80px;
-            }
-
-            .g-term-title {
-                font-size: .75rem;
-
-                margin-bottom: 2px;
-            }
-
-            .g-def-text {
-                font-size: .7rem;
-
-                line-height: 1.2;
-
-                margin-bottom: 6px;
-            }
-
-            .g-example-title {
-                font-size: .7rem;
-            }
-
-            .g-example-text {
-                font-size: .65rem;
-
-                padding: 4px;
-            }
-
-            .pagination-area {
-                margin-top: 10px;
-
-                padding-top: 10px;
-
-                gap: 5px;
-            }
-
-            .nav-arrow {
-                width: 24px;
-                height: 24px;
-
-                font-size: .8rem;
-            }
-
-            .page-thumb {
-                width: 25px;
-                height: 35px;
-
-                font-size: .7rem;
-
-                padding: 2px;
-            }
-
-            .page-indicator {
-                border-width: 4px;
-
-                top: -6px;
+            .w95-scroll-thumb {
+                min-height: 50px;
             }
         }
 
@@ -2787,7 +2847,6 @@
 
 
 <body>
-
 
     <!-- ==================================================
          GAME
@@ -2828,7 +2887,11 @@
             </div>
 
 
-            <!-- CLIENT BRIEF -->
+            <!-- ==================================================
+                 CLIENT BRIEF
+                 HANYA 4 FIELD:
+                 GENRE / TEMA / PLOT / FORMAT
+                 ================================================== -->
 
             <div class="header-center">
 
@@ -2840,16 +2903,7 @@
                     >
 
                         <path
-                            d="
-                            M12 12
-                            c2.21 0 4-1.79 4-4
-                            s-1.79-4-4-4
-                            -4 1.79-4 4
-                            1.79 4 4 4
-                            zm0 2
-                            c-2.67 0-8 1.34-8 4v2h16v-2
-                            c0-2.66-5.33-4-8-4z
-                            "
+                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
                         />
 
                         <circle
@@ -2886,14 +2940,17 @@
                     <div
                         class="brief-content"
                         id="client-brief-content"
-                    ></div>
+                    >
+                    </div>
 
                 </div>
 
             </div>
 
 
-            <!-- BUTTONS -->
+            <!-- ==================================================
+                 HEADER KANAN
+                 ================================================== -->
 
             <div class="header-right">
 
@@ -2903,10 +2960,13 @@
                     title="Kembalikan semua blok ke inventory"
                 >
                     ⟲
+
                     <span class="hide-mobile">
                         RESET
                     </span>
+
                 </button>
+
 
                 <button
                     id="btn-periksa"
@@ -2914,9 +2974,11 @@
                     onclick="checkScript()"
                 >
                     PERIKSA
+
                     <span class="hide-mobile">
                         NASKAH
                     </span>
+
                 </button>
 
             </div>
@@ -2932,6 +2994,7 @@
 
 
             <!-- ==================================================
+                 LEFT PANEL
                  SCRIPT BLOCKS
                  ================================================== -->
 
@@ -2960,7 +3023,8 @@
                         id="block-container"
                         ondragover="handleDragOverPanel(event)"
                         ondrop="handleDropToPanel(event)"
-                    ></div>
+                    >
+                    </div>
 
 
                     <div
@@ -2982,7 +3046,8 @@
 
 
             <!-- ==================================================
-                 CENTER SCRIPT
+                 CENTER PANEL
+                 SCRIPT PAPER
                  ================================================== -->
 
             <div
@@ -3004,12 +3069,14 @@
                         <span
                             class="page-num"
                             id="page-number"
-                        ></span>
+                        >
+                        </span>
 
                     </div>
 
 
-                    <div id="slots-container"></div>
+                    <div id="slots-container">
+                    </div>
 
                 </div>
 
@@ -3037,9 +3104,9 @@
                         CHECKLIST
                     </div>
 
-                    <div
-                        id="checklist-container"
-                    ></div>
+
+                    <div id="checklist-container">
+                    </div>
 
 
                     <!-- HINT -->
@@ -3076,6 +3143,7 @@
                             KAMUS
                         </div>
 
+
                         <div class="kamus-tab-content">
 
                             <div
@@ -3103,6 +3171,7 @@
                                     ISTILAH
                                 </div>
 
+
                                 <p
                                     class="g-def-text"
                                     id="glossary-def"
@@ -3110,9 +3179,11 @@
                                     Definisi akan muncul di sini.
                                 </p>
 
+
                                 <div class="g-example-title">
                                     CONTOH
                                 </div>
+
 
                                 <p
                                     class="g-example-text"
@@ -3138,6 +3209,7 @@
                         ◄
                     </div>
 
+
                     <div class="page-thumb-wrapper">
 
                         <div class="page-thumb active">
@@ -3147,6 +3219,7 @@
                         <div class="page-indicator"></div>
 
                     </div>
+
 
                     <div
                         class="page-thumb-wrapper"
@@ -3162,6 +3235,7 @@
 
                     </div>
 
+
                     <div class="nav-arrow">
                         ►
                     </div>
@@ -3176,7 +3250,7 @@
 
 
     <!-- ==================================================
-         MODAL HINT
+         HINT MODAL
          ================================================== -->
 
     <div
@@ -3205,13 +3279,13 @@
 
 
             <div
-                id="modal-block-scrollarea"
                 style="
                     font-family: sans-serif;
                     font-size: 0.9rem;
                     color: var(--text-normal);
                     line-height: 1.6;
                     max-height: 65vh;
+                    padding-right: 15px;
                     overflow-y: auto;
                 "
             >
@@ -3356,9 +3430,7 @@
             </div>
 
 
-            <div
-                class="flex justify-center mt-6"
-            >
+            <div class="flex justify-center mt-6">
 
                 <button
                     class="retro-btn primary"
@@ -3375,7 +3447,7 @@
 
 
     <!-- ==================================================
-         MODAL EVALUASI
+         EVALUATION MODAL
          ================================================== -->
 
     <div
@@ -3453,10 +3525,9 @@
 
                 <div
                     class="col-span-2 border-t my-1"
-                    style="
-                        border-color: var(--border-light);
-                    "
-                ></div>
+                    style="border-color: var(--border-light);"
+                >
+                </div>
 
 
                 <div
@@ -3478,18 +3549,18 @@
 
 
             <div
-                class="p-3 text-sm font-sans mb-4 border text-left"
+                class="p-3 text-sm mb-4 border text-left"
                 id="eval-feedback"
                 style="
                     border-color: var(--border-light);
                     line-height: 1.4;
+                    font-family: sans-serif;
                 "
-            ></div>
-
-
-            <div
-                class="flex justify-between mt-4"
             >
+            </div>
+
+
+            <div class="flex justify-between mt-4">
 
                 <button
                     class="retro-btn"
@@ -3498,6 +3569,7 @@
                 >
                     KEMBALI
                 </button>
+
 
                 <button
                     class="retro-btn primary hidden"
@@ -3515,7 +3587,7 @@
 
 
     <!-- ==================================================
-         MODAL START
+         START / PROFILE MODAL
          ================================================== -->
 
     <div
@@ -3529,9 +3601,13 @@
                 EDITOR SCRIPT
             </h1>
 
+
             <p
-                class="text-sm mb-6 font-sans"
-                style="color: var(--text-muted);"
+                class="text-sm mb-6"
+                style="
+                    color: var(--text-muted);
+                    font-family: sans-serif;
+                "
             >
                 Setiap cerita memiliki masalah.
                 Tugasmu memastikan setiap bagian
@@ -3541,10 +3617,11 @@
 
             <div
                 id="profile-stats"
-                class="text-sm mb-6 hidden border p-3 text-left font-sans"
+                class="text-sm mb-6 hidden border p-3 text-left"
                 style="
                     color: var(--text-normal);
                     border-color: var(--border-light);
+                    font-family: sans-serif;
                 "
             >
 
@@ -3609,6 +3686,7 @@
                     [ RESET DATA ]
                 </button>
 
+
                 <button
                     class="retro-btn primary"
                     id="btn-start-game"
@@ -3629,7 +3707,6 @@
          ================================================== -->
 
     <script>
-
 
         /* ==================================================
            GLOSSARY
@@ -3706,8 +3783,7 @@
 
                 theme: "Ketakutan pada yang tak terlihat",
 
-                reqText:
-                    "Akhir cerita harus IRONIS.",
+                reqText: "Akhir cerita harus IRONIS.",
 
                 protagonists: [
                     "POLISI",
@@ -3732,11 +3808,9 @@
             {
                 genre: "DRAMA KRIMINAL",
 
-                theme:
-                    "Keadilan yang terhalang kebohongan",
+                theme: "Keadilan yang terhalang kebohongan",
 
-                reqText:
-                    "Kewenangan hukum tidak boleh dilanggar.",
+                reqText: "Kewenangan hukum tidak boleh dilanggar.",
 
                 protagonists: [
                     "JAKSA"
@@ -3751,19 +3825,16 @@
                     "alibi terdakwa dipalsukan"
                 ],
 
-                ending:
-                    "PENYELESAIAN TUNTUTAN"
+                ending: "PENYELESAIAN TUNTUTAN"
             },
 
 
             {
                 genre: "THRILLER MEDIS",
 
-                theme:
-                    "Berpacu dengan waktu melawan kematian",
+                theme: "Berpacu dengan waktu melawan kematian",
 
-                reqText:
-                    "Tensi memuncak di akhir cerita (Cliffhanger).",
+                reqText: "Tensi memuncak di akhir cerita (Cliffhanger).",
 
                 protagonists: [
                     "DOKTER"
@@ -3779,19 +3850,16 @@
                     "pasien kejang hebat"
                 ],
 
-                ending:
-                    "CLIFFHANGER"
+                ending: "CLIFFHANGER"
             },
 
 
             {
                 genre: "MISTERI",
 
-                theme:
-                    "Kebenaran bersembunyi di detail kecil",
+                theme: "Kebenaran bersembunyi di detail kecil",
 
-                reqText:
-                    "Tokoh harus mengamankan area TKP.",
+                reqText: "Tokoh harus mengamankan area TKP.",
 
                 protagonists: [
                     "POLISI"
@@ -3807,8 +3875,7 @@
                     "tersangka menolak bicara"
                 ],
 
-                ending:
-                    "TERBUKA (AMBIGU)"
+                ending: "TERBUKA (AMBIGU)"
             }
 
         ];
@@ -3872,12 +3939,29 @@
                         ]
                 );
 
+
             if (!available.length) {
+
                 available = storyTemplates;
+
             }
+
 
             const template =
                 pickRandom(available);
+
+
+            const protagonist =
+                pickRandom(template.protagonists);
+
+
+            const location =
+                pickRandom(template.locations);
+
+
+            const conflict =
+                pickRandom(template.conflicts);
+
 
             const formats = [
 
@@ -3905,37 +3989,30 @@
 
             ];
 
+
             const format =
                 pickRandom(formats);
 
+
             return {
 
-                genre:
-                    template.genre,
+                genre: template.genre,
 
-                theme:
-                    template.theme,
+                theme: template.theme,
 
-                reqText:
-                    template.reqText,
+                reqText: template.reqText,
 
-                protagonist:
-                    pickRandom(template.protagonists),
+                protagonist: protagonist,
 
-                location:
-                    pickRandom(template.locations),
+                location: location,
 
-                conflict:
-                    pickRandom(template.conflicts),
+                conflict: conflict,
 
-                ending:
-                    template.ending,
+                ending: template.ending,
 
-                formatId:
-                    format.id,
+                formatId: format.id,
 
-                formatText:
-                    format.text
+                formatText: format.text
 
             };
 
@@ -3943,14 +4020,13 @@
 
 
         /* ==================================================
-           GENERATE BLOCKS
+           GENERATE SCRIPT BLOCKS
            ================================================== */
 
         function generateBlocksForBible(bible) {
 
-            const blocks = [];
+            let blocks = [];
 
-            let idCounter = 1;
 
             function cb(
                 type,
@@ -3962,383 +4038,329 @@
                 hint = ""
             ) {
 
-                blocks.push({
+                return {
 
                     id:
-                        "block-" +
-                        idCounter++,
+                        "b_" +
+                        Math.random()
+                            .toString(36)
+                            .substring(2, 9),
 
-                    type,
+                    type: type,
 
-                    text,
+                    text: text,
 
-                    correct:
-                        isCorrect,
+                    correct: isCorrect,
 
-                    sequence:
-                        seq,
+                    sequenceOrder: seq,
 
-                    required:
-                        req,
+                    required: req,
 
-                    error:
-                        err,
+                    error: err,
 
-                    hint
+                    hint: hint
 
-                });
+                };
 
             }
 
 
-            /* ----------------------------------------------
+            /* ------------------------------------------
                SCENE HEADING
-               ---------------------------------------------- */
+               ------------------------------------------ */
 
-            cb(
-                "SCENE HEADING",
-
-                `INT. ${bible.location} - SIANG`,
-
-                true,
-
-                1,
-
-                true
+            blocks.push(
+                cb(
+                    "SCENE HEADING",
+                    `INT. ${bible.location} - SIANG`,
+                    true,
+                    1,
+                    true
+                )
             );
 
 
             if (gameState.day >= 4) {
 
-                cb(
-                    "SCENE HEADING",
-
-                    "EXT. JALAN RAYA - MALAM",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Lokasi Salah",
-
-                    "Perhatikan lokasi relevan sesuai profesi di kasus ini."
+                blocks.push(
+                    cb(
+                        "SCENE HEADING",
+                        "EXT. JALAN RAYA - MALAM",
+                        false,
+                        0,
+                        false,
+                        "Lokasi Salah",
+                        "Perhatikan lokasi relevan sesuai profesi di kasus ini."
+                    )
                 );
 
-                cb(
-                    "SCENE HEADING",
 
-                    "INT. RESTORAN CEPAT SAJI - PAGI",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Lokasi Salah",
-
-                    "Perhatikan lokasi relevan sesuai profesi di kasus ini."
+                blocks.push(
+                    cb(
+                        "SCENE HEADING",
+                        "INT. RESTORAN CEPAT SAJI - PAGI",
+                        false,
+                        0,
+                        false,
+                        "Lokasi Salah",
+                        "Perhatikan lokasi relevan sesuai profesi di kasus ini."
+                    )
                 );
 
             }
 
 
-            /* ----------------------------------------------
+            /* ------------------------------------------
                JAKSA
-               ---------------------------------------------- */
+               ------------------------------------------ */
 
             if (bible.protagonist === "JAKSA") {
 
-                cb(
-                    "ACTION",
-
-                    "Seorang JAKSA merapikan berkas di meja dengan gugup.",
-
-                    true,
-
-                    2,
-
-                    true
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "Seorang JAKSA merapikan berkas di meja dengan gugup.",
+                        true,
+                        2,
+                        true
+                    )
                 );
 
-                cb(
-                    "DIALOGUE",
 
-                    "JAKSA\nKita harus periksa ALIBI terdakwa dengan saksama.",
-
-                    true,
-
-                    3,
-
-                    true
+                blocks.push(
+                    cb(
+                        "DIALOGUE",
+                        "JAKSA\nKita harus periksa ALIBI terdakwa dengan saksama.",
+                        true,
+                        3,
+                        true
+                    )
                 );
 
-                cb(
-                    "ACTION",
 
-                    "JAKSA mengetuk palu dan memutuskan vonis penjara.",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Kewenangan",
-
-                    "Jaksa tidak menjatuhkan vonis. Keputusan vonis merupakan kewenangan hakim."
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "JAKSA mengetuk palu dan memutuskan vonis penjara.",
+                        false,
+                        0,
+                        false,
+                        "Kewenangan",
+                        "JAKSA mengajukan tuntutan. Putusan berada pada Hakim."
+                    )
                 );
 
-                cb(
-                    "DIALOGUE",
 
-                    "JAKSA\nSaya akan melakukan AUTOPSI sekarang juga.",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Kewenangan",
-
-                    "Autopsi bukan kewenangan jaksa."
+                blocks.push(
+                    cb(
+                        "DIALOGUE",
+                        "JAKSA\nSaya akan melakukan AUTOPSI sekarang juga.",
+                        false,
+                        0,
+                        false,
+                        "Kewenangan",
+                        "AUTOPSI adalah tindakan medis/forensik, bukan kewenangan Jaksa."
+                    )
                 );
 
-                cb(
-                    "ACTION",
 
-                    "Hakim menyuruh JAKSA membacakan PLEDOI.",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Kewenangan",
-
-                    "Pahami kembali siapa yang berwenang menyampaikan pledoi."
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "Hakim menyuruh JAKSA membacakan PLEDOI.",
+                        false,
+                        0,
+                        false,
+                        "Kewenangan",
+                        "PLEDOI merupakan nota pembelaan, bukan kewenangan Jaksa."
+                    )
                 );
 
             }
 
 
-            /* ----------------------------------------------
+            /* ------------------------------------------
                DOKTER
-               ---------------------------------------------- */
+               ------------------------------------------ */
 
             else if (bible.protagonist === "DOKTER") {
 
-                cb(
-                    "ACTION",
-
-                    "DOKTER memeriksa kondisi KLINIS pasien secara manual.",
-
-                    true,
-
-                    2,
-
-                    true
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "DOKTER memeriksa kondisi KLINIS pasien secara manual.",
+                        true,
+                        2,
+                        true
+                    )
                 );
 
-                cb(
-                    "ACTION",
 
-                    "Ia mengambil STETOSKOP dan menarik napas panjang.",
-
-                    true,
-
-                    3,
-
-                    true
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "Ia mengambil STETOSKOP dan menarik napas panjang.",
+                        true,
+                        3,
+                        true
+                    )
                 );
 
-                cb(
-                    "ACTION",
 
-                    "DOKTER mengeluarkan pistol dan memborgol pelaku.",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Kewenangan",
-
-                    "Tindakan penegakan hukum bukan kewenangan dokter."
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "DOKTER mengeluarkan pistol dan memborgol pelaku.",
+                        false,
+                        0,
+                        false,
+                        "Kewenangan",
+                        "Tindakan penangkapan bukan kewenangan profesi Dokter."
+                    )
                 );
 
-                cb(
-                    "ACTION",
 
-                    "DOKTER memasang GARIS POLISI di sekitar ranjang.",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Kewenangan",
-
-                    "Pengamanan TKP bukan kewenangan dokter."
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "DOKTER memasang GARIS POLISI di sekitar ranjang.",
+                        false,
+                        0,
+                        false,
+                        "Kewenangan",
+                        "GARIS POLISI berkaitan dengan pengamanan TKP."
+                    )
                 );
 
-                cb(
-                    "DIALOGUE",
 
-                    "DOKTER\nSaya akan mengajukan PLEDOI untuk pasien ini.",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Konteks",
-
-                    "Gunakan tindakan medis yang sesuai, misalnya RESEP."
+                blocks.push(
+                    cb(
+                        "DIALOGUE",
+                        "DOKTER\nSaya akan mengajukan PLEDOI untuk pasien ini.",
+                        false,
+                        0,
+                        false,
+                        "Konteks",
+                        "Dokter menangani pasien secara medis, misalnya dengan RESEP."
+                    )
                 );
 
             }
 
 
-            /* ----------------------------------------------
+            /* ------------------------------------------
                POLISI
-               ---------------------------------------------- */
+               ------------------------------------------ */
 
             else {
 
-                cb(
-                    "ACTION",
-
-                    "POLISI merunduk di bawah GARIS POLISI.",
-
-                    true,
-
-                    2,
-
-                    true
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "POLISI merunduk di bawah GARIS POLISI.",
+                        true,
+                        2,
+                        true
+                    )
                 );
 
-                cb(
-                    "DIALOGUE",
 
-                    "POLISI\nArea ini steril. Amankan BARANG BUKTI!",
-
-                    true,
-
-                    3,
-
-                    true
+                blocks.push(
+                    cb(
+                        "DIALOGUE",
+                        "POLISI\nArea ini steril. Amankan BARANG BUKTI!",
+                        true,
+                        3,
+                        true
+                    )
                 );
 
-                cb(
-                    "ACTION",
 
-                    "POLISI melakukan pembedahan KLINIS pada mayat.",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Kewenangan",
-
-                    "Pemeriksaan mayat berkaitan dengan autopsi dan tenaga forensik."
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "POLISI melakukan pembedahan KLINIS pada mayat.",
+                        false,
+                        0,
+                        false,
+                        "Kewenangan",
+                        "AUTOPSI dilakukan untuk mengetahui penyebab kematian."
+                    )
                 );
 
-                cb(
-                    "ACTION",
 
-                    "POLISI membacakan PLEDOI di depan saksi.",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Kewenangan",
-
-                    "Pahami fungsi pledoi dalam proses hukum."
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "POLISI membacakan PLEDOI di depan saksi.",
+                        false,
+                        0,
+                        false,
+                        "Kewenangan",
+                        "PLEDOI berkaitan dengan pembelaan dalam proses persidangan."
+                    )
                 );
 
-                cb(
-                    "ACTION",
 
-                    "POLISI menuliskan RESEP untuk korban luka.",
-
-                    false,
-
-                    0,
-
-                    false,
-
-                    "Kewenangan",
-
-                    "Resep merupakan bagian dari tindakan medis."
+                blocks.push(
+                    cb(
+                        "ACTION",
+                        "POLISI menuliskan RESEP untuk korban luka.",
+                        false,
+                        0,
+                        false,
+                        "Kewenangan",
+                        "RESEP merupakan kewenangan dokter."
+                    )
                 );
 
             }
 
 
-            /* ----------------------------------------------
+            /* ------------------------------------------
                CONFLICT
-               ---------------------------------------------- */
+               ------------------------------------------ */
 
-            cb(
-                "ACTION",
-
-                `Tiba-tiba, ${bible.conflict}.`,
-
-                true,
-
-                4,
-
-                true
+            blocks.push(
+                cb(
+                    "ACTION",
+                    `Tiba-tiba, ${bible.conflict}.`,
+                    true,
+                    4,
+                    true
+                )
             );
 
 
-            /* ----------------------------------------------
+            /* ------------------------------------------
                TRANSITION
-               ---------------------------------------------- */
+               ------------------------------------------ */
 
             if (bible.formatId === "CUT_TO") {
 
-                cb(
-                    "TRANSITION",
-
-                    "CUT TO:",
-
-                    true,
-
-                    5,
-
-                    true
+                blocks.push(
+                    cb(
+                        "TRANSITION",
+                        "CUT TO:",
+                        true,
+                        5,
+                        true
+                    )
                 );
+
 
                 if (gameState.day >= 4) {
 
-                    cb(
-                        "TRANSITION",
-
-                        "FADE OUT.",
-
-                        false,
-
-                        0,
-
-                        false,
-
-                        "Format",
-
-                        "Client meminta CUT TO: sebagai penutup."
+                    blocks.push(
+                        cb(
+                            "TRANSITION",
+                            "FADE OUT.",
+                            false,
+                            0,
+                            false,
+                            "Format Salah",
+                            "Klien meminta CUT TO: sebagai transisi akhir."
+                        )
                     );
 
                 }
@@ -4348,34 +4370,29 @@
 
             else if (bible.formatId === "FADE_OUT") {
 
-                cb(
-                    "TRANSITION",
-
-                    "FADE OUT.",
-
-                    true,
-
-                    5,
-
-                    true
+                blocks.push(
+                    cb(
+                        "TRANSITION",
+                        "FADE OUT.",
+                        true,
+                        5,
+                        true
+                    )
                 );
+
 
                 if (gameState.day >= 4) {
 
-                    cb(
-                        "TRANSITION",
-
-                        "CUT TO:",
-
-                        false,
-
-                        0,
-
-                        false,
-
-                        "Format",
-
-                        "Client meminta FADE OUT. sebagai penutup."
+                    blocks.push(
+                        cb(
+                            "TRANSITION",
+                            "CUT TO:",
+                            false,
+                            0,
+                            false,
+                            "Format Salah",
+                            "Klien meminta FADE OUT. sebagai transisi akhir."
+                        )
                     );
 
                 }
@@ -4387,36 +4404,29 @@
 
                 if (gameState.day >= 4) {
 
-                    cb(
-                        "TRANSITION",
-
-                        "CUT TO:",
-
-                        false,
-
-                        0,
-
-                        false,
-
-                        "Format",
-
-                        "Brief meminta naskah tanpa transisi."
+                    blocks.push(
+                        cb(
+                            "TRANSITION",
+                            "CUT TO:",
+                            false,
+                            0,
+                            false,
+                            "Format Salah",
+                            "Brief tidak meminta transisi akhir."
+                        )
                     );
 
-                    cb(
-                        "TRANSITION",
 
-                        "FADE OUT.",
-
-                        false,
-
-                        0,
-
-                        false,
-
-                        "Format",
-
-                        "Brief meminta naskah tanpa transisi."
+                    blocks.push(
+                        cb(
+                            "TRANSITION",
+                            "FADE OUT.",
+                            false,
+                            0,
+                            false,
+                            "Format Salah",
+                            "Brief tidak meminta transisi akhir."
+                        )
                     );
 
                 }
@@ -4426,37 +4436,35 @@
 
             else if (bible.formatId === "ANY_TRANS") {
 
-                cb(
-                    "TRANSITION",
+                const trans =
+                    Math.random() < 0.5
+                        ? "CUT TO:"
+                        : "FADE OUT.";
 
-                    pickRandom([
-                        "CUT TO:",
-                        "FADE OUT."
-                    ]),
 
-                    true,
-
-                    5,
-
-                    true
+                blocks.push(
+                    cb(
+                        "TRANSITION",
+                        trans,
+                        true,
+                        5,
+                        true
+                    )
                 );
+
 
                 if (gameState.day >= 4) {
 
-                    cb(
-                        "TRANSITION",
-
-                        "DISSOLVE TO:",
-
-                        false,
-
-                        0,
-
-                        false,
-
-                        "Format",
-
-                        "Gunakan transisi yang tersedia sesuai struktur."
+                    blocks.push(
+                        cb(
+                            "TRANSITION",
+                            "DISSOLVE TO:",
+                            false,
+                            0,
+                            false,
+                            "Format Salah",
+                            "Gunakan transisi standar yang tersedia."
+                        )
                     );
 
                 }
@@ -4464,19 +4472,40 @@
             }
 
 
-            /* ----------------------------------------------
+            /* ------------------------------------------
                SHUFFLE
-               ---------------------------------------------- */
+               ------------------------------------------ */
 
-            return blocks.sort(
-                () => Math.random() - 0.5
-            );
+            for (
+                let i = blocks.length - 1;
+                i > 0;
+                i--
+            ) {
+
+                const j =
+                    Math.floor(
+                        Math.random() * (i + 1)
+                    );
+
+                [
+                    blocks[i],
+                    blocks[j]
+                ] =
+                [
+                    blocks[j],
+                    blocks[i]
+                ];
+
+            }
+
+
+            return blocks;
 
         }
 
 
         /* ==================================================
-           SETUP CASE
+           SETUP NEW CASE
            ================================================== */
 
         function setupNewCase() {
@@ -4484,22 +4513,29 @@
             gameState.currentBible =
                 generateStoryBible();
 
+
             gameState.currentBlocks =
                 generateBlocksForBible(
                     gameState.currentBible
                 );
+
 
             const reqCount =
                 gameState.currentBlocks.filter(
                     b => b.required
                 ).length;
 
+
             gameState.placedBlocks =
                 new Array(reqCount).fill(null);
 
-            gameState.selectedBlockId = null;
 
-            gameState.hintUsed = false;
+            gameState.selectedBlockId =
+                null;
+
+
+            gameState.hintUsed =
+                false;
 
 
             const badge =
@@ -4507,14 +4543,17 @@
                     "hint-badge"
                 );
 
-            const hintButton =
+
+            badge.style.display = "flex";
+
+
+            const hintBtn =
                 document.getElementById(
                     "btn-open-hint"
                 );
 
-            badge.style.display = "flex";
 
-            hintButton.classList.remove(
+            hintBtn.classList.remove(
                 "hint-disabled"
             );
 
@@ -4522,6 +4561,7 @@
             document.getElementById(
                 "glossary-empty"
             ).classList.remove("hidden");
+
 
             document.getElementById(
                 "glossary-content"
@@ -4543,6 +4583,7 @@
                 return;
             }
 
+
             document
                 .getElementById("modal-hint")
                 .classList.add("active");
@@ -4556,12 +4597,14 @@
                 .getElementById("modal-hint")
                 .classList.remove("active");
 
+
             gameState.hintUsed = true;
 
 
             document
                 .getElementById("hint-badge")
                 .style.display = "none";
+
 
             document
                 .getElementById("btn-open-hint")
@@ -4578,6 +4621,7 @@
 
             let result = text;
 
+
             Object.keys(glossaryDB)
                 .sort(
                     (a,b) =>
@@ -4591,11 +4635,13 @@
                             '\\$&'
                         );
 
+
                     const regex =
                         new RegExp(
                             `\\b(${escaped})\\b`,
                             "gi"
                         );
+
 
                     result =
                         result.replace(
@@ -4608,6 +4654,7 @@
 
                 });
 
+
             return result;
 
         }
@@ -4618,29 +4665,35 @@
             const data =
                 glossaryDB[term];
 
+
             if (!data) {
                 return;
             }
 
-            document.getElementById(
-                "glossary-empty"
-            ).classList.add("hidden");
-
-            document.getElementById(
-                "glossary-content"
-            ).classList.remove("hidden");
 
             document.getElementById(
                 "glossary-title"
             ).innerText = term;
 
+
             document.getElementById(
                 "glossary-def"
             ).innerText = data.def;
 
+
             document.getElementById(
                 "glossary-ex"
             ).innerText = data.ex;
+
+
+            document.getElementById(
+                "glossary-empty"
+            ).classList.add("hidden");
+
+
+            document.getElementById(
+                "glossary-content"
+            ).classList.remove("hidden");
 
         }
 
@@ -4654,8 +4707,7 @@
             document.getElementById(
                 "level-display"
             ).innerText =
-                "HARI " +
-                String(gameState.day).padStart(2, "0");
+                `HARI ${String(gameState.day).padStart(2,"0")}`;
 
 
             document.getElementById(
@@ -4669,10 +4721,17 @@
             const bible =
                 gameState.currentBible;
 
+
             if (!bible) {
                 return;
             }
 
+
+            /* ------------------------------------------
+               CLIENT BRIEF
+               HANYA:
+               GENRE / TEMA / PLOT / FORMAT
+               ------------------------------------------ */
 
             document.getElementById(
                 "client-brief-content"
@@ -4688,39 +4747,17 @@
                         ${bible.genre}
                     </span>
 
-                    <span
-                        class="label"
-                        style="margin-left:18px;"
-                    >
-                        TEMA:
-                    </span>
-
-                    <span class="value">
-                        ${bible.theme}
-                    </span>
-
                 </div>
 
 
                 <div class="brief-line">
 
                     <span class="label">
-                        TOKOH:
+                        TEMA:
                     </span>
 
                     <span class="value">
-                        ${bible.protagonist}
-                    </span>
-
-                    <span
-                        class="label"
-                        style="margin-left:18px;"
-                    >
-                        LOKASI:
-                    </span>
-
-                    <span class="value">
-                        ${bible.location}
+                        ${bible.theme}
                     </span>
 
                 </div>
@@ -4746,11 +4783,7 @@
                     </span>
 
                     <span class="value">
-                        ${
-                            bible.formatText === "-"
-                                ? "BEBAS"
-                                : bible.formatText
-                        }
+                        ${bible.formatText}
                     </span>
 
                 </div>
@@ -4758,28 +4791,27 @@
             `;
 
 
-            const checklist =
-                document.getElementById(
-                    "checklist-container"
-                );
+            /* ------------------------------------------
+               CHECKLIST
+               ------------------------------------------ */
 
-            checklist.innerHTML = "";
+            let checklistHTML = "";
 
 
             if (bible.reqText !== "-") {
 
-                checklist.innerHTML += `
+                checklistHTML += `
 
                     <div
-                        id="chk-blocks"
                         class="checklist-item"
+                        id="chk-blocks"
                     >
 
                         <div class="checklist-box"></div>
 
-                        <span>
+                        <div>
                             Sesuai plot klien
-                        </span>
+                        </div>
 
                     </div>
 
@@ -4790,42 +4822,43 @@
 
             if (bible.formatId === "NO_TRANS") {
 
-                checklist.innerHTML += `
+                checklistHTML += `
 
                     <div
-                        id="chk-trans"
                         class="checklist-item"
+                        id="chk-trans"
                     >
 
                         <div class="checklist-box"></div>
 
-                        <span>
+                        <div>
                             Tanpa transisi
-                        </span>
+                        </div>
 
                     </div>
 
                 `;
 
             }
+
 
             else if (
                 bible.formatId === "CUT_TO" ||
                 bible.formatId === "FADE_OUT"
             ) {
 
-                checklist.innerHTML += `
+                checklistHTML += `
 
                     <div
-                        id="chk-trans"
                         class="checklist-item"
+                        id="chk-trans"
                     >
 
                         <div class="checklist-box"></div>
 
-                        <span>
+                        <div>
                             Transisi sesuai instruksi
-                        </span>
+                        </div>
 
                     </div>
 
@@ -4834,36 +4867,42 @@
             }
 
 
-            checklist.innerHTML += `
+            checklistHTML += `
 
                 <div
-                    id="chk-logic"
                     class="checklist-item"
+                    id="chk-logic"
                 >
 
                     <div class="checklist-box"></div>
 
-                    <span>
+                    <div>
                         Urutan logis
-                    </span>
+                    </div>
 
                 </div>
 
 
                 <div
-                    id="chk-prof"
                     class="checklist-item"
+                    id="chk-prof"
                 >
 
                     <div class="checklist-box"></div>
 
-                    <span>
+                    <div>
                         Karakter sesuai profesi
-                    </span>
+                    </div>
 
                 </div>
 
             `;
+
+
+            document.getElementById(
+                "checklist-container"
+            ).innerHTML =
+                checklistHTML;
 
 
             renderBlocksAndSlots();
@@ -4874,7 +4913,7 @@
 
 
         /* ==================================================
-           RENDER BLOCKS
+           RENDER BLOCKS + SLOTS
            ================================================== */
 
         function renderBlocksAndSlots() {
@@ -4884,155 +4923,179 @@
                     "block-container"
                 );
 
+
             container.innerHTML = "";
 
 
+            /* ------------------------------------------
+               INVENTORY
+               ------------------------------------------ */
+
             gameState.currentBlocks
                 .filter(
-                    b =>
+                    block =>
                         !gameState.placedBlocks
-                            .includes(b.id)
+                            .includes(block.id)
                 )
-                .forEach(b => {
+                .forEach(block => {
 
                     container.appendChild(
-                        createBlockEl(b)
+                        createBlockEl(
+                            block,
+                            false,
+                            null
+                        )
                     );
 
                 });
 
+
+            /* ------------------------------------------
+               SLOTS
+               ------------------------------------------ */
 
             const slots =
                 document.getElementById(
                     "slots-container"
                 );
 
+
             slots.innerHTML = "";
 
 
             gameState.placedBlocks
-                .forEach((id, index) => {
+                .forEach(
+                    (blockId, index) => {
 
-                    const row =
-                        document.createElement("div");
-
-                    row.className =
-                        "slot-row";
+                        const row =
+                            document.createElement("div");
 
 
-                    const number =
-                        document.createElement("div");
-
-                    number.className =
-                        "slot-number";
-
-                    number.innerText =
-                        index + 1;
+                        row.className =
+                            "slot-row";
 
 
-                    const slot =
-                        document.createElement("div");
-
-                    slot.className =
-                        "drop-slot";
-
-                    slot.dataset.index =
-                        index;
+                        const number =
+                            document.createElement("div");
 
 
-                    slot.ondragover =
-                        handleDragOver;
-
-                    slot.ondragleave =
-                        handleDragLeave;
-
-                    slot.ondrop =
-                        handleDrop;
-
-                    slot.onclick =
-                        () =>
-                            handleSlotClick(index);
+                        number.className =
+                            "slot-number";
 
 
-                    if (id) {
+                        number.innerText =
+                            index + 1;
 
-                        const block =
-                            gameState.currentBlocks
-                                .find(
-                                    b =>
-                                        b.id === id
+
+                        const slot =
+                            document.createElement("div");
+
+
+                        slot.className =
+                            "drop-slot";
+
+
+                        slot.dataset.index =
+                            index;
+
+
+                        slot.ondragover =
+                            handleDragOver;
+
+
+                        slot.ondragleave =
+                            handleDragLeave;
+
+
+                        slot.ondrop =
+                            handleDrop;
+
+
+                        slot.onclick =
+                            () =>
+                                handleSlotClick(index);
+
+
+                        if (blockId) {
+
+                            const block =
+                                gameState.currentBlocks
+                                    .find(
+                                        b =>
+                                            b.id === blockId
+                                    );
+
+
+                            if (block) {
+
+                                slot.appendChild(
+                                    createBlockEl(
+                                        block,
+                                        true,
+                                        index
+                                    )
                                 );
 
-                        if (block) {
 
-                            slot.appendChild(
-                                createBlockEl(
-                                    block,
-                                    true,
-                                    index
-                                )
-                            );
+                                slot.style.border =
+                                    "2px solid transparent";
 
-                            slot.style.border =
-                                "1px solid transparent";
+                                slot.style.background =
+                                    "transparent";
 
-                            slot.style.background =
-                                "transparent";
+                            }
 
                         }
 
-                    }
+                        else {
 
-                    else {
-
-                        slot.innerHTML =
-                            `
-                            <div
-                                style="
-                                    width:100%;
-                                    display:flex;
-                                    align-items:center;
-                                    justify-content:center;
-                                    color:#aaa28e;
-                                    font-family:var(--font-ui);
-                                    font-size:.9rem;
-                                    pointer-events:none;
-                                "
-                            >
-                                DRAG BLOCK KE SINI
-                            </div>
+                            slot.innerHTML = `
+                                <div
+                                    style="
+                                        width:100%;
+                                        display:flex;
+                                        align-items:center;
+                                        justify-content:center;
+                                        color:var(--paper-dashed);
+                                        font-family:var(--font-ui);
+                                        font-size:1rem;
+                                        pointer-events:none;
+                                    "
+                                >
+                                    DRAG BLOCK KE SINI
+                                </div>
                             `;
 
+                        }
+
+
+                        row.appendChild(number);
+
+                        row.appendChild(slot);
+
+                        slots.appendChild(row);
+
                     }
-
-
-                    row.appendChild(number);
-
-                    row.appendChild(slot);
-
-                    slots.appendChild(row);
-
-                });
-
-
-            requestAnimationFrame(() => {
-
-                const scroller =
-                    document.getElementById(
-                        "block-container"
-                    );
-
-                scroller.dispatchEvent(
-                    new Event("scroll")
                 );
 
-            });
+
+            requestAnimationFrame(
+                () => {
+
+                    const event =
+                        new Event("scroll");
+
+
+                    container.dispatchEvent(event);
+
+                }
+            );
 
         }
 
 
         /* ==================================================
-           CREATE BLOCK
+           CREATE BLOCK ELEMENT
            ================================================== */
 
         function createBlockEl(
@@ -5044,24 +5107,20 @@
             const el =
                 document.createElement("div");
 
+
             el.className =
                 "script-block";
 
 
-            if (
-                gameState.selectedBlockId ===
-                b.id
-            ) {
-                el.classList.add("selected");
-            }
+            el.id =
+                b.id;
 
 
-            el.id = b.id;
+            el.draggable = true;
+
 
             el.dataset.type =
                 b.type;
-
-            el.draggable = true;
 
 
             el.innerHTML = `
@@ -5073,35 +5132,53 @@
                 <div class="block-text">
                     ${processTextForGlossary(
                         b.text
-                    )}
+                    ).replace(/\n/g,"<br>")}
                 </div>
 
             `;
 
 
-            el.ondragstart =
+            el.addEventListener(
+                "dragstart",
                 e =>
                     handleDragStart(
                         e,
                         b.id,
                         isPlaced,
                         slotIdx
-                    );
-
-            el.ondragend =
-                handleDragEnd;
+                    )
+            );
 
 
-            el.onclick =
+            el.addEventListener(
+                "dragend",
+                handleDragEnd
+            );
+
+
+            el.addEventListener(
+                "click",
                 e => {
 
                     e.stopPropagation();
 
-                    handleBlockClick(
-                        b.id
-                    );
+                    handleBlockClick(b.id);
 
-                };
+                }
+            );
+
+
+            if (
+                gameState.selectedBlockId === b.id
+            ) {
+
+                el.style.borderColor =
+                    "#555";
+
+                el.style.boxShadow =
+                    "0 0 0 2px var(--accent-yellow)";
+
+            }
 
 
             return el;
@@ -5110,7 +5187,7 @@
 
 
         /* ==================================================
-           DRAG AND DROP
+           DRAG / DROP
            ================================================== */
 
         let draggedId = null;
@@ -5139,20 +5216,26 @@
             );
 
 
-            setTimeout(() => {
+            setTimeout(
+                () => {
 
-                e.target.style.opacity =
-                    "0.5";
+                    if (e.target) {
 
-            }, 0);
+                        e.target.style.opacity =
+                            "0.5";
+
+                    }
+
+                },
+                0
+            );
 
         }
 
 
         function handleDragEnd(e) {
 
-            e.target.style.opacity =
-                "1";
+            e.target.style.opacity = "1";
 
             draggedId = null;
 
@@ -5232,7 +5315,7 @@
 
 
         /* ==================================================
-           CLICK BLOCK
+           BLOCK CLICK
            ================================================== */
 
         function handleBlockClick(id) {
@@ -5260,17 +5343,20 @@
 
 
         /* ==================================================
-           CLICK SLOT
+           SLOT CLICK
            ================================================== */
 
         function handleSlotClick(idx) {
 
-            if (gameState.selectedBlockId) {
+            if (
+                gameState.selectedBlockId
+            ) {
 
-                const fromIdx =
-                    gameState.placedBlocks.indexOf(
-                        gameState.selectedBlockId
-                    );
+                let fromIdx =
+                    gameState.placedBlocks
+                        .indexOf(
+                            gameState.selectedBlockId
+                        );
 
 
                 moveBlock(
@@ -5295,6 +5381,7 @@
 
                 gameState.selectedBlockId =
                     gameState.placedBlocks[idx];
+
 
                 renderBlocksAndSlots();
 
@@ -5332,7 +5419,7 @@
 
             else {
 
-                const ex =
+                const existing =
                     gameState.placedBlocks[
                         toIdx
                     ];
@@ -5342,7 +5429,8 @@
 
                     gameState.placedBlocks[
                         fromIdx
-                    ] = ex;
+                    ] = existing;
+
 
                     gameState.placedBlocks[
                         toIdx
@@ -5392,35 +5480,46 @@
 
         function updateChecklist() {
 
-            const placed =
+            const placedIds =
                 gameState.placedBlocks.filter(
                     Boolean
                 );
 
 
-            const required =
+            const requiredBlocks =
                 gameState.currentBlocks.filter(
                     b => b.required
                 );
 
 
-            const allRequired =
-                required.every(
+            const placedRequired =
+                requiredBlocks.filter(
                     b =>
-                        placed.includes(b.id)
+                        placedIds.includes(b.id)
                 );
 
 
-            const allFilled =
+            const allRequired =
+                placedRequired.length ===
+                requiredBlocks.length;
+
+
+            const allSlotsFilled =
                 gameState.placedBlocks.every(
                     Boolean
                 );
+
+
+            const canCheckDetails =
+                allRequired &&
+                allSlotsFilled;
 
 
             const chkBlocks =
                 document.getElementById(
                     "chk-blocks"
                 );
+
 
             if (chkBlocks) {
 
@@ -5438,110 +5537,72 @@
                 );
 
 
-            let transOK = false;
-
-
-            if (
-                gameState.currentBible.formatId ===
-                "NO_TRANS"
-            ) {
-
-                transOK =
-                    !gameState.placedBlocks.some(
-                        id => {
-
-                            const b =
-                                gameState.currentBlocks
-                                    .find(
-                                        x =>
-                                            x.id === id
-                                    );
-
-                            return (
-                                b &&
-                                b.type === "TRANSITION"
-                            );
-
-                        }
-                    );
-
-            }
-
-            else {
-
-                transOK =
-                    gameState.placedBlocks.some(
-                        id => {
-
-                            const b =
-                                gameState.currentBlocks
-                                    .find(
-                                        x =>
-                                            x.id === id
-                                    );
-
-                            return (
-                                b &&
-                                b.type === "TRANSITION" &&
-                                b.correct
-                            );
-
-                        }
-                    );
-
-            }
-
-
             if (chkTrans) {
+
+                let transDone = false;
+
+
+                if (
+                    gameState.currentBible
+                        .formatId ===
+                    "NO_TRANS"
+                ) {
+
+                    transDone =
+                        !gameState.placedBlocks.some(
+                            id => {
+
+                                const b =
+                                    gameState.currentBlocks
+                                        .find(
+                                            x =>
+                                                x.id === id
+                                        );
+
+                                return (
+                                    b &&
+                                    b.type ===
+                                    "TRANSITION"
+                                );
+
+                            }
+                        );
+
+                }
+
+                else {
+
+                    transDone =
+                        gameState.placedBlocks.some(
+                            id => {
+
+                                const b =
+                                    gameState.currentBlocks
+                                        .find(
+                                            x =>
+                                                x.id === id
+                                        );
+
+                                return (
+                                    b &&
+                                    b.type ===
+                                    "TRANSITION" &&
+                                    b.correct
+                                );
+
+                            }
+                        );
+
+                }
+
 
                 chkTrans.classList.toggle(
                     "done",
-                    transOK
+                    canCheckDetails &&
+                    transDone
                 );
 
             }
-
-
-            let sequenceOK = true;
-
-            let lastSequence = -1;
-
-
-            gameState.placedBlocks
-                .forEach(id => {
-
-                    const b =
-                        gameState.currentBlocks
-                            .find(
-                                x =>
-                                    x.id === id
-                            );
-
-                    if (!b) {
-                        return;
-                    }
-
-
-                    if (
-                        b.sequence > 0
-                    ) {
-
-                        if (
-                            b.sequence <=
-                            lastSequence
-                        ) {
-
-                            sequenceOK =
-                                false;
-
-                        }
-
-                        lastSequence =
-                            b.sequence;
-
-                    }
-
-                });
 
 
             const chkLogic =
@@ -5549,53 +5610,117 @@
                     "chk-logic"
                 );
 
-            if (chkLogic) {
-
-                chkLogic.classList.toggle(
-                    "done",
-                    allFilled &&
-                    sequenceOK
-                );
-
-            }
-
-
-            let hErr = false;
-
-
-            gameState.placedBlocks
-                .forEach(id => {
-
-                    const b =
-                        gameState.currentBlocks
-                            .find(
-                                x =>
-                                    x.id === id
-                            );
-
-                    if (
-                        b &&
-                        !b.correct
-                    ) {
-
-                        hErr = true;
-
-                    }
-
-                });
-
 
             const chkProf =
                 document.getElementById(
                     "chk-prof"
                 );
 
+
+            let sequenceOK = true;
+
+            let lastSequence = -1;
+
+
+            if (canCheckDetails) {
+
+                for (
+                    const id of
+                    gameState.placedBlocks
+                ) {
+
+                    const b =
+                        gameState.currentBlocks.find(
+                            x =>
+                                x.id === id
+                        );
+
+
+                    if (!b) {
+                        continue;
+                    }
+
+
+                    if (
+                        b.sequenceOrder <= 0 ||
+                        b.sequenceOrder <
+                        lastSequence
+                    ) {
+
+                        sequenceOK =
+                            false;
+
+                        break;
+
+                    }
+
+
+                    lastSequence =
+                        b.sequenceOrder;
+
+                }
+
+            }
+
+            else {
+
+                sequenceOK = false;
+
+            }
+
+
+            let professionOK = true;
+
+            let hasError = false;
+
+
+            for (
+                const id of
+                gameState.placedBlocks
+            ) {
+
+                const b =
+                    gameState.currentBlocks.find(
+                        x =>
+                            x.id === id
+                    );
+
+
+                if (
+                    b &&
+                    !b.correct
+                ) {
+
+                    professionOK =
+                        false;
+
+                    hasError =
+                        true;
+
+                }
+
+            }
+
+
+            if (chkLogic) {
+
+                chkLogic.classList.toggle(
+                    "done",
+                    canCheckDetails &&
+                    sequenceOK &&
+                    !hasError
+                );
+
+            }
+
+
             if (chkProf) {
 
                 chkProf.classList.toggle(
                     "done",
-                    allFilled &&
-                    !hErr
+                    canCheckDetails &&
+                    professionOK &&
+                    !hasError
                 );
 
             }
@@ -5609,36 +5734,25 @@
 
         function checkScript() {
 
-            const placed =
-                gameState.placedBlocks.filter(
-                    Boolean
-                );
-
-
-            const required =
+            const requiredBlocks =
                 gameState.currentBlocks.filter(
                     b => b.required
                 );
 
 
-            if (!placed.length) {
-
-                alert(
-                    "Susun naskah terlebih dahulu."
-                );
-
-                return;
-
-            }
+            const placed =
+                gameState.placedBlocks;
 
 
             if (
-                placed.length !==
-                gameState.placedBlocks.length
+                !placed.length ||
+                placed.some(
+                    x => !x
+                )
             ) {
 
                 alert(
-                    "Masih ada slot yang kosong."
+                    "Lengkapi semua slot naskah terlebih dahulu."
                 );
 
                 return;
@@ -5653,108 +5767,181 @@
             let sCh = 100;
 
 
-            const messages = [];
-
-
-            let aReq = true;
-
-
-            required.forEach(b => {
-
-                if (
-                    !placed.includes(b.id)
-                ) {
-
-                    aReq = false;
-
-                    sSt -= 30;
-
-                    messages.push(
-                        "Blok wajib belum ditempatkan: " +
-                        b.type
-                    );
-
-                }
-
-            });
-
+            let messages = [];
 
             let hErr = false;
 
 
-            placed.forEach(id => {
-
-                const b =
-                    gameState.currentBlocks
-                        .find(
-                            x =>
-                                x.id === id
-                        );
-
-                if (
-                    b &&
-                    !b.correct
-                ) {
-
-                    hErr = true;
-
-                    sCh -= 40;
-
-                    sLg -= 20;
-
-                    messages.push(
-                        `${b.error || "Kesalahan"}: ${b.hint || "Periksa kembali blok tersebut."}`
-                    );
-
-                }
-
-            });
+            const placedBlocks =
+                placed.map(
+                    id =>
+                        gameState.currentBlocks.find(
+                            b =>
+                                b.id === id
+                        )
+                );
 
 
-            let sErr = false;
+            /* ------------------------------------------
+               REQUIRED
+               ------------------------------------------ */
 
-            let lSeq = -1;
-
-
-            placed.forEach(id => {
-
-                const b =
-                    gameState.currentBlocks
-                        .find(
-                            x =>
-                                x.id === id
-                        );
-
-                if (
-                    b &&
-                    b.sequence > 0
-                ) {
-
-                    if (
-                        b.sequence <= lSeq
-                    ) {
-
-                        sErr = true;
-
-                    }
-
-                    lSeq = b.sequence;
-
-                }
-
-            });
+            const placedRequired =
+                requiredBlocks.filter(
+                    b =>
+                        placed.includes(b.id)
+                );
 
 
-            if (sErr) {
+            if (
+                placedRequired.length !==
+                requiredBlocks.length
+            ) {
 
-                sLg -= 30;
+                sSt -= 30;
 
                 messages.push(
-                    "Urutan blok belum logis."
+                    "Ada bagian wajib dari brief yang belum masuk ke naskah."
                 );
 
             }
 
+
+            /* ------------------------------------------
+               WRONG BLOCKS
+               ------------------------------------------ */
+
+            placedBlocks.forEach(
+                b => {
+
+                    if (
+                        b &&
+                        !b.correct
+                    ) {
+
+                        hErr = true;
+
+                        sCh -= 40;
+
+                        sLg -= 20;
+
+                        messages.push(
+                            `${b.error || "Kesalahan"}: ${b.hint || "Periksa kembali fungsi blok tersebut."}`
+                        );
+
+                    }
+
+                }
+            );
+
+
+            /* ------------------------------------------
+               SEQUENCE
+               ------------------------------------------ */
+
+            let sequenceError =
+                false;
+
+
+            let lastSeq = -1;
+
+
+            placedBlocks.forEach(
+                b => {
+
+                    if (!b) {
+                        return;
+                    }
+
+
+                    if (
+                        b.sequenceOrder <= 0 ||
+                        b.sequenceOrder <
+                        lastSeq
+                    ) {
+
+                        sequenceError =
+                            true;
+
+                    }
+
+
+                    if (
+                        b.sequenceOrder > 0
+                    ) {
+
+                        lastSeq =
+                            b.sequenceOrder;
+
+                    }
+
+                }
+            );
+
+
+            if (sequenceError) {
+
+                sLg -= 30;
+
+                messages.push(
+                    "Urutan blok belum mengikuti struktur cerita yang logis."
+                );
+
+            }
+
+
+            /* ------------------------------------------
+               TRANSITION
+               ------------------------------------------ */
+
+            let transitionOK =
+                false;
+
+
+            if (
+                gameState.currentBible
+                    .formatId ===
+                "NO_TRANS"
+            ) {
+
+                transitionOK =
+                    !placedBlocks.some(
+                        b =>
+                            b &&
+                            b.type ===
+                            "TRANSITION"
+                    );
+
+            }
+
+            else {
+
+                transitionOK =
+                    placedBlocks.some(
+                        b =>
+                            b &&
+                            b.type ===
+                            "TRANSITION" &&
+                            b.correct
+                    );
+
+            }
+
+
+            if (!transitionOK) {
+
+                sSt -= 30;
+
+                messages.push(
+                    "Format transisi belum sesuai dengan client brief."
+                );
+
+            }
+
+
+            /* ------------------------------------------
+               CLAMP
+               ------------------------------------------ */
 
             sSt =
                 Math.max(
@@ -5762,11 +5949,13 @@
                     sSt
                 );
 
+
             sLg =
                 Math.max(
                     0,
                     sLg
                 );
+
 
             sCh =
                 Math.max(
@@ -5775,20 +5964,29 @@
                 );
 
 
+            const aReq =
+                placedRequired.length ===
+                requiredBlocks.length;
+
+
+            const sErr =
+                sequenceError;
+
+
             const total =
                 Math.round(
                     (
                         sSt +
                         sLg +
                         sCh +
-                        (
-                            aReq
-                                ? 100
-                                : 0
-                        )
+                        (aReq ? 100 : 0)
                     ) / 4
                 );
 
+
+            /* ------------------------------------------
+               UPDATE SCORE UI
+               ------------------------------------------ */
 
             document.getElementById(
                 "score-structure"
@@ -5814,63 +6012,113 @@
                 total;
 
 
+            /* ------------------------------------------
+               FEEDBACK
+               ------------------------------------------ */
+
             const feedback =
                 document.getElementById(
                     "eval-feedback"
                 );
 
 
-            if (
-                total >= 80 &&
-                !hErr &&
-                aReq &&
-                !sErr
-            ) {
+            if (!messages.length) {
 
-                document.getElementById(
-                    "eval-title"
-                ).innerText =
-                    "NASKAH DISETUJUI";
+                feedback.innerHTML = `
+                    <strong
+                        style="
+                            color: var(--color-scene);
+                            font-family: var(--font-ui);
+                            font-size: 1.2rem;
+                        "
+                    >
+                        NASKAH SESUAI.
+                    </strong>
+                    <br><br>
+                    Struktur, logika, dan brief
+                    sudah terpenuhi.
+                `;
+
+            }
+
+            else {
 
                 feedback.innerHTML = `
 
-                    <div
+                    <strong
                         style="
-                            color:var(--color-scene);
-                            font-family:var(--font-ui);
-                            font-size:1.2rem;
-                            margin-bottom:10px;
+                            color: var(--color-char);
+                            font-family: var(--font-ui);
+                            font-size: 1.2rem;
                         "
                     >
-                        KLIEN PUAS.
-                    </div>
+                        PERLU REVISI
+                    </strong>
 
-                    Struktur naskah,
-                    logika cerita,
-                    dan kesesuaian brief
-                    telah memenuhi kebutuhan kasus.
+                    <br><br>
+
+                    ${messages
+                        .map(
+                            m =>
+                                `• ${m}`
+                        )
+                        .join("<br>")}
 
                 `;
 
+            }
 
+
+            /* ------------------------------------------
+               APPROVED
+               ------------------------------------------ */
+
+            const approved =
+                total >= 80 &&
+                !hErr &&
+                aReq &&
+                !sErr;
+
+
+            const title =
+                document.getElementById(
+                    "eval-title"
+                );
+
+
+            const nextBtn =
+                document.getElementById(
+                    "btn-next"
+                );
+
+
+            const reviseBtn =
                 document.getElementById(
                     "btn-revisi"
-                ).innerText =
-                    "TUTUP";
+                );
 
 
-                const next =
-                    document.getElementById(
-                        "btn-next"
-                    );
+            if (approved) {
 
-                next.classList.remove(
+                title.innerText =
+                    "NASKAH DISETUJUI";
+
+
+                title.style.color =
+                    "var(--color-scene)";
+
+
+                nextBtn.classList.remove(
                     "hidden"
                 );
 
 
+                reviseBtn.innerText =
+                    "TUTUP";
+
+
                 if (
-                    next.dataset.saved !==
+                    nextBtn.dataset.saved !==
                     "true"
                 ) {
 
@@ -5879,6 +6127,7 @@
                     gameState.totalScore +=
                         total;
 
+
                     gameState.history.push(
                         gameState.currentBible.genre
                     );
@@ -5886,7 +6135,8 @@
 
                     saveData();
 
-                    next.dataset.saved =
+
+                    nextBtn.dataset.saved =
                         "true";
 
                 }
@@ -5895,59 +6145,30 @@
 
             else {
 
-                document.getElementById(
-                    "eval-title"
-                ).innerText =
-                    "REVISI DIPERLUKAN";
+                title.innerText =
+                    "EVALUASI KLIEN";
 
 
-                feedback.innerHTML = `
-
-                    <div
-                        style="
-                            color:var(--color-char);
-                            font-family:var(--font-ui);
-                            font-size:1.2rem;
-                            margin-bottom:10px;
-                        "
-                    >
-                        NASKAH BELUM SIAP.
-                    </div>
-
-                    ${
-                        messages.length
-                            ? messages
-                                .map(
-                                    m =>
-                                        `<div>• ${m}</div>`
-                                )
-                                .join("")
-                            : "Periksa kembali struktur naskah."
-                    }
-
-                `;
+                title.style.color =
+                    "var(--text-highlight)";
 
 
-                document.getElementById(
-                    "btn-next"
-                ).classList.add(
+                nextBtn.classList.add(
                     "hidden"
                 );
 
 
-                document.getElementById(
-                    "btn-revisi"
-                ).innerText =
+                reviseBtn.innerText =
                     "REVISI NASKAH";
 
             }
 
 
-            document.getElementById(
-                "modal-eval"
-            ).classList.add(
-                "active"
-            );
+            document
+                .getElementById(
+                    "modal-eval"
+                )
+                .classList.add("active");
 
         }
 
@@ -5960,18 +6181,19 @@
 
             gameState.day++;
 
+
             document
                 .getElementById(
                     "modal-eval"
                 )
-                .classList.remove(
-                    "active"
-                );
+                .classList.remove("active");
 
 
-            document.getElementById(
-                "btn-next"
-            ).dataset.saved =
+            document
+                .getElementById(
+                    "btn-next"
+                )
+                .dataset.saved =
                 "false";
 
 
@@ -5990,9 +6212,7 @@
 
             document
                 .getElementById(id)
-                .classList.remove(
-                    "active"
-                );
+                .classList.remove("active");
 
         }
 
@@ -6005,7 +6225,6 @@
 
             localStorage.setItem(
                 "edsave",
-
                 JSON.stringify({
 
                     d:
@@ -6047,13 +6266,16 @@
 
 
                     gameState.day =
-                        d.d || 1;
+                        d.d;
+
 
                     gameState.casesCompleted =
-                        d.c || 0;
+                        d.c;
+
 
                     gameState.totalScore =
-                        d.s || 0;
+                        d.s;
+
 
                     gameState.history =
                         d.h || [];
@@ -6066,10 +6288,9 @@
                 catch (e) {
 
                     console.warn(
-                        "Save data rusak."
+                        "Save data rusak.",
+                        e
                     );
-
-                    return false;
 
                 }
 
@@ -6096,6 +6317,7 @@
                 localStorage.removeItem(
                     "edsave"
                 );
+
 
                 location.reload();
 
@@ -6126,10 +6348,12 @@
                 "stat-score"
             ).innerText =
                 gameState.casesCompleted > 0
+
                     ? Math.round(
                         gameState.totalScore /
                         gameState.casesCompleted
                     )
+
                     : 0;
 
 
@@ -6161,13 +6385,11 @@
 
         function startGame() {
 
-            document
-                .getElementById(
-                    "modal-start"
-                )
-                .classList.remove(
-                    "active"
-                );
+            document.getElementById(
+                "modal-start"
+            ).classList.remove(
+                "active"
+            );
 
 
             if (
@@ -6182,7 +6404,7 @@
 
 
         /* ==================================================
-           CUSTOM SCROLLBAR
+           CUSTOM WINDOWS 95 SCROLLBAR
            ================================================== */
 
         function initW95Scrollbars() {
@@ -6192,16 +6414,20 @@
                     "block-container"
                 );
 
+
             const scrollbar =
                 document.getElementById(
                     "script-scrollbar"
                 );
 
+
             if (
                 !container ||
                 !scrollbar
             ) {
+
                 return;
+
             }
 
 
@@ -6209,6 +6435,7 @@
                 scrollbar.querySelector(
                     ".w95-scroll-track"
                 );
+
 
             const thumb =
                 scrollbar.querySelector(
@@ -6221,10 +6448,12 @@
                 const scrollHeight =
                     container.scrollHeight;
 
+
                 const clientHeight =
                     container.clientHeight;
 
-                const maxScrollTop =
+
+                const maxScroll =
                     Math.max(
                         0,
                         scrollHeight -
@@ -6233,18 +6462,21 @@
 
 
                 if (
-                    maxScrollTop <= 0
+                    maxScroll <= 1
                 ) {
 
                     scrollbar.classList.add(
                         "disabled"
                     );
 
+
                     thumb.style.height =
                         "100%";
 
+
                     thumb.style.transform =
                         "translateY(0px)";
+
 
                     return;
 
@@ -6260,38 +6492,38 @@
                     track.clientHeight;
 
 
-                const isCoarse =
+                const coarse =
                     window.matchMedia(
                         "(pointer: coarse)"
                     ).matches;
 
 
                 const minThumb =
-                    isCoarse
+                    coarse
                         ? 50
                         : 40;
 
 
-                const calculated =
-                    trackHeight *
-                    (
-                        clientHeight /
-                        scrollHeight
-                    );
-
-
-                const thumbHeight =
+                let thumbHeight =
                     Math.max(
                         minThumb,
-                        Math.min(
-                            trackHeight,
-                            calculated
+                        trackHeight *
+                        (
+                            clientHeight /
+                            scrollHeight
                         )
                     );
 
 
+                thumbHeight =
+                    Math.min(
+                        thumbHeight,
+                        trackHeight
+                    );
+
+
                 thumb.style.height =
-                    thumbHeight + "px";
+                    `${thumbHeight}px`;
 
 
                 const maxThumbTravel =
@@ -6303,10 +6535,8 @@
 
 
                 const ratio =
-                    maxScrollTop > 0
-                        ? container.scrollTop /
-                          maxScrollTop
-                        : 0;
+                    container.scrollTop /
+                    maxScroll;
 
 
                 thumb.style.transform =
@@ -6318,29 +6548,15 @@
             container.addEventListener(
                 "scroll",
                 updateScrollbar,
-                { passive: true }
+                {
+                    passive: true
+                }
             );
 
 
             window.addEventListener(
                 "resize",
                 updateScrollbar
-            );
-
-
-            const observer =
-                new MutationObserver(
-                    updateScrollbar
-                );
-
-
-            observer.observe(
-                container,
-                {
-                    childList: true,
-                    subtree: true,
-                    characterData: true
-                }
             );
 
 
@@ -6360,11 +6576,15 @@
                             "disabled"
                         )
                     ) {
+
                         return;
+
                     }
 
 
                     e.preventDefault();
+
+                    e.stopPropagation();
 
 
                     dragging = true;
@@ -6398,11 +6618,16 @@
                     }
 
 
+                    e.preventDefault();
+
+
                     const trackHeight =
                         track.clientHeight;
 
+
                     const thumbHeight =
                         thumb.offsetHeight;
+
 
                     const maxThumbTravel =
                         Math.max(
@@ -6425,13 +6650,15 @@
                         startY;
 
 
+                    const scrollDelta =
+                        delta /
+                        maxThumbTravel *
+                        maxScroll;
+
+
                     container.scrollTop =
                         startScroll +
-                        (
-                            delta /
-                            maxThumbTravel
-                        ) *
-                        maxScroll;
+                        scrollDelta;
 
                 }
             );
@@ -6453,6 +6680,7 @@
                 stopDragging
             );
 
+
             thumb.addEventListener(
                 "pointercancel",
                 stopDragging
@@ -6467,12 +6695,15 @@
                         e.target === thumb ||
                         thumb.contains(e.target)
                     ) {
+
                         return;
+
                     }
 
 
                     const rect =
                         track.getBoundingClientRect();
+
 
                     const clickY =
                         e.clientY -
@@ -6480,40 +6711,57 @@
 
 
                     const thumbTop =
-                        parseFloat(
-                            getComputedStyle(
-                                thumb
-                            ).transform
-                                .match(
-                                    /matrix.*\((.+)\)/
-                                )?.[1]
-                                ?.split(",")[5] ||
-                            "0"
-                        );
+                        thumb.offsetTop;
 
 
-                    const page =
-                        container.clientHeight *
-                        0.85;
+                    const thumbHeight =
+                        thumb.offsetHeight;
 
 
                     if (
                         clickY <
-                        thumb.offsetTop
+                        thumbTop
                     ) {
 
                         container.scrollTop -=
-                            page;
+                            container.clientHeight *
+                            0.85;
 
                     }
 
-                    else {
+                    else if (
+                        clickY >
+                        thumbTop +
+                        thumbHeight
+                    ) {
 
                         container.scrollTop +=
-                            page;
+                            container.clientHeight *
+                            0.85;
 
                     }
 
+                }
+            );
+
+
+            const observer =
+                new MutationObserver(
+                    () => {
+
+                        requestAnimationFrame(
+                            updateScrollbar
+                        );
+
+                    }
+                );
+
+
+            observer.observe(
+                container,
+                {
+                    childList: true,
+                    subtree: true
                 }
             );
 
@@ -6538,12 +6786,14 @@
 
 
         /* ==================================================
-           INITIALIZE
+           STARTUP
            ================================================== */
 
         window.onload = function() {
 
-            if (loadData()) {
+            if (
+                loadData()
+            ) {
 
                 document.getElementById(
                     "btn-start-game"
