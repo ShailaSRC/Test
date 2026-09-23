@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -216,19 +217,13 @@
         .w95-scrollbar.disabled { opacity: 0.3; }
         .w95-scrollbar.disabled .w95-scroll-thumb { cursor: default; }
 
-        #block-container {
-            padding: 5px !important;
-            padding-right: 25px !important;
-        }
-
-        #modal-block-scrollarea {
+        #block-container, #modal-block-scrollarea {
             padding: 5px !important;
             padding-right: 25px !important;
         }
 
         @media (pointer: coarse) {
             .w95-scroll-thumb { min-height: 50px; }
-            .w95-scrollbar { width: 15px !important; }
         }
 
 
@@ -366,17 +361,17 @@
 
         #right-panel { padding: 15px; display: flex; flex-direction: column; position: relative; }
         .right-panel-content { flex: 1 1 0; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; padding-bottom: 10px; }
-        .right-section-title { font-size: 1.2rem; color: var(--text-highlight); margin-bottom: 8px; border-bottom: 2px solid var(--border-light); padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .right-section-title { font-size: 1.2rem; color: var(--text-highlight); margin-bottom: 12px; border-bottom: 2px solid var(--border-light); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
 
-        /* Checklist dengan line-height sangat dekat dan font kecil */
-        .checklist-item { display: flex; align-items: flex-start; margin-bottom: 3px; color: var(--text-muted); font-family: sans-serif; font-size: 0.7rem; line-height: 1.05; width: 100%; box-sizing: border-box; }
-        .checklist-box { width: 10px; height: 10px; border: 2px solid var(--text-muted); margin-right: 6px; margin-top: 1px; position: relative; flex-shrink: 0; background: #1a1a1a; }
-        .checklist-item.done .checklist-box::after { content: "✔"; color: var(--color-scene); position: absolute; top: -5px; left: 0px; font-size: 10px; font-family: var(--font-ui); }
+        /* Checklist diperbarui: text lebih kecil dan line-height lebih dekat */
+        .checklist-item { display: flex; align-items: flex-start; margin-bottom: 6px; color: var(--text-muted); font-family: sans-serif; font-size: 0.75rem; line-height: 1.15; width: 100%; box-sizing: border-box; }
+        .checklist-box { width: 12px; height: 12px; border: 2px solid var(--text-muted); margin-right: 8px; margin-top: 1px; position: relative; flex-shrink: 0; background: #1a1a1a; }
+        .checklist-item.done .checklist-box::after { content: "✔"; color: var(--color-scene); position: absolute; top: -5px; left: 0px; font-size: 12px; font-family: var(--font-ui); }
         .checklist-item.done { color: var(--text-normal); }
 
-        .hint-section { margin: 2px 0 6px 0; width: 100%; display: block; flex-shrink: 0; box-sizing: border-box; }
+        .hint-section { margin: 10px 0 15px 0; width: 100%; display: block; flex-shrink: 0; box-sizing: border-box; }
         .hint-btn-style {
-            width: 100%; display: flex; justify-content: center; align-items: center; font-size: 0.85rem; padding: 5px 8px;
+            width: 100%; display: flex; justify-content: center; align-items: center; font-size: 0.95rem; padding: 10px;
             border: 2px solid var(--border-light); background: rgba(0,0,0,0.25); color: var(--text-highlight);
             font-family: var(--font-ui); letter-spacing: 1px; position: relative; cursor: pointer; transition: background 0.1s, color 0.1s; box-sizing: border-box;
         }
@@ -391,27 +386,29 @@
 
         .glossary-term-link { color: #5a8ca8; cursor: pointer; text-decoration: none; font-weight: bold; border-bottom: 1px dotted #5a8ca8; }
         .glossary-term-link:hover { background: rgba(90,140,168,0.2); }
-        .kamus-tab-container { display: flex; flex-direction: column; width: 100%; margin-top: 2px; flex-shrink: 0; flex: 1; box-sizing: border-box; }
+        .kamus-tab-container { display: flex; flex-direction: column; width: 100%; margin-top: 5px; flex-shrink: 0; flex: 1; box-sizing: border-box; }
         .kamus-tab-title {
             background: rgba(255,255,255,0.05); border: 2px solid var(--border-light); border-bottom: none; border-radius: 6px 6px 0 0;
             padding: 4px 12px; display: inline-block; width: max-content; font-size: 1.1rem; margin-bottom: 0; color: var(--accent-yellow); font-family: var(--font-ui);
         }
         .kamus-tab-content { border: 2px solid var(--border-light); background: rgba(0,0,0,0.15); border-radius: 0 6px 6px 6px; padding: 10px; flex: 1; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
-        #glossary-content { display: flex; flex-type: column; font-family: sans-serif; color: var(--text-normal); }
+        #glossary-content { display: flex; flex-direction: column; font-family: sans-serif; color: var(--text-normal); }
         .g-term-title { color: #5a8ca8; font-family: var(--font-ui); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px; border-bottom: 1px solid #5a8ca8; padding-bottom: 2px; }
         .g-def-text { font-size: 0.75rem; line-height: 1.3; margin-bottom: 10px; }
         .g-example-title { color: #5a8ca8; font-family: var(--font-ui); font-size: 0.8rem; letter-spacing: 1px; margin-bottom: 2px; }
         .g-example-text { color: var(--text-muted); font-style: italic; background: rgba(0,0,0,0.2); padding: 6px; border-left: 2px solid #5a8ca8; font-size: 0.7rem; }
 
-        /* PAGINATION AREA DI BAWAH PAPER DALAM MODAL PREVIEW PAPER */
-        .pagination-area-portrait { 
-            display: flex; align-items: center; justify-content: center; gap: 10px; 
-            margin-top: 0; padding-top: 0; flex-shrink: 0; width: auto; box-sizing: border-box; 
-        }
-        .nav-arrow-portrait { width: 35px; height: 35px; background: var(--bg-panel); border: 2px solid var(--border-dark); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; font-size: 1.2rem; }
-        .nav-arrow-portrait:hover { color: var(--text-highlight); }
-        .page-thumb-wrapper-portrait { position: relative; display: flex; flex-direction: column; align-items: center; }
-        .page-thumb-portrait { width: 45px; height: 55px; background: #8e8877; border: 2px solid var(--border-dark); display: flex; align-items: flex-start; justify-content: center; padding-top: 3px; font-size: 1rem; color: #333; cursor: pointer; box-shadow: 2px 2px 0 rgba(0,0,0,0.3); }
-        .page-thumb-portrait.active { background: var(--paper-bg); box-shadow: none; transform: translate(1px,1px); }
-        .page-indicator-portrait { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid var(--accent-yellow); display: none; }
-        .pa
+        /* PAGINATION DIPERKEÇIL SESUAI PERMINTAAN SEBELUMNYA */
+        .pagination-area { display: flex; align-items: center; justify-content: center; gap: 4px; margin-top: auto; padding-top: 6px; border-top: 2px dashed var(--border-light); flex-shrink: 0; width: 100%; box-sizing: border-box; }
+        .nav-arrow { width: 18px; height: 18px; background: var(--bg-panel); border: 2px solid var(--border-dark); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; font-size: 0.7rem; }
+        .nav-arrow:hover { color: var(--text-highlight); }
+        .page-thumb-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; }
+        .page-thumb { width: 20px; height: 26px; background: #8e8877; border: 2px solid var(--border-dark); display: flex; align-items: flex-start; padding: 1px 2px; font-size: 0.6rem; color: #333; cursor: pointer; box-shadow: 1px 1px 0 rgba(0,0,0,0.3); }
+        .page-thumb.active { background: var(--paper-bg); box-shadow: none; transform: translate(1px,1px); }
+        .page-indicator { position: absolute; top: -5px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-top: 3px solid var(--accent-yellow); display: none; }
+        .page-thumb.active + .page-indicator { display: block; }
+
+        /* ==================================================
+           MODAL
+           ================================================== */
+        .modal-overl
