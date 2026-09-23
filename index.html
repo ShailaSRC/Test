@@ -99,9 +99,11 @@
 
         body::after {
             content: "";
+
             display: block;
 
             position: absolute;
+
             top: 0;
             left: 0;
             right: 0;
@@ -131,15 +133,11 @@
             position: relative;
             width: 100%;
             height: 100%;
-
             overflow-y: scroll !important;
             overflow-x: hidden;
-
             overscroll-behavior: none;
-
             scrollbar-width: none;
             -ms-overflow-style: none;
-
             touch-action: pan-y;
         }
 
@@ -150,26 +148,30 @@
         }
 
 
+        /* ==================================================
+           SCROLL CONTAINER
+           ================================================== */
+
         .scroll-container {
-            flex: 1 1 auto;
-
+            flex: 1;
             position: relative;
-
             min-height: 0;
-            height: 100%;
-
             overflow: hidden;
         }
 
+
+        /* ==================================================
+           WINDOWS 95 SCROLLBAR
+           ================================================== */
 
         .w95-scrollbar {
             position: absolute;
 
             top: 2px;
-            right: 5px;
+            right: 2px;
             bottom: 2px;
 
-            width: 15px !important;
+            width: 14px;
 
             background: var(--bg-app);
 
@@ -187,7 +189,6 @@
             pointer-events: auto;
         }
 
-
         .w95-scroll-track {
             position: absolute;
 
@@ -204,7 +205,6 @@
 
             touch-action: none;
         }
-
 
         .w95-scroll-track::before {
             content: "";
@@ -230,16 +230,12 @@
                 );
 
             background-size: 4px 4px;
-
-            background-position:
-                0 0,
-                2px 2px;
+            background-position: 0 0, 2px 2px;
 
             opacity: 0.5;
 
             pointer-events: none;
         }
-
 
         .w95-scroll-thumb {
             position: absolute;
@@ -260,7 +256,6 @@
             z-index: 2;
 
             border: 1px solid var(--border-dark);
-
             border-top: 1px solid #6a6a66;
             border-left: 1px solid #6a6a66;
 
@@ -271,7 +266,6 @@
 
             will-change: transform;
         }
-
 
         .w95-scroll-thumb.dragging {
             cursor: grabbing;
@@ -285,7 +279,6 @@
             border-bottom: 1px solid #6a6a66;
         }
 
-
         .w95-scroll-thumb::after {
             content: "";
 
@@ -293,6 +286,7 @@
 
             left: 2px;
             right: 2px;
+
             top: 50%;
 
             height: 2px;
@@ -308,7 +302,6 @@
             pointer-events: none;
         }
 
-
         .w95-scrollbar.disabled {
             opacity: 0.3;
         }
@@ -318,34 +311,55 @@
         }
 
 
+        /* ==================================================
+           BLOCK CONTAINER
+           ================================================== */
+
         #block-container {
-            padding: 5px !important;
-            padding-right: 25px !important;
+            padding: 18px;
+            padding-right: 38px;
         }
 
+
+        /* ==================================================
+           MODAL SCROLL AREA
+           ================================================== */
 
         #modal-block-scrollarea {
-            padding: 5px !important;
-            padding-right: 25px !important;
+            padding: 18px;
+            padding-right: 38px;
         }
 
 
+        /* ==================================================
+           TOUCH
+           ================================================== */
+
         @media (pointer: coarse) {
+
+            .w95-scrollbar {
+                width: 18px;
+            }
 
             .w95-scroll-thumb {
                 min-height: 50px;
             }
 
-            .w95-scrollbar {
-                width: 15px !important;
+            #block-container {
+                padding: 18px;
+                padding-right: 42px;
+            }
+
+            #modal-block-scrollarea {
+                padding: 18px;
+                padding-right: 42px;
             }
         }
 
 
-        /* =========================================================
+        /* ==================================================
            GAME LAYOUT
-           DEFAULT = LANDSCAPE
-           ========================================================= */
+           ================================================== */
 
         #game-layout {
             width: 100%;
@@ -360,7 +374,6 @@
             gap: 10px;
 
             position: relative;
-
             z-index: 10;
         }
 
@@ -389,11 +402,16 @@
 
             border: 2px solid var(--border-dark);
 
-            padding: 8px 15px;
+            padding: 10px 20px;
 
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            box-shadow:
+                2px 2px 0 rgba(0,0,0,0.3);
         }
 
+
+        /* ==================================================
+           HEADER KIRI
+           ================================================== */
 
         .header-left {
             display: flex;
@@ -403,7 +421,6 @@
 
             gap: 15px;
         }
-
 
         .settings-btn {
             color: var(--text-muted);
@@ -422,11 +439,9 @@
             justify-content: center;
         }
 
-
         .settings-btn:hover {
             color: var(--text-highlight);
         }
-
 
         .title-area {
             display: flex;
@@ -435,11 +450,10 @@
             justify-content: center;
         }
 
-
         .header-left h1 {
             margin: 0;
 
-            font-size: 1.6rem;
+            font-size: 2rem;
 
             color: var(--text-highlight);
 
@@ -450,16 +464,15 @@
             line-height: 1.1;
         }
 
-
         .header-left .day-text {
-            font-size: 0.95rem;
+            font-size: 1.1rem;
 
             color: var(--text-muted);
         }
 
 
         /* ==================================================
-           HEADER CENTER / CLIENT BRIEF
+           HEADER TENGAH
            ================================================== */
 
         .header-center {
@@ -472,9 +485,8 @@
             justify-content: center;
         }
 
-
         .client-avatar {
-            width: 55px;
+            width: 70px;
 
             flex-shrink: 0;
 
@@ -487,6 +499,7 @@
             display: flex;
 
             align-items: flex-end;
+
             justify-content: center;
 
             overflow: hidden;
@@ -495,16 +508,15 @@
                 inset 0 0 10px rgba(0,0,0,0.5);
         }
 
-
         .client-avatar svg {
             width: 85%;
+
             height: auto;
 
             margin-bottom: -5px;
 
             fill: #1c1c1a;
         }
-
 
         .client-brief-box {
             flex: 1;
@@ -527,31 +539,31 @@
             min-height: 0;
         }
 
-
         .client-brief-box .brief-title {
             background: rgba(255,255,255,0.03);
 
-            border-bottom: 2px solid var(--border-dark);
+            border-bottom:
+                2px solid var(--border-dark);
 
-            padding: 2px 8px;
+            padding: 4px 10px;
 
-            font-size: 0.85rem;
+            font-size: 0.9rem;
 
             color: var(--text-muted);
 
             letter-spacing: 1px;
         }
 
-
         .client-brief-box .brief-content {
-            padding: 4px 8px;
+            padding: 6px 10px;
 
             display: flex;
+
             flex-direction: column;
 
             gap: 4px;
 
-            font-size: 0.8rem;
+            font-size: 0.85rem;
 
             font-family: var(--font-ui);
 
@@ -560,7 +572,6 @@
             color: var(--text-normal);
         }
 
-
         .brief-line {
             display: flex;
 
@@ -568,7 +579,6 @@
 
             line-height: 1.3;
         }
-
 
         .brief-line .label {
             color: var(--text-muted);
@@ -579,7 +589,6 @@
 
             min-width: 80px;
         }
-
 
         .brief-line .value {
             color: var(--text-highlight);
@@ -593,7 +602,7 @@
 
 
         /* ==================================================
-           HEADER RIGHT
+           HEADER KANAN
            ================================================== */
 
         .header-right {
@@ -606,7 +615,6 @@
             gap: 10px;
         }
 
-
         .retro-btn {
             background: var(--bg-panel);
 
@@ -616,15 +624,16 @@
 
             font-family: var(--font-ui);
 
-            font-size: 0.95rem;
+            font-size: 1.1rem;
 
-            padding: 4px 12px;
+            padding: 6px 14px;
 
             cursor: pointer;
 
             text-transform: uppercase;
 
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+            box-shadow:
+                2px 2px 0 rgba(0,0,0,0.5);
 
             transition:
                 transform 0.1s,
@@ -635,17 +644,13 @@
             align-items: center;
 
             gap: 5px;
-
-            justify-content: center;
         }
-
 
         .retro-btn:active {
             transform: translate(2px,2px);
 
             box-shadow: none;
         }
-
 
         .retro-btn.primary {
             background: #b56c6c;
@@ -658,7 +663,6 @@
 
         /* ==================================================
            MAIN AREA
-           LANDSCAPE
            ================================================== */
 
         #main-area {
@@ -677,7 +681,6 @@
 
             overflow: hidden;
         }
-
 
         .panel {
             background: var(--bg-panel);
@@ -704,26 +707,19 @@
             position: relative;
         }
 
-
         .panel-header {
-            padding: 10px;
+            padding: 15px;
 
-            border-bottom: 2px solid var(--border-dark);
+            border-bottom:
+                2px solid var(--border-dark);
 
             background: rgba(0,0,0,0.2);
 
             flex-shrink: 0;
-
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
         }
 
-
         .panel-title {
-            font-size: 1.1rem;
+            font-size: 1.4rem;
 
             color: var(--text-highlight);
 
@@ -732,9 +728,8 @@
             margin: 0;
         }
 
-
         .panel-subtitle {
-            font-size: 0.75rem;
+            font-size: 0.9rem;
 
             color: var(--text-muted);
         }
@@ -755,7 +750,7 @@
 
             font-size: 0.85rem;
 
-            margin-bottom: 8px;
+            margin-bottom: 12px;
 
             display: flex;
 
@@ -767,9 +762,7 @@
                 3px 3px 0 rgba(0,0,0,0.3);
 
             transition:
-                transform 0.1s,
-                border-color 0.1s,
-                box-shadow 0.1s;
+                transform 0.1s;
 
             width: 100%;
 
@@ -782,16 +775,23 @@
             box-sizing: border-box;
         }
 
-
         .script-block:active {
             cursor: grabbing;
 
-            transform: translate(2px,2px);
+            transform:
+                translate(2px, 2px);
 
             box-shadow:
                 1px 1px 0 rgba(0,0,0,0.3);
         }
 
+        .script-block.selected {
+            border-color: var(--accent-yellow);
+
+            box-shadow:
+                0 0 0 2px var(--accent-yellow),
+                3px 3px 0 rgba(0,0,0,0.3);
+        }
 
         .block-type-label {
             font-family: var(--font-ui);
@@ -811,7 +811,6 @@
             color: var(--paper-text);
         }
 
-
         .block-text {
             line-height: 1.3;
 
@@ -820,7 +819,7 @@
 
 
         /* ==================================================
-           PANEL TENGAH
+           CENTER PANEL
            ================================================== */
 
         #center-panel {
@@ -839,11 +838,11 @@
             padding: 15px;
 
             overflow-y: auto;
+
             overflow-x: hidden;
 
             position: relative;
         }
-
 
         .paper-sheet {
             background: var(--paper-bg);
@@ -852,11 +851,12 @@
 
             max-width: 750px;
 
-            height: max-content;
+            height: auto;
 
-            flex: 1 0 auto;
+            min-height: 100%;
 
-            border: 1px solid var(--paper-border);
+            border:
+                1px solid var(--paper-border);
 
             box-shadow:
                 4px 4px 0 rgba(0,0,0,0.5);
@@ -871,7 +871,6 @@
 
             position: relative;
         }
-
 
         .paper-header {
             display: flex;
@@ -894,7 +893,6 @@
             flex-shrink: 0;
         }
 
-
         .paper-header .title {
             flex: 1;
 
@@ -902,7 +900,6 @@
 
             font-weight: bold;
         }
-
 
         .paper-header .page-num {
             width: 60px;
@@ -927,7 +924,6 @@
             width: 100%;
         }
 
-
         .slot-number {
             width: 30px;
 
@@ -943,7 +939,6 @@
 
             flex-shrink: 0;
         }
-
 
         .drop-slot {
             flex: 1;
@@ -961,18 +956,18 @@
 
             min-height: 50px;
 
-            background: rgba(0,0,0,0.02);
+            background:
+                rgba(0,0,0,0.02);
 
             width: 100%;
         }
 
-
         .drop-slot.drag-over {
-            background: rgba(0,0,0,0.08);
+            background:
+                rgba(0,0,0,0.08);
 
             border-color: #555;
         }
-
 
         .drop-slot > .script-block {
             margin-bottom: 0;
@@ -989,14 +984,11 @@
             padding: 8px 10px;
         }
 
-
         .drop-slot > .script-block .block-text {
             text-align: justify;
         }
 
-
-        .drop-slot >
-        .script-block[data-type="TRANSITION"]
+        .drop-slot > .script-block[data-type="TRANSITION"]
         .block-text {
             text-align: right !important;
         }
@@ -1016,7 +1008,6 @@
             position: relative;
         }
 
-
         .right-panel-content {
             flex: 1 1 0;
 
@@ -1030,7 +1021,6 @@
 
             padding-bottom: 10px;
         }
-
 
         .right-section-title {
             font-size: 1.2rem;
@@ -1063,33 +1053,30 @@
 
             align-items: flex-start;
 
-            margin-bottom: 3px;
+            margin-bottom: 10px;
 
             color: var(--text-muted);
 
             font-family: sans-serif;
 
-            font-size: 0.7rem;
-
-            line-height: 1.05;
+            font-size: 0.85rem;
 
             width: 100%;
 
             box-sizing: border-box;
         }
 
-
         .checklist-box {
-            width: 10px;
+            width: 14px;
 
-            height: 10px;
+            height: 14px;
 
             border:
                 2px solid var(--text-muted);
 
-            margin-right: 6px;
+            margin-right: 10px;
 
-            margin-top: 1px;
+            margin-top: 2px;
 
             position: relative;
 
@@ -1097,7 +1084,6 @@
 
             background: #1a1a1a;
         }
-
 
         .checklist-item.done
         .checklist-box::after {
@@ -1107,15 +1093,13 @@
 
             position: absolute;
 
-            top: -5px;
+            top: -4px;
+            left: 1px;
 
-            left: 0;
-
-            font-size: 10px;
+            font-size: 14px;
 
             font-family: var(--font-ui);
         }
-
 
         .checklist-item.done {
             color: var(--text-normal);
@@ -1127,7 +1111,7 @@
            ================================================== */
 
         .hint-section {
-            margin: 2px 0 6px 0;
+            margin: 10px 0 15px 0;
 
             width: 100%;
 
@@ -1138,7 +1122,6 @@
             box-sizing: border-box;
         }
 
-
         .hint-btn-style {
             width: 100%;
 
@@ -1148,14 +1131,15 @@
 
             align-items: center;
 
-            font-size: 0.85rem;
+            font-size: 0.95rem;
 
-            padding: 5px 8px;
+            padding: 10px;
 
             border:
                 2px solid var(--border-light);
 
-            background: rgba(0,0,0,0.25);
+            background:
+                rgba(0,0,0,0.25);
 
             color: var(--text-highlight);
 
@@ -1174,18 +1158,17 @@
             box-sizing: border-box;
         }
 
-
         .hint-btn-style:hover:not(.hint-disabled) {
-            background: rgba(255,255,255,0.05);
+            background:
+                rgba(255,255,255,0.05);
 
             color: #fff;
         }
 
-
         .hint-btn-style:active:not(.hint-disabled) {
-            transform: translate(1px,1px);
+            transform:
+                translate(1px,1px);
         }
-
 
         .notification-badge {
             position: absolute;
@@ -1222,7 +1205,6 @@
             pointer-events: none;
         }
 
-
         .hint-disabled {
             opacity: 0.3;
 
@@ -1233,7 +1215,7 @@
 
 
         /* ==================================================
-           KAMUS
+           GLOSSARY
            ================================================== */
 
         .glossary-term-link {
@@ -1249,12 +1231,10 @@
                 1px dotted #5a8ca8;
         }
 
-
         .glossary-term-link:hover {
             background:
                 rgba(90,140,168,0.2);
         }
-
 
         .kamus-tab-container {
             display: flex;
@@ -1263,7 +1243,7 @@
 
             width: 100%;
 
-            margin-top: 2px;
+            margin-top: 5px;
 
             flex-shrink: 0;
 
@@ -1272,10 +1252,9 @@
             box-sizing: border-box;
         }
 
-
         .kamus-tab-title {
             background:
-                rgba(255,255,255,0.05);
+                rgba(255,255,255,.05);
 
             border:
                 2px solid var(--border-light);
@@ -1285,7 +1264,8 @@
             border-radius:
                 6px 6px 0 0;
 
-            padding: 4px 12px;
+            padding:
+                4px 12px;
 
             display: inline-block;
 
@@ -1300,13 +1280,12 @@
             font-family: var(--font-ui);
         }
 
-
         .kamus-tab-content {
             border:
                 2px solid var(--border-light);
 
             background:
-                rgba(0,0,0,0.15);
+                rgba(0,0,0,.15);
 
             border-radius:
                 0 6px 6px 6px;
@@ -1324,7 +1303,6 @@
             box-sizing: border-box;
         }
 
-
         #glossary-content {
             display: flex;
 
@@ -1335,13 +1313,12 @@
             color: var(--text-normal);
         }
 
-
         .g-term-title {
             color: #5a8ca8;
 
             font-family: var(--font-ui);
 
-            font-size: 0.85rem;
+            font-size: .85rem;
 
             text-transform: uppercase;
 
@@ -1355,28 +1332,25 @@
             padding-bottom: 2px;
         }
 
-
         .g-def-text {
-            font-size: 0.75rem;
+            font-size: .75rem;
 
             line-height: 1.3;
 
             margin-bottom: 10px;
         }
 
-
         .g-example-title {
             color: #5a8ca8;
 
             font-family: var(--font-ui);
 
-            font-size: 0.8rem;
+            font-size: .8rem;
 
             letter-spacing: 1px;
 
             margin-bottom: 2px;
         }
-
 
         .g-example-text {
             color: var(--text-muted);
@@ -1384,19 +1358,146 @@
             font-style: italic;
 
             background:
-                rgba(0,0,0,0.2);
+                rgba(0,0,0,.2);
 
             padding: 6px;
 
             border-left:
                 2px solid #5a8ca8;
 
-            font-size: 0.7rem;
+            font-size: .7rem;
         }
 
 
         /* ==================================================
-           PAGINATION PORTRAIT
+           PAGINATION
+           ================================================== */
+
+        .pagination-area {
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            margin-top: auto;
+
+            padding-top: 15px;
+
+            border-top:
+                2px dashed var(--border-light);
+
+            flex-shrink: 0;
+
+            width: 100%;
+
+            box-sizing: border-box;
+        }
+
+        .nav-arrow {
+            width: 30px;
+            height: 30px;
+
+            background: var(--bg-panel);
+
+            border:
+                2px solid var(--border-dark);
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: var(--text-muted);
+
+            cursor: pointer;
+
+            font-size: 1rem;
+        }
+
+        .nav-arrow:hover {
+            color: var(--text-highlight);
+        }
+
+        .page-thumb-wrapper {
+            position: relative;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+        }
+
+        .page-thumb {
+            width: 35px;
+            height: 42px;
+
+            background: #8e8877;
+
+            border:
+                2px solid var(--border-dark);
+
+            display: flex;
+
+            align-items: flex-start;
+
+            padding: 2px 4px;
+
+            font-size: .8rem;
+
+            color: #333;
+
+            cursor: pointer;
+
+            box-shadow:
+                2px 2px 0 rgba(0,0,0,.3);
+        }
+
+        .page-thumb.active {
+            background: var(--paper-bg);
+
+            box-shadow: none;
+
+            transform:
+                translate(1px,1px);
+        }
+
+        .page-indicator {
+            position: absolute;
+
+            top: -8px;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+            width: 0;
+            height: 0;
+
+            border-left:
+                5px solid transparent;
+
+            border-right:
+                5px solid transparent;
+
+            border-top:
+                5px solid var(--accent-yellow);
+
+            display: none;
+        }
+
+        .page-thumb.active + .page-indicator {
+            display: block;
+        }
+
+
+        /* ==================================================
+           PORTRAIT PAGINATION
            ================================================== */
 
         .pagination-area-portrait {
@@ -1419,7 +1520,6 @@
             box-sizing: border-box;
         }
 
-
         .nav-arrow-portrait {
             width: 35px;
             height: 35px;
@@ -1432,6 +1532,7 @@
             display: flex;
 
             align-items: center;
+
             justify-content: center;
 
             color: var(--text-muted);
@@ -1441,11 +1542,9 @@
             font-size: 1.2rem;
         }
 
-
         .nav-arrow-portrait:hover {
             color: var(--text-highlight);
         }
-
 
         .page-thumb-wrapper-portrait {
             position: relative;
@@ -1456,7 +1555,6 @@
 
             align-items: center;
         }
-
 
         .page-thumb-portrait {
             width: 45px;
@@ -1485,15 +1583,14 @@
                 2px 2px 0 rgba(0,0,0,0.3);
         }
 
-
         .page-thumb-portrait.active {
             background: var(--paper-bg);
 
             box-shadow: none;
 
-            transform: translate(1px,1px);
+            transform:
+                translate(1px,1px);
         }
-
 
         .page-indicator-portrait {
             position: absolute;
@@ -1502,7 +1599,8 @@
 
             left: 50%;
 
-            transform: translateX(-50%);
+            transform:
+                translateX(-50%);
 
             width: 0;
             height: 0;
@@ -1518,7 +1616,6 @@
 
             display: none;
         }
-
 
         .page-thumb-portrait.active
         + .page-indicator-portrait {
@@ -1539,7 +1636,7 @@
             bottom: 0;
 
             background:
-                rgba(0,0,0,0.85);
+                rgba(0,0,0,.85);
 
             z-index: 1000;
 
@@ -1554,16 +1651,14 @@
             pointer-events: none;
 
             transition:
-                opacity 0.2s;
+                opacity .2s;
         }
-
 
         .modal-overlay.active {
             opacity: 1;
 
             pointer-events: auto;
         }
-
 
         .modal-content {
             background: var(--bg-panel);
@@ -1582,634 +1677,20 @@
             text-align: center;
 
             box-shadow:
-                5px 5px 0 rgba(0,0,0,0.5);
+                5px 5px 0 rgba(0,0,0,.5);
         }
 
 
         /* ==================================================
-           PORTRAIT LAYOUT
-           
-           HANYA MENGUBAH PENEMPATAN.
-           FITUR GAME TETAP SAMA.
+           PORTRAIT PAPER PREVIEW
            ================================================== */
 
-        @media screen and (orientation: portrait),
-               screen and (max-aspect-ratio: 9/10) {
-
-            body {
-                overflow: hidden !important;
-            }
-
-
-            #game-layout {
-                width: 100%;
-
-                height: 100dvh;
-
-                min-height: 0;
-
-                padding: 6px;
-
-                gap: 6px;
-
-                display: flex;
-
-                flex-direction: column;
-            }
-
-
-            /* ------------------------------------------
-               HEADER PORTRAIT
-               Lebih tipis
-               ------------------------------------------ */
-
-            #game-header {
-                flex: 0 0 auto;
-
-                min-height: 52px;
-
-                height: 52px;
-
-                padding: 5px 8px;
-
-                display: grid;
-
-                grid-template-columns: 1fr auto;
-
-                grid-template-rows: 1fr;
-
-                gap: 5px;
-
-                position: relative;
-            }
-
-
-            .header-left {
-                gap: 9px;
-
-                min-width: 0;
-            }
-
-
-            .settings-btn {
-                font-size: 25px;
-
-                width: 38px;
-                height: 38px;
-            }
-
-
-            .title-area {
-                min-width: 0;
-            }
-
-
-            .header-left h1 {
-                font-size: 1.35rem;
-
-                letter-spacing: 1px;
-
-                white-space: nowrap;
-            }
-
-
-            .header-left .day-text {
-                font-size: 0.78rem;
-            }
-
-
-            /* ------------------------------------------
-               Tombol tetap tersedia
-               tetapi dibuat kecil
-               ------------------------------------------ */
-
-            .header-right {
-                gap: 4px;
-            }
-
-
-            .retro-btn {
-                font-size: 0.72rem;
-
-                padding: 4px 7px;
-
-                min-height: 30px;
-            }
-
-
-            .hide-mobile {
-                display: none !important;
-            }
-
-
-            /* ------------------------------------------
-               CLIENT BRIEF
-               Menjadi baris tersendiri
-               ------------------------------------------ */
-
-            .header-center {
-                position: absolute;
-
-                left: 0;
-                right: 0;
-
-                top: calc(100% + 6px);
-
-                height: 82px;
-
-                z-index: 20;
-
-                display: flex;
-
-                gap: 7px;
-
-                padding: 5px;
-
-                background: var(--bg-panel);
-
-                border:
-                    2px solid var(--border-dark);
-
-                box-shadow:
-                    2px 2px 0 rgba(0,0,0,0.3);
-            }
-
-
-            .client-avatar {
-                width: 48px;
-
-                height: 100%;
-            }
-
-
-            .client-brief-box {
-                max-width: none;
-
-                width: 100%;
-            }
-
-
-            .client-brief-box .brief-title {
-                padding: 2px 6px;
-
-                font-size: 0.75rem;
-            }
-
-
-            .client-brief-box .brief-content {
-                padding: 3px 6px;
-
-                gap: 2px;
-
-                font-size: 0.7rem;
-
-                overflow-y: auto;
-            }
-
-
-            .brief-line {
-                line-height: 1.15;
-            }
-
-
-            .brief-line .label {
-                min-width: 50px;
-
-                margin-right: 5px;
-            }
-
-
-            /* ------------------------------------------
-               MAIN AREA PORTRAIT
-
-               Atas:
-               CENTER / PAPER
-
-               Bawah:
-               LEFT  | RIGHT
-
-               1 : 1
-               ------------------------------------------ */
-
-            #main-area {
-                flex: 1 1 auto;
-
-                min-height: 0;
-
-                margin-top: 88px;
-
-                display: grid;
-
-                grid-template-columns:
-                    minmax(0, 1fr)
-                    minmax(0, 1fr);
-
-                grid-template-rows:
-                    minmax(0, 1fr)
-                    minmax(150px, 0.52fr);
-
-                grid-template-areas:
-                    "center center"
-                    "left right";
-
-                gap: 6px;
-
-                overflow: hidden;
-            }
-
-
-            #left-panel {
-                grid-area: left;
-
-                min-height: 0;
-
-                overflow: hidden;
-            }
-
-
-            #center-panel {
-                grid-area: center;
-
-                min-height: 0;
-
-                padding: 6px;
-
-                overflow-y: auto;
-
-                overflow-x: hidden;
-
-                align-items: stretch;
-            }
-
-
-            #right-panel {
-                grid-area: right;
-
-                min-height: 0;
-
-                padding: 8px;
-
-                overflow: hidden;
-            }
-
-
-            /* ------------------------------------------
-               PAPER PORTRAIT
-
-               Tetap panel tengah.
-               Lebar penuh.
-               ------------------------------------------ */
-
-            .paper-sheet {
-                width: 100%;
-
-                max-width: none;
-
-                min-height: max-content;
-
-                height: max-content;
-
-                flex: 0 0 auto;
-
-                padding: 16px 18px;
-
-                box-shadow:
-                    3px 3px 0 rgba(0,0,0,0.45);
-            }
-
-
-            .paper-header {
-                font-size: 1.15rem;
-
-                margin-bottom: 12px;
-
-                padding-bottom: 5px;
-            }
-
-
-            .paper-header .page-num {
-                width: 45px;
-            }
-
-
-            .slot-row {
-                min-height: 42px;
-
-                margin-bottom: 6px;
-            }
-
-
-            .slot-number {
-                width: 22px;
-
-                font-size: 0.82rem;
-
-                padding-top: 7px;
-            }
-
-
-            .drop-slot {
-                min-height: 42px;
-            }
-
-
-            .drop-slot > .script-block {
-                padding: 6px 8px;
-            }
-
-
-            .script-block {
-                font-size: 0.72rem;
-
-                padding: 7px 8px;
-
-                margin-bottom: 6px;
-            }
-
-
-            .block-type-label {
-                font-size: 0.7rem;
-
-                margin-bottom: 2px;
-            }
-
-
-            /* ------------------------------------------
-               PANEL HEADER BAWAH
-               ------------------------------------------ */
-
-            .panel-header {
-                padding: 6px 8px;
-
-                min-height: 32px;
-            }
-
-
-            .panel-title {
-                font-size: 0.95rem;
-            }
-
-
-            .panel-subtitle {
-                font-size: 0.65rem;
-            }
-
-
-            /* ------------------------------------------
-               SCRIPT BLOCKS PORTRAIT
-               ------------------------------------------ */
-
-            #left-panel .scroll-container {
-                min-height: 0;
-
-                height: auto;
-            }
-
-
-            #block-container {
-                padding: 5px !important;
-
-                padding-right: 25px !important;
-            }
-
-
-            #left-panel .script-block {
-                font-size: 0.7rem;
-
-                padding: 7px 8px;
-
-                margin-bottom: 6px;
-            }
-
-
-            #left-panel .block-type-label {
-                font-size: 0.68rem;
-            }
-
-
-            /* ------------------------------------------
-               CHECKLIST PORTRAIT
-               ------------------------------------------ */
-
-            .right-panel-content {
-                padding-bottom: 4px;
-
-                overflow-y: auto;
-            }
-
-
-            .right-section-title {
-                font-size: 0.95rem;
-
-                margin-bottom: 6px;
-
-                padding-bottom: 3px;
-            }
-
-
-            .checklist-item {
-                font-size: 0.65rem;
-
-                line-height: 1.05;
-
-                margin-bottom: 5px;
-            }
-
-
-            .checklist-box {
-                width: 10px;
-
-                height: 10px;
-
-                margin-right: 5px;
-            }
-
-
-            .checklist-item.done
-            .checklist-box::after {
-                font-size: 10px;
-
-                top: -5px;
-
-                left: 0;
-            }
-
-
-            .hint-section {
-                margin: 4px 0 5px 0;
-            }
-
-
-            .hint-btn-style {
-                font-size: 0.72rem;
-
-                padding: 4px;
-            }
-
-
-            .kamus-tab-container {
-                margin-top: 2px;
-            }
-
-
-            .kamus-tab-title {
-                font-size: 0.85rem;
-
-                padding: 2px 7px;
-            }
-
-
-            .kamus-tab-content {
-                padding: 6px;
-
-                min-height: 55px;
-
-                overflow-y: auto;
-            }
-
-
-            .g-term-title {
-                font-size: 0.7rem;
-
-                margin-bottom: 2px;
-            }
-
-
-            .g-def-text {
-                font-size: 0.62rem;
-
-                line-height: 1.2;
-
-                margin-bottom: 5px;
-            }
-
-
-            .g-example-title {
-                font-size: 0.65rem;
-            }
-
-
-            .g-example-text {
-                font-size: 0.6rem;
-
-                padding: 4px;
-            }
-
-
-            /* ------------------------------------------
-               SCROLLBAR
-               ------------------------------------------ */
-
-            .w95-scrollbar {
-                width: 15px !important;
-
-                right: 2px;
-            }
-
-
-            .w95-scroll-thumb {
-                min-height: 45px;
-            }
+        #portrait-paper-preview {
+            display: none;
         }
 
-
-        /* ==================================================
-           PORTRAIT SANGAT PENDEK
-           ================================================== */
-
-        @media screen and
-               (orientation: portrait) and
-               (max-height: 650px) {
-
-            #game-header {
-                height: 46px;
-
-                min-height: 46px;
-            }
-
-
-            .settings-btn {
-                width: 32px;
-                height: 32px;
-
-                font-size: 22px;
-            }
-
-
-            .header-left h1 {
-                font-size: 1.15rem;
-            }
-
-
-            .header-left .day-text {
-                font-size: 0.7rem;
-            }
-
-
-            .header-center {
-                height: 70px;
-
-                top: calc(100% + 5px);
-            }
-
-
-            #main-area {
-                margin-top: 75px;
-
-                grid-template-rows:
-                    minmax(0, 1fr)
-                    minmax(125px, 0.48fr);
-            }
-
-
-            .paper-sheet {
-                padding: 12px 14px;
-            }
-
-
-            .paper-header {
-                font-size: 1rem;
-
-                margin-bottom: 8px;
-            }
-
-
-            .slot-row {
-                min-height: 34px;
-
-                margin-bottom: 5px;
-            }
-
-
-            .drop-slot {
-                min-height: 34px;
-            }
-
-
-            .slot-number {
-                width: 18px;
-
-                padding-top: 5px;
-
-                font-size: 0.72rem;
-            }
-
-
-            #left-panel .script-block {
-                font-size: 0.62rem;
-
-                padding: 5px 6px;
-            }
-
-
-            .panel-title {
-                font-size: 0.8rem;
-            }
-
-
-            .right-section-title {
-                font-size: 0.8rem;
-            }
+        #portrait-bottom-area {
+            display: none;
         }
 
 
@@ -2221,149 +1702,121 @@
             display: none !important;
         }
 
-
         .text-2xl {
             font-size: 1.5rem;
             line-height: 2rem;
         }
-
 
         .text-4xl {
             font-size: 2.25rem;
             line-height: 2.5rem;
         }
 
-
         .mb-2 {
             margin-bottom: .5rem;
         }
-
 
         .mb-4 {
             margin-bottom: 1rem;
         }
 
-
         .mb-6 {
             margin-bottom: 1.5rem;
         }
-
 
         .mt-4 {
             margin-top: 1rem;
         }
 
-
         .mt-6 {
             margin-top: 1.5rem;
         }
-
 
         .text-sm {
             font-size: .875rem;
             line-height: 1.25rem;
         }
 
-
         .text-xs {
             font-size: .75rem;
             line-height: 1rem;
         }
 
-
         .text-center {
             text-align: center;
         }
-
 
         .text-left {
             text-align: left;
         }
 
-
         .text-right {
             text-align: right;
         }
-
 
         .font-bold {
             font-weight: 700;
         }
 
-
         .font-sans {
             font-family: sans-serif;
         }
-
 
         .flex {
             display: flex;
         }
 
-
         .justify-between {
             justify-content: space-between;
         }
-
 
         .justify-center {
             justify-content: center;
         }
 
-
         .items-center {
             align-items: center;
         }
 
-
         .grid {
             display: grid;
         }
-
 
         .grid-cols-2 {
             grid-template-columns:
                 repeat(2,minmax(0,1fr));
         }
 
-
         .gap-2 {
             gap: .5rem;
         }
-
 
         .p-3 {
             padding: .75rem;
         }
 
-
         .pb-2 {
             padding-bottom: .5rem;
         }
-
 
         .border-b {
             border-bottom-width: 1px;
             border-style: solid;
         }
 
-
         .border-t {
             border-top-width: 1px;
             border-style: solid;
         }
-
 
         .border {
             border-width: 1px;
             border-style: solid;
         }
 
-
         .cursor-pointer {
             cursor: pointer;
         }
-
 
         .hover\:text-\[var\(--text-highlight\)\]:hover {
             color: var(--text-highlight);
@@ -2371,39 +1824,962 @@
 
 
         /* ==================================================
-           MODAL BLOCK PREVIEW
+           ==================================================
+           PORTRAIT MODE
+           ==================================================
+           
+           STRUKTUR:
+           
+           ┌─────────────────────────────┐
+           │ HEADER TIPIS                │
+           ├─────────────────────────────┤
+           │ CLIENT BRIEF                │
+           ├─────────────────────────────┤
+           │                             │
+           │      SCRIPT / PAPER         │
+           │                             │
+           ├──────────────┬──────────────┤
+           │ SCRIPT       │ CHECKLIST    │
+           │ BLOCKS       │              │
+           └──────────────┴──────────────┘
+           
+           ==================================================
            ================================================== */
 
-        #modal-block-preview .modal-content {
-            max-width: 850px;
+        @media screen and (orientation: portrait) {
 
-            max-height: 92vh;
+            html,
+            body {
+                overflow: hidden;
+            }
 
-            padding: 12px;
+            body {
+                position: fixed;
 
-            display: flex;
+                width: 100%;
+                height: 100%;
 
-            flex-direction: column;
-        }
+                overflow: hidden;
+            }
 
 
-        #modal-block-scrollarea {
-            flex: 1;
+            /* ----------------------------------------------
+               GAME LAYOUT
+               ---------------------------------------------- */
 
-            min-height: 0;
+            #game-layout {
+                width: 100%;
+                height: 100dvh;
 
-            overflow-y: auto;
+                padding: 6px;
+
+                gap: 6px;
+
+                display: grid;
+
+                grid-template-rows:
+                    52px
+                    minmax(55px, 72px)
+                    minmax(0, 1fr)
+                    38%;
+
+                overflow: hidden;
+            }
+
+
+            /* ----------------------------------------------
+               HEADER TIPIS
+               ---------------------------------------------- */
+
+            #game-header {
+                min-height: 0;
+
+                height: 52px;
+
+                padding:
+                    5px 10px;
+
+                gap: 0;
+
+                display: grid;
+
+                grid-template-columns:
+                    1fr;
+
+                grid-template-rows:
+                    1fr;
+
+                align-items: center;
+            }
+
+            .header-left {
+                gap: 10px;
+            }
+
+            .settings-btn {
+                width: 34px;
+                height: 34px;
+
+                font-size: 23px;
+
+                border:
+                    2px solid var(--border-dark);
+
+                background:
+                    rgba(255,255,255,0.03);
+            }
+
+            .header-left h1 {
+                font-size: 1.35rem;
+
+                letter-spacing: 1.5px;
+            }
+
+            .header-left .day-text {
+                font-size: .8rem;
+            }
+
+            /*
+             * Pada portrait, tombol RESET dan PERIKSA
+             * tetap tersedia melalui area atas kecil.
+             */
+
+            .header-right {
+                position: absolute;
+
+                right: 8px;
+
+                top: 8px;
+
+                gap: 4px;
+            }
+
+            .header-right .retro-btn {
+                font-size: .72rem;
+
+                padding:
+                    3px 6px;
+            }
+
+            .header-right .retro-btn:first-child {
+                display: none;
+            }
+
+            .header-center {
+                position: absolute;
+
+                top: 58px;
+
+                left: 6px;
+                right: 6px;
+
+                height: 68px;
+
+                display: flex;
+
+                align-items: stretch;
+
+                justify-content: stretch;
+
+                gap: 6px;
+
+                z-index: 20;
+            }
+
+            .client-avatar {
+                width: 54px;
+
+                min-width: 54px;
+
+                height: 68px;
+            }
+
+            .client-brief-box {
+                max-width: none;
+
+                width: 100%;
+
+                height: 68px;
+            }
+
+            .client-brief-box .brief-title {
+                padding:
+                    2px 7px;
+
+                font-size: .78rem;
+            }
+
+            .client-brief-box .brief-content {
+                padding:
+                    3px 7px;
+
+                gap: 2px;
+
+                font-size: .68rem;
+
+                overflow-y: auto;
+            }
+
+            .brief-line {
+                line-height: 1.15;
+            }
+
+            .brief-line .label {
+                min-width: 52px;
+
+                margin-right: 5px;
+            }
+
+
+            /* ----------------------------------------------
+               MAIN AREA PORTRAIT
+               ---------------------------------------------- */
+
+            #main-area {
+
+                /*
+                 * Tengah di atas.
+                 * Dua panel bawah sama besar.
+                 */
+
+                grid-column: 1;
+
+                grid-row: 3 / 5;
+
+                width: 100%;
+                height: 100%;
+
+                min-height: 0;
+
+                display: grid;
+
+                grid-template-columns:
+                    minmax(0, 1fr)
+                    minmax(0, 1fr);
+
+                grid-template-rows:
+                    minmax(0, 1fr)
+                    38%;
+
+                grid-template-areas:
+                    "center center"
+                    "left right";
+
+                gap: 6px;
+
+                overflow: hidden;
+
+                padding-top: 78px;
+            }
+
+
+            /* ----------------------------------------------
+               CENTER = SCRIPT PAPER
+               ---------------------------------------------- */
+
+            #center-panel {
+                grid-area: center;
+
+                width: 100%;
+                height: 100%;
+
+                min-height: 0;
+
+                padding: 6px;
+
+                overflow-y: auto;
+                overflow-x: hidden;
+
+                align-items: center;
+            }
+
+            .paper-sheet {
+                width: 100%;
+
+                max-width: none;
+
+                min-height: max-content;
+
+                height: auto;
+
+                padding:
+                    16px 18px;
+
+                border:
+                    1px solid var(--paper-border);
+
+                box-shadow:
+                    3px 3px 0 rgba(0,0,0,.45);
+            }
+
+            .paper-header {
+                font-size: 1.15rem;
+
+                margin-bottom: 12px;
+
+                padding-bottom: 4px;
+            }
+
+            .paper-header .page-num {
+                width: 40px;
+            }
+
+            .slot-row {
+                min-height: 42px;
+
+                margin-bottom: 7px;
+            }
+
+            .slot-number {
+                width: 22px;
+
+                padding-top: 7px;
+
+                font-size: .82rem;
+            }
+
+            .drop-slot {
+                min-height: 42px;
+            }
+
+            .drop-slot > .script-block {
+                padding:
+                    7px 8px;
+            }
+
+            .script-block {
+                font-size: .76rem;
+
+                margin-bottom: 8px;
+
+                padding:
+                    8px 9px;
+            }
+
+            .block-type-label {
+                font-size: .72rem;
+
+                margin-bottom: 3px;
+            }
+
+
+            /* ----------------------------------------------
+               SCRIPT BLOCKS BAWAH KIRI
+               ---------------------------------------------- */
+
+            #left-panel {
+                grid-area: left;
+
+                width: 100%;
+                height: 100%;
+
+                min-height: 0;
+
+                overflow: hidden;
+            }
+
+            #left-panel .panel-header {
+                height: 36px;
+
+                min-height: 36px;
+
+                padding:
+                    5px 8px;
+
+                display: flex;
+
+                align-items: center;
+
+                justify-content: space-between;
+            }
+
+            #left-panel .panel-title {
+                font-size: 1rem;
+            }
+
+            #left-panel .panel-subtitle {
+                font-size: .68rem;
+            }
+
+            #left-panel .scroll-container {
+                min-height: 0;
+
+                height: 100%;
+            }
+
+            #block-container {
+                padding:
+                    8px 20px 8px 8px !important;
+            }
+
+            #left-panel .script-block {
+                font-size: .72rem;
+
+                padding:
+                    7px 8px;
+
+                margin-bottom: 7px;
+            }
+
+            #left-panel .block-type-label {
+                font-size: .68rem;
+            }
+
+            #left-panel .block-text {
+                line-height: 1.2;
+            }
+
+            #left-panel .w95-scrollbar {
+                width: 14px;
+
+                right: 1px;
+            }
+
+
+            /* ----------------------------------------------
+               CHECKLIST BAWAH KANAN
+               ---------------------------------------------- */
+
+            #right-panel {
+                grid-area: right;
+
+                width: 100%;
+                height: 100%;
+
+                min-height: 0;
+
+                padding: 8px;
+
+                overflow: hidden;
+            }
+
+            .right-panel-content {
+                min-height: 0;
+
+                overflow-y: auto;
+
+                padding-bottom: 4px;
+            }
+
+            .right-section-title {
+                font-size: 1rem;
+
+                margin-bottom: 7px;
+
+                padding-bottom: 3px;
+            }
+
+            .checklist-item {
+                font-size: .67rem;
+
+                line-height: 1.05;
+
+                margin-bottom: 6px;
+            }
+
+            .checklist-box {
+                width: 11px;
+                height: 11px;
+
+                margin-right: 6px;
+
+                margin-top: 1px;
+            }
+
+            .checklist-item.done
+            .checklist-box::after {
+                font-size: 11px;
+
+                top: -5px;
+
+                left: 0;
+            }
+
+
+            /* ----------------------------------------------
+               HINT PORTRAIT
+               ---------------------------------------------- */
+
+            .hint-section {
+                margin:
+                    5px 0 8px 0;
+            }
+
+            .hint-btn-style {
+                font-size: .75rem;
+
+                padding:
+                    5px 6px;
+            }
+
+            .notification-badge {
+                width: 15px;
+                height: 15px;
+
+                font-size: .6rem;
+
+                top: -5px;
+                right: -5px;
+            }
+
+
+            /* ----------------------------------------------
+               KAMUS PORTRAIT
+               ---------------------------------------------- */
+
+            .kamus-tab-container {
+                margin-top: 2px;
+
+                min-height: 70px;
+            }
+
+            .kamus-tab-title {
+                font-size: .82rem;
+
+                padding:
+                    2px 7px;
+            }
+
+            .kamus-tab-content {
+                padding: 6px;
+
+                min-height: 60px;
+            }
+
+            #glossary-empty {
+                font-size: .6rem !important;
+
+                line-height: 1.1rem;
+            }
+
+            .g-term-title {
+                font-size: .7rem;
+
+                margin-bottom: 2px;
+            }
+
+            .g-def-text {
+                font-size: .62rem;
+
+                line-height: 1.15;
+
+                margin-bottom: 5px;
+            }
+
+            .g-example-title {
+                font-size: .65rem;
+            }
+
+            .g-example-text {
+                font-size: .58rem;
+
+                padding: 4px;
+            }
+
+
+            /* ----------------------------------------------
+               PAGINATION
+               ---------------------------------------------- */
+
+            .pagination-area {
+                display: none;
+            }
+
+
+            /* ----------------------------------------------
+               HIDE MOBILE LABEL
+               ---------------------------------------------- */
+
+            .hide-mobile {
+                display: none;
+            }
         }
 
 
         /* ==================================================
-           LANDSCAPE WARNING
-           TIDAK DIGUNAKAN KARENA GAME MENDUKUNG
-           PORTRAIT DAN LANDSCAPE
+           PORTRAIT LAYAR SANGAT PENDEK
            ================================================== */
 
-        #landscape-warning {
-            display: none !important;
+        @media screen and
+               (orientation: portrait) and
+               (max-height: 650px) {
+
+            #game-layout {
+                grid-template-rows:
+                    46px
+                    58px
+                    minmax(0, 1fr)
+                    40%;
+            }
+
+            #game-header {
+                height: 46px;
+            }
+
+            .header-left h1 {
+                font-size: 1.2rem;
+            }
+
+            .settings-btn {
+                width: 30px;
+                height: 30px;
+
+                font-size: 20px;
+            }
+
+            .header-center {
+                top: 51px;
+
+                height: 57px;
+            }
+
+            .client-avatar {
+                width: 46px;
+                min-width: 46px;
+
+                height: 57px;
+            }
+
+            .client-brief-box {
+                height: 57px;
+            }
+
+            #main-area {
+                padding-top: 63px;
+            }
+
+            .paper-sheet {
+                padding:
+                    11px 13px;
+            }
+
+            .paper-header {
+                font-size: 1rem;
+
+                margin-bottom: 8px;
+            }
+
+            .slot-row {
+                min-height: 34px;
+
+                margin-bottom: 5px;
+            }
+
+            .drop-slot {
+                min-height: 34px;
+            }
+
+            .slot-number {
+                width: 18px;
+
+                padding-top: 5px;
+
+                font-size: .72rem;
+            }
+
+            #left-panel .panel-header {
+                height: 30px;
+
+                min-height: 30px;
+
+                padding:
+                    3px 6px;
+            }
+
+            #left-panel .panel-title,
+            .right-section-title {
+                font-size: .85rem;
+            }
+
+            #left-panel .panel-subtitle {
+                font-size: .6rem;
+            }
+
+            #right-panel {
+                padding: 6px;
+            }
+
+            .checklist-item {
+                font-size: .6rem;
+
+                margin-bottom: 4px;
+            }
+
+            .hint-btn-style {
+                font-size: .68rem;
+
+                padding: 4px;
+            }
+        }
+
+
+        /* ==================================================
+           LANDSCAPE LAYAR KECIL
+           ================================================== */
+
+        @media screen and
+               (max-height:600px) and
+               (orientation:landscape),
+               screen and
+               (max-width:950px) and
+               (orientation:landscape) {
+
+            #game-header {
+                padding:
+                    5px 10px;
+
+                min-height: 50px;
+
+                gap: 8px;
+            }
+
+            .header-left {
+                gap: 8px;
+            }
+
+            .header-left h1 {
+                font-size: 1.2rem;
+            }
+
+            .header-left .day-text {
+                font-size: .9rem;
+            }
+
+            .settings-btn {
+                font-size: 24px;
+            }
+
+            .client-avatar {
+                width: 45px;
+            }
+
+            .client-brief-box .brief-title {
+                padding:
+                    2px 6px;
+
+                font-size: .75rem;
+            }
+
+            .client-brief-box .brief-content {
+                padding:
+                    4px 6px;
+
+                font-size: .7rem;
+
+                gap: 2px;
+            }
+
+            .brief-line .label {
+                min-width: 50px;
+            }
+
+            .header-right {
+                gap: 5px;
+            }
+
+            .retro-btn {
+                font-size: .8rem;
+
+                padding:
+                    4px 8px;
+            }
+
+            .hide-mobile {
+                display: none;
+            }
+
+            #left-panel {
+                width: 280px;
+            }
+
+            #right-panel {
+                width: 200px;
+
+                padding: 10px;
+            }
+
+            .panel-header {
+                padding:
+                    8px 10px;
+            }
+
+            .panel-title {
+                font-size: 1.1rem;
+            }
+
+            .panel-subtitle {
+                font-size: .75rem;
+            }
+
+            #block-container {
+                padding:
+                    10px;
+
+                padding-right: 32px;
+            }
+
+            .w95-scrollbar {
+                width: 18px;
+            }
+
+            .w95-scroll-thumb {
+                min-height: 50px;
+            }
+
+            .script-block {
+                padding:
+                    6px 8px;
+
+                margin-bottom: 8px;
+
+                font-size: .75rem;
+            }
+
+            .block-type-label {
+                font-size: .7rem;
+
+                margin-bottom: 2px;
+            }
+
+            #center-panel {
+                padding:
+                    8px 5px;
+            }
+
+            .paper-sheet {
+                padding:
+                    15px 20px;
+
+                max-width: 100%;
+
+                border-width: 0;
+
+                box-shadow: none;
+
+                border-radius: 4px;
+            }
+
+            .paper-header {
+                font-size: 1.1rem;
+
+                margin-bottom: 12px;
+
+                padding-bottom: 4px;
+            }
+
+            .slot-row {
+                min-height: 35px;
+
+                margin-bottom: 6px;
+            }
+
+            .drop-slot {
+                min-height: 35px;
+            }
+
+            .slot-number {
+                width: 20px;
+
+                padding-top: 5px;
+
+                font-size: .8rem;
+            }
+
+            .right-section-title {
+                font-size: .9rem;
+
+                margin-bottom: 8px;
+            }
+
+            .checklist-item {
+                font-size: .75rem;
+
+                margin-bottom: 6px;
+
+                line-height: 1.2;
+            }
+
+            .checklist-box {
+                width: 12px;
+                height: 12px;
+
+                margin-right: 6px;
+            }
+
+            .checklist-item.done
+            .checklist-box::after {
+                font-size: 12px;
+
+                top: -5px;
+                left: 0;
+            }
+
+            .kamus-tab-title {
+                font-size: .9rem;
+
+                padding:
+                    2px 8px;
+            }
+
+            .kamus-tab-content {
+                padding: 6px;
+
+                min-height: 80px;
+            }
+
+            .g-term-title {
+                font-size: .75rem;
+
+                margin-bottom: 2px;
+            }
+
+            .g-def-text {
+                font-size: .7rem;
+
+                line-height: 1.2;
+
+                margin-bottom: 6px;
+            }
+
+            .g-example-title {
+                font-size: .7rem;
+            }
+
+            .g-example-text {
+                font-size: .65rem;
+
+                padding: 4px;
+            }
+
+            .pagination-area {
+                margin-top: 10px;
+
+                padding-top: 10px;
+
+                gap: 5px;
+            }
+
+            .nav-arrow {
+                width: 24px;
+                height: 24px;
+
+                font-size: .8rem;
+            }
+
+            .page-thumb {
+                width: 25px;
+                height: 35px;
+
+                font-size: .7rem;
+
+                padding: 2px;
+            }
+
+            .page-indicator {
+                border-width: 4px;
+
+                top: -6px;
+            }
         }
 
     </style>
@@ -2411,53 +2787,6 @@
 
 
 <body>
-
-
-    <!-- ==================================================
-         LANDSCAPE WARNING
-         ================================================== -->
-
-    <div id="landscape-warning">
-
-        <svg
-            width="80"
-            height="80"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-        >
-            <rect
-                x="5"
-                y="2"
-                width="14"
-                height="20"
-                rx="2"
-                ry="2"
-            ></rect>
-
-            <line
-                x1="12"
-                y1="18"
-                x2="12.01"
-                y2="18"
-            ></line>
-        </svg>
-
-        <h2 class="text-2xl font-bold mb-2">
-            PUTAR PERANGKAT
-        </h2>
-
-        <p
-            class="text-sm"
-            style="color: var(--text-muted);"
-        >
-            Game ini membutuhkan tampilan Mendatar (Landscape).
-        </p>
-
-    </div>
 
 
     <!-- ==================================================
@@ -2471,10 +2800,7 @@
              HEADER
              ================================================== -->
 
-        <div id="game-header">
-
-
-            <!-- HEADER LEFT -->
+        <header id="game-header">
 
             <div class="header-left">
 
@@ -2486,12 +2812,9 @@
                     ⚙
                 </div>
 
-
                 <div class="title-area">
 
-                    <h1>
-                        EDITOR SCRIPT
-                    </h1>
+                    <h1>EDITOR SCRIPT</h1>
 
                     <div
                         class="day-text"
@@ -2517,7 +2840,16 @@
                     >
 
                         <path
-                            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                            d="
+                            M12 12
+                            c2.21 0 4-1.79 4-4
+                            s-1.79-4-4-4
+                            -4 1.79-4 4
+                            1.79 4 4 4
+                            zm0 2
+                            c-2.67 0-8 1.34-8 4v2h16v-2
+                            c0-2.66-5.33-4-8-4z
+                            "
                         />
 
                         <circle
@@ -2561,7 +2893,7 @@
             </div>
 
 
-            <!-- HEADER RIGHT -->
+            <!-- BUTTONS -->
 
             <div class="header-right">
 
@@ -2576,7 +2908,6 @@
                     </span>
                 </button>
 
-
                 <button
                     id="btn-periksa"
                     class="retro-btn primary"
@@ -2590,7 +2921,7 @@
 
             </div>
 
-        </div>
+        </header>
 
 
         <!-- ==================================================
@@ -2601,7 +2932,7 @@
 
 
             <!-- ==================================================
-                 LEFT PANEL
+                 SCRIPT BLOCKS
                  ================================================== -->
 
             <div
@@ -2651,7 +2982,7 @@
 
 
             <!-- ==================================================
-                 CENTER PANEL
+                 CENTER SCRIPT
                  ================================================== -->
 
             <div
@@ -2697,6 +3028,8 @@
                 <div class="right-panel-content">
 
 
+                    <!-- CHECKLIST -->
+
                     <div
                         class="right-section-title"
                         style="margin-bottom: 8px;"
@@ -2704,9 +3037,12 @@
                         CHECKLIST
                     </div>
 
+                    <div
+                        id="checklist-container"
+                    ></div>
 
-                    <div id="checklist-container"></div>
 
+                    <!-- HINT -->
 
                     <div class="hint-section">
 
@@ -2732,12 +3068,13 @@
                     </div>
 
 
+                    <!-- KAMUS -->
+
                     <div class="kamus-tab-container">
 
                         <div class="kamus-tab-title">
                             KAMUS
                         </div>
-
 
                         <div class="kamus-tab-content">
 
@@ -2749,7 +3086,8 @@
                                     margin-top: 10px;
                                 "
                             >
-                                Klik kata biru pada naskah untuk melihat definisi.
+                                Klik kata biru pada naskah
+                                untuk melihat definisi.
                             </div>
 
 
@@ -2765,7 +3103,6 @@
                                     ISTILAH
                                 </div>
 
-
                                 <p
                                     class="g-def-text"
                                     id="glossary-def"
@@ -2773,11 +3110,9 @@
                                     Definisi akan muncul di sini.
                                 </p>
 
-
                                 <div class="g-example-title">
                                     CONTOH
                                 </div>
-
 
                                 <p
                                     class="g-example-text"
@@ -2797,40 +3132,37 @@
 
                 <!-- PAGINATION -->
 
-                <div class="pagination-area-portrait">
+                <div class="pagination-area">
 
-                    <div class="nav-arrow-portrait">
+                    <div class="nav-arrow">
                         ◄
                     </div>
 
+                    <div class="page-thumb-wrapper">
 
-                    <div class="page-thumb-wrapper-portrait">
-
-                        <div class="page-thumb-portrait active">
+                        <div class="page-thumb active">
                             1
                         </div>
 
-                        <div class="page-indicator-portrait"></div>
+                        <div class="page-indicator"></div>
 
                     </div>
 
-
                     <div
-                        class="page-thumb-wrapper-portrait"
+                        class="page-thumb-wrapper"
                         style="
                             opacity: 0.4;
                             pointer-events:none;
                         "
                     >
 
-                        <div class="page-thumb-portrait">
+                        <div class="page-thumb">
                             2
                         </div>
 
                     </div>
 
-
-                    <div class="nav-arrow-portrait">
+                    <div class="nav-arrow">
                         ►
                     </div>
 
@@ -2873,20 +3205,21 @@
 
 
             <div
+                id="modal-block-scrollarea"
                 style="
                     font-family: sans-serif;
                     font-size: 0.9rem;
                     color: var(--text-normal);
                     line-height: 1.6;
                     max-height: 65vh;
-                    padding-right: 15px;
                     overflow-y: auto;
                 "
             >
 
                 <p class="mb-4">
                     Setiap tipe blok memiliki peran penting.
-                    Perhatikan formatnya untuk menyusun alur yang benar.
+                    Perhatikan formatnya untuk menyusun alur
+                    yang benar.
                 </p>
 
 
@@ -2904,7 +3237,8 @@
 
                     <br>
 
-                    Penanda awal adegan (Lokasi & Waktu).
+                    Penanda awal adegan
+                    (Lokasi & Waktu).
                     Selalu kapital.
 
                     <br>
@@ -2915,7 +3249,8 @@
                             font-style: italic;
                         "
                     >
-                        Contoh: INT. RUANG SIDANG - SIANG
+                        Contoh:
+                        INT. RUANG SIDANG - SIANG
                     </span>
 
                 </div>
@@ -2935,8 +3270,8 @@
 
                     <br>
 
-                    Deskripsi kejadian/tindakan fisik karakter
-                    yang terlihat di layar.
+                    Deskripsi kejadian/tindakan fisik
+                    karakter yang terlihat di layar.
 
                     <br>
 
@@ -2946,7 +3281,8 @@
                             font-style: italic;
                         "
                     >
-                        Contoh: Seorang Hakim mengetuk palu.
+                        Contoh:
+                        Seorang Hakim mengetuk palu.
                     </span>
 
                 </div>
@@ -2967,7 +3303,8 @@
                     <br>
 
                     Ucapan tokoh.
-                    Nama tokoh selalu kapital di atas dialog.
+                    Nama tokoh selalu kapital
+                    di atas dialog.
 
                     <br>
 
@@ -3010,7 +3347,8 @@
                             font-style: italic;
                         "
                     >
-                        Contoh: CUT TO:
+                        Contoh:
+                        CUT TO:
                     </span>
 
                 </div>
@@ -3018,7 +3356,9 @@
             </div>
 
 
-            <div class="flex justify-center mt-6">
+            <div
+                class="flex justify-center mt-6"
+            >
 
                 <button
                     class="retro-btn primary"
@@ -3035,7 +3375,7 @@
 
 
     <!-- ==================================================
-         MODAL EVALUATION
+         MODAL EVALUASI
          ================================================== -->
 
     <div
@@ -3113,7 +3453,9 @@
 
                 <div
                     class="col-span-2 border-t my-1"
-                    style="border-color: var(--border-light);"
+                    style="
+                        border-color: var(--border-light);
+                    "
                 ></div>
 
 
@@ -3123,7 +3465,6 @@
                 >
                     TOTAL SKOR:
                 </div>
-
 
                 <div
                     class="text-right font-bold"
@@ -3146,7 +3487,9 @@
             ></div>
 
 
-            <div class="flex justify-between mt-4">
+            <div
+                class="flex justify-between mt-4"
+            >
 
                 <button
                     class="retro-btn"
@@ -3155,7 +3498,6 @@
                 >
                     KEMBALI
                 </button>
-
 
                 <button
                     class="retro-btn primary hidden"
@@ -3187,13 +3529,13 @@
                 EDITOR SCRIPT
             </h1>
 
-
             <p
                 class="text-sm mb-6 font-sans"
                 style="color: var(--text-muted);"
             >
                 Setiap cerita memiliki masalah.
-                Tugasmu memastikan setiap bagian memiliki alasan yang logis.
+                Tugasmu memastikan setiap bagian
+                memiliki alasan yang logis.
             </p>
 
 
@@ -3267,7 +3609,6 @@
                     [ RESET DATA ]
                 </button>
 
-
                 <button
                     class="retro-btn primary"
                     id="btn-start-game"
@@ -3283,7 +3624,12 @@
     </div>
 
 
+    <!-- ==================================================
+         JAVASCRIPT
+         ================================================== -->
+
     <script>
+
 
         /* ==================================================
            GLOSSARY
@@ -3357,69 +3703,112 @@
 
             {
                 genre: "HOROR",
+
                 theme: "Ketakutan pada yang tak terlihat",
-                reqText: "Akhir cerita harus IRONIS.",
-                protagonists: ["POLISI", "DOKTER"],
+
+                reqText:
+                    "Akhir cerita harus IRONIS.",
+
+                protagonists: [
+                    "POLISI",
+                    "DOKTER"
+                ],
+
                 locations: [
                     "RUMAH SAKIT KOSONG",
                     "GUDANG TUA",
                     "RUMAH TUA"
                 ],
+
                 conflicts: [
                     "terdengar langkah kaki mendekat perlahan",
                     "semua lampu berkedip dan mati"
                 ],
+
                 ending: "IRONIS"
             },
 
 
             {
                 genre: "DRAMA KRIMINAL",
-                theme: "Keadilan yang terhalang kebohongan",
-                reqText: "Kewenangan hukum tidak boleh dilanggar.",
-                protagonists: ["JAKSA"],
+
+                theme:
+                    "Keadilan yang terhalang kebohongan",
+
+                reqText:
+                    "Kewenangan hukum tidak boleh dilanggar.",
+
+                protagonists: [
+                    "JAKSA"
+                ],
+
                 locations: [
                     "RUANG SIDANG"
                 ],
+
                 conflicts: [
                     "saksi ahli tiba-tiba mengubah kesaksiannya",
                     "alibi terdakwa dipalsukan"
                 ],
-                ending: "PENYELESAIAN TUNTUTAN"
+
+                ending:
+                    "PENYELESAIAN TUNTUTAN"
             },
 
 
             {
                 genre: "THRILLER MEDIS",
-                theme: "Berpacu dengan waktu melawan kematian",
-                reqText: "Tensi memuncak di akhir cerita (Cliffhanger).",
-                protagonists: ["DOKTER"],
+
+                theme:
+                    "Berpacu dengan waktu melawan kematian",
+
+                reqText:
+                    "Tensi memuncak di akhir cerita (Cliffhanger).",
+
+                protagonists: [
+                    "DOKTER"
+                ],
+
                 locations: [
                     "RUANG OPERASI",
                     "KLINIK DARURAT"
                 ],
+
                 conflicts: [
                     "kondisi korban memburuk dalam hitungan detik",
                     "pasien kejang hebat"
                 ],
-                ending: "CLIFFHANGER"
+
+                ending:
+                    "CLIFFHANGER"
             },
 
 
             {
                 genre: "MISTERI",
-                theme: "Kebenaran bersembunyi di detail kecil",
-                reqText: "Tokoh harus mengamankan area TKP.",
-                protagonists: ["POLISI"],
+
+                theme:
+                    "Kebenaran bersembunyi di detail kecil",
+
+                reqText:
+                    "Tokoh harus mengamankan area TKP.",
+
+                protagonists: [
+                    "POLISI"
+                ],
+
                 locations: [
                     "TKP PENEMUAN KORBAN",
                     "GANG GELAP"
                 ],
+
                 conflicts: [
                     "sebuah BARANG BUKTI hilang",
                     "tersangka menolak bicara"
                 ],
-                ending: "TERBUKA (AMBIGU)"
+
+                ending:
+                    "TERBUKA (AMBIGU)"
             }
 
         ];
@@ -3457,9 +3846,13 @@
            ================================================== */
 
         function pickRandom(arr) {
+
             return arr[
-                Math.floor(Math.random() * arr.length)
+                Math.floor(
+                    Math.random() * arr.length
+                )
             ];
+
         }
 
 
@@ -3479,50 +3872,52 @@
                         ]
                 );
 
-
             if (!available.length) {
                 available = storyTemplates;
             }
 
-
-            const template = pickRandom(available);
-
+            const template =
+                pickRandom(available);
 
             const formats = [
 
                 {
-                    id: "CUT_TO",
-                    text: "Akhiri naskah dengan transisi CUT TO:"
+                    id: 'CUT_TO',
+                    text:
+                        "Akhiri naskah dengan transisi CUT TO:"
                 },
 
                 {
-                    id: "FADE_OUT",
-                    text: "Akhiri naskah dengan transisi FADE OUT."
+                    id: 'FADE_OUT',
+                    text:
+                        "Akhiri naskah dengan transisi FADE OUT."
                 },
 
                 {
-                    id: "NO_TRANS",
+                    id: 'NO_TRANS',
                     text: "-"
                 },
 
                 {
-                    id: "ANY_TRANS",
+                    id: 'ANY_TRANS',
                     text: "-"
                 }
 
             ];
 
-
-            const format = pickRandom(formats);
-
+            const format =
+                pickRandom(formats);
 
             return {
 
-                genre: template.genre,
+                genre:
+                    template.genre,
 
-                theme: template.theme,
+                theme:
+                    template.theme,
 
-                reqText: template.reqText,
+                reqText:
+                    template.reqText,
 
                 protagonist:
                     pickRandom(template.protagonists),
@@ -3533,13 +3928,17 @@
                 conflict:
                     pickRandom(template.conflicts),
 
-                ending: template.ending,
+                ending:
+                    template.ending,
 
-                formatId: format.id,
+                formatId:
+                    format.id,
 
-                formatText: format.text
+                formatText:
+                    format.text
 
             };
+
         }
 
 
@@ -3549,359 +3948,397 @@
 
         function generateBlocksForBible(bible) {
 
-            let blocks = [];
+            const blocks = [];
 
+            let idCounter = 1;
 
             function cb(
                 type,
                 text,
                 isCorrect,
                 seq,
-                req,
-                err,
-                hint
+                req = false,
+                err = "",
+                hint = ""
             ) {
 
-                return {
+                blocks.push({
 
                     id:
-                        "b_" +
-                        Math.random()
-                            .toString(36)
-                            .substr(2,9),
+                        "block-" +
+                        idCounter++,
 
-                    type: type,
+                    type,
 
-                    text: text,
+                    text,
 
-                    correct: isCorrect,
+                    correct:
+                        isCorrect,
 
-                    sequence: seq,
+                    sequence:
+                        seq,
 
-                    required: req,
+                    required:
+                        req,
 
-                    error: err || "",
+                    error:
+                        err,
 
-                    hint: hint || ""
+                    hint
 
-                };
+                });
+
             }
 
 
-            /* SCENE HEADING */
+            /* ----------------------------------------------
+               SCENE HEADING
+               ---------------------------------------------- */
 
-            blocks.push(
-                cb(
-                    "SCENE HEADING",
-                    `INT. ${bible.location} - SIANG`,
-                    true,
-                    1,
-                    true,
-                    "",
-                    ""
-                )
+            cb(
+                "SCENE HEADING",
+
+                `INT. ${bible.location} - SIANG`,
+
+                true,
+
+                1,
+
+                true
             );
 
-
-            /* FALSE LOCATIONS */
 
             if (gameState.day >= 4) {
 
-                blocks.push(
-                    cb(
-                        "SCENE HEADING",
-                        "EXT. JALAN RAYA - MALAM",
-                        false,
-                        0,
-                        false,
-                        "Lokasi Salah",
-                        "Perhatikan lokasi relevan sesuai profesi di kasus ini."
-                    )
+                cb(
+                    "SCENE HEADING",
+
+                    "EXT. JALAN RAYA - MALAM",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Lokasi Salah",
+
+                    "Perhatikan lokasi relevan sesuai profesi di kasus ini."
                 );
 
+                cb(
+                    "SCENE HEADING",
 
-                blocks.push(
-                    cb(
-                        "SCENE HEADING",
-                        "INT. RESTORAN CEPAT SAJI - PAGI",
-                        false,
-                        0,
-                        false,
-                        "Lokasi Salah",
-                        "Perhatikan lokasi relevan sesuai profesi di kasus ini."
-                    )
+                    "INT. RESTORAN CEPAT SAJI - PAGI",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Lokasi Salah",
+
+                    "Perhatikan lokasi relevan sesuai profesi di kasus ini."
                 );
 
             }
 
 
-            /* ==================================================
+            /* ----------------------------------------------
                JAKSA
-               ================================================== */
+               ---------------------------------------------- */
 
             if (bible.protagonist === "JAKSA") {
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "Seorang JAKSA merapikan berkas di meja dengan gugup.",
-                        true,
-                        2,
-                        true,
-                        "",
-                        ""
-                    )
+                cb(
+                    "ACTION",
+
+                    "Seorang JAKSA merapikan berkas di meja dengan gugup.",
+
+                    true,
+
+                    2,
+
+                    true
                 );
 
+                cb(
+                    "DIALOGUE",
 
-                blocks.push(
-                    cb(
-                        "DIALOGUE",
-                        "JAKSA\nKita harus periksa ALIBI terdakwa dengan saksama.",
-                        true,
-                        3,
-                        true,
-                        "",
-                        ""
-                    )
+                    "JAKSA\nKita harus periksa ALIBI terdakwa dengan saksama.",
+
+                    true,
+
+                    3,
+
+                    true
                 );
 
+                cb(
+                    "ACTION",
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "JAKSA mengetuk palu dan memutuskan vonis penjara.",
-                        false,
-                        0,
-                        false,
-                        "Kewenangan",
-                        "Perhatikan batas kewenangan JAKSA."
-                    )
+                    "JAKSA mengetuk palu dan memutuskan vonis penjara.",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Kewenangan",
+
+                    "Jaksa tidak menjatuhkan vonis. Keputusan vonis merupakan kewenangan hakim."
                 );
 
+                cb(
+                    "DIALOGUE",
 
-                blocks.push(
-                    cb(
-                        "DIALOGUE",
-                        "JAKSA\nSaya akan melakukan AUTOPSI sekarang juga.",
-                        false,
-                        0,
-                        false,
-                        "Kewenangan",
-                        "Autopsi bukan kewenangan JAKSA."
-                    )
+                    "JAKSA\nSaya akan melakukan AUTOPSI sekarang juga.",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Kewenangan",
+
+                    "Autopsi bukan kewenangan jaksa."
                 );
 
+                cb(
+                    "ACTION",
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "Hakim menyuruh JAKSA membacakan PLEDOI.",
-                        false,
-                        0,
-                        false,
-                        "Kewenangan",
-                        "Perhatikan fungsi PLEDOI dalam persidangan."
-                    )
+                    "Hakim menyuruh JAKSA membacakan PLEDOI.",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Kewenangan",
+
+                    "Pahami kembali siapa yang berwenang menyampaikan pledoi."
                 );
 
             }
 
 
-            /* ==================================================
+            /* ----------------------------------------------
                DOKTER
-               ================================================== */
+               ---------------------------------------------- */
 
             else if (bible.protagonist === "DOKTER") {
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "DOKTER memeriksa kondisi KLINIS pasien secara manual.",
-                        true,
-                        2,
-                        true,
-                        "",
-                        ""
-                    )
+                cb(
+                    "ACTION",
+
+                    "DOKTER memeriksa kondisi KLINIS pasien secara manual.",
+
+                    true,
+
+                    2,
+
+                    true
                 );
 
+                cb(
+                    "ACTION",
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "Ia mengambil STETOSKOP dan menarik napas panjang.",
-                        true,
-                        3,
-                        true,
-                        "",
-                        ""
-                    )
+                    "Ia mengambil STETOSKOP dan menarik napas panjang.",
+
+                    true,
+
+                    3,
+
+                    true
                 );
 
+                cb(
+                    "ACTION",
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "DOKTER mengeluarkan pistol dan memborgol pelaku.",
-                        false,
-                        0,
-                        false,
-                        "Kewenangan",
-                        "Tindakan tersebut bukan kewenangan dokter."
-                    )
+                    "DOKTER mengeluarkan pistol dan memborgol pelaku.",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Kewenangan",
+
+                    "Tindakan penegakan hukum bukan kewenangan dokter."
                 );
 
+                cb(
+                    "ACTION",
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "DOKTER memasang GARIS POLISI di sekitar ranjang.",
-                        false,
-                        0,
-                        false,
-                        "Kewenangan",
-                        "Perhatikan kewenangan POLISI."
-                    )
+                    "DOKTER memasang GARIS POLISI di sekitar ranjang.",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Kewenangan",
+
+                    "Pengamanan TKP bukan kewenangan dokter."
                 );
 
+                cb(
+                    "DIALOGUE",
 
-                blocks.push(
-                    cb(
-                        "DIALOGUE",
-                        "DOKTER\nSaya akan mengajukan PLEDOI untuk pasien ini.",
-                        false,
-                        0,
-                        false,
-                        "Konteks",
-                        "Dokter lebih tepat menggunakan RESEP untuk terapi pasien."
-                    )
+                    "DOKTER\nSaya akan mengajukan PLEDOI untuk pasien ini.",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Konteks",
+
+                    "Gunakan tindakan medis yang sesuai, misalnya RESEP."
                 );
 
             }
 
 
-            /* ==================================================
+            /* ----------------------------------------------
                POLISI
-               ================================================== */
+               ---------------------------------------------- */
 
             else {
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "POLISI merunduk di bawah GARIS POLISI.",
-                        true,
-                        2,
-                        true,
-                        "",
-                        ""
-                    )
+                cb(
+                    "ACTION",
+
+                    "POLISI merunduk di bawah GARIS POLISI.",
+
+                    true,
+
+                    2,
+
+                    true
                 );
 
+                cb(
+                    "DIALOGUE",
 
-                blocks.push(
-                    cb(
-                        "DIALOGUE",
-                        "POLISI\nArea ini steril. Amankan BARANG BUKTI!",
-                        true,
-                        3,
-                        true,
-                        "",
-                        ""
-                    )
+                    "POLISI\nArea ini steril. Amankan BARANG BUKTI!",
+
+                    true,
+
+                    3,
+
+                    true
                 );
 
+                cb(
+                    "ACTION",
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "POLISI melakukan pembedahan KLINIS pada mayat.",
-                        false,
-                        0,
-                        false,
-                        "Kewenangan",
-                        "Perhatikan fungsi AUTOPSI dan pemeriksaan forensik."
-                    )
+                    "POLISI melakukan pembedahan KLINIS pada mayat.",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Kewenangan",
+
+                    "Pemeriksaan mayat berkaitan dengan autopsi dan tenaga forensik."
                 );
 
+                cb(
+                    "ACTION",
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "POLISI membacakan PLEDOI di depan saksi.",
-                        false,
-                        0,
-                        false,
-                        "Kewenangan",
-                        "PLEDOI berkaitan dengan pembelaan di pengadilan."
-                    )
+                    "POLISI membacakan PLEDOI di depan saksi.",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Kewenangan",
+
+                    "Pahami fungsi pledoi dalam proses hukum."
                 );
 
+                cb(
+                    "ACTION",
 
-                blocks.push(
-                    cb(
-                        "ACTION",
-                        "POLISI menuliskan RESEP untuk korban luka.",
-                        false,
-                        0,
-                        false,
-                        "Kewenangan",
-                        "RESEP merupakan kewenangan dokter."
-                    )
+                    "POLISI menuliskan RESEP untuk korban luka.",
+
+                    false,
+
+                    0,
+
+                    false,
+
+                    "Kewenangan",
+
+                    "Resep merupakan bagian dari tindakan medis."
                 );
 
             }
 
 
-            /* ==================================================
+            /* ----------------------------------------------
                CONFLICT
-               ================================================== */
+               ---------------------------------------------- */
 
-            blocks.push(
-                cb(
-                    "ACTION",
-                    `Tiba-tiba, ${bible.conflict}.`,
-                    true,
-                    4,
-                    true,
-                    "",
-                    ""
-                )
+            cb(
+                "ACTION",
+
+                `Tiba-tiba, ${bible.conflict}.`,
+
+                true,
+
+                4,
+
+                true
             );
 
 
-            /* ==================================================
+            /* ----------------------------------------------
                TRANSITION
-               ================================================== */
+               ---------------------------------------------- */
 
             if (bible.formatId === "CUT_TO") {
 
-                blocks.push(
-                    cb(
-                        "TRANSITION",
-                        "CUT TO:",
-                        true,
-                        5,
-                        true,
-                        "",
-                        ""
-                    )
-                );
+                cb(
+                    "TRANSITION",
 
+                    "CUT TO:",
+
+                    true,
+
+                    5,
+
+                    true
+                );
 
                 if (gameState.day >= 4) {
 
-                    blocks.push(
-                        cb(
-                            "TRANSITION",
-                            "FADE OUT.",
-                            false,
-                            0,
-                            false,
-                            "Format",
-                            "Ikuti instruksi format pada CLIENT BRIEF."
-                        )
+                    cb(
+                        "TRANSITION",
+
+                        "FADE OUT.",
+
+                        false,
+
+                        0,
+
+                        false,
+
+                        "Format",
+
+                        "Client meminta CUT TO: sebagai penutup."
                     );
 
                 }
@@ -3911,31 +4348,34 @@
 
             else if (bible.formatId === "FADE_OUT") {
 
-                blocks.push(
-                    cb(
-                        "TRANSITION",
-                        "FADE OUT.",
-                        true,
-                        5,
-                        true,
-                        "",
-                        ""
-                    )
-                );
+                cb(
+                    "TRANSITION",
 
+                    "FADE OUT.",
+
+                    true,
+
+                    5,
+
+                    true
+                );
 
                 if (gameState.day >= 4) {
 
-                    blocks.push(
-                        cb(
-                            "TRANSITION",
-                            "CUT TO:",
-                            false,
-                            0,
-                            false,
-                            "Format",
-                            "Ikuti instruksi format pada CLIENT BRIEF."
-                        )
+                    cb(
+                        "TRANSITION",
+
+                        "CUT TO:",
+
+                        false,
+
+                        0,
+
+                        false,
+
+                        "Format",
+
+                        "Client meminta FADE OUT. sebagai penutup."
                     );
 
                 }
@@ -3947,29 +4387,36 @@
 
                 if (gameState.day >= 4) {
 
-                    blocks.push(
-                        cb(
-                            "TRANSITION",
-                            "CUT TO:",
-                            false,
-                            0,
-                            false,
-                            "Format",
-                            "Kasus ini tidak membutuhkan transisi."
-                        )
+                    cb(
+                        "TRANSITION",
+
+                        "CUT TO:",
+
+                        false,
+
+                        0,
+
+                        false,
+
+                        "Format",
+
+                        "Brief meminta naskah tanpa transisi."
                     );
 
+                    cb(
+                        "TRANSITION",
 
-                    blocks.push(
-                        cb(
-                            "TRANSITION",
-                            "FADE OUT.",
-                            false,
-                            0,
-                            false,
-                            "Format",
-                            "Kasus ini tidak membutuhkan transisi."
-                        )
+                        "FADE OUT.",
+
+                        false,
+
+                        0,
+
+                        false,
+
+                        "Format",
+
+                        "Brief meminta naskah tanpa transisi."
                     );
 
                 }
@@ -3979,34 +4426,37 @@
 
             else if (bible.formatId === "ANY_TRANS") {
 
-                blocks.push(
-                    cb(
-                        "TRANSITION",
-                        pickRandom([
-                            "CUT TO:",
-                            "FADE OUT."
-                        ]),
-                        true,
-                        5,
-                        true,
-                        "",
-                        ""
-                    )
-                );
+                cb(
+                    "TRANSITION",
 
+                    pickRandom([
+                        "CUT TO:",
+                        "FADE OUT."
+                    ]),
+
+                    true,
+
+                    5,
+
+                    true
+                );
 
                 if (gameState.day >= 4) {
 
-                    blocks.push(
-                        cb(
-                            "TRANSITION",
-                            "DISSOLVE TO:",
-                            false,
-                            0,
-                            false,
-                            "Format",
-                            "Gunakan transisi standar yang tersedia."
-                        )
+                    cb(
+                        "TRANSITION",
+
+                        "DISSOLVE TO:",
+
+                        false,
+
+                        0,
+
+                        false,
+
+                        "Format",
+
+                        "Gunakan transisi yang tersedia sesuai struktur."
                     );
 
                 }
@@ -4014,14 +4464,19 @@
             }
 
 
+            /* ----------------------------------------------
+               SHUFFLE
+               ---------------------------------------------- */
+
             return blocks.sort(
                 () => Math.random() - 0.5
             );
+
         }
 
 
         /* ==================================================
-           SETUP NEW CASE
+           SETUP CASE
            ================================================== */
 
         function setupNewCase() {
@@ -4029,49 +4484,52 @@
             gameState.currentBible =
                 generateStoryBible();
 
-
             gameState.currentBlocks =
                 generateBlocksForBible(
                     gameState.currentBible
                 );
 
-
             const reqCount =
-                gameState.currentBlocks
-                    .filter(b => b.required)
-                    .length;
-
+                gameState.currentBlocks.filter(
+                    b => b.required
+                ).length;
 
             gameState.placedBlocks =
                 new Array(reqCount).fill(null);
-
 
             gameState.selectedBlockId = null;
 
             gameState.hintUsed = false;
 
 
-            document
-                .getElementById("hint-badge")
-                .style.display = "flex";
+            const badge =
+                document.getElementById(
+                    "hint-badge"
+                );
+
+            const hintButton =
+                document.getElementById(
+                    "btn-open-hint"
+                );
+
+            badge.style.display = "flex";
+
+            hintButton.classList.remove(
+                "hint-disabled"
+            );
 
 
-            document
-                .getElementById("btn-open-hint")
-                .classList.remove("hint-disabled");
+            document.getElementById(
+                "glossary-empty"
+            ).classList.remove("hidden");
 
-
-            document
-                .getElementById("glossary-empty")
-                .classList.remove("hidden");
-
-
-            document
-                .getElementById("glossary-content")
-                .classList.add("hidden");
+            document.getElementById(
+                "glossary-content"
+            ).classList.add("hidden");
 
 
             updateUI();
+
         }
 
 
@@ -4085,10 +4543,10 @@
                 return;
             }
 
-
             document
                 .getElementById("modal-hint")
                 .classList.add("active");
+
         }
 
 
@@ -4098,7 +4556,6 @@
                 .getElementById("modal-hint")
                 .classList.remove("active");
 
-
             gameState.hintUsed = true;
 
 
@@ -4106,10 +4563,10 @@
                 .getElementById("hint-badge")
                 .style.display = "none";
 
-
             document
                 .getElementById("btn-open-hint")
                 .classList.add("hint-disabled");
+
         }
 
 
@@ -4121,24 +4578,24 @@
 
             let result = text;
 
-
             Object.keys(glossaryDB)
-                .sort((a,b) => b.length - a.length)
+                .sort(
+                    (a,b) =>
+                        b.length - a.length
+                )
                 .forEach(key => {
 
                     const escaped =
                         key.replace(
                             /[.*+?^${}()|[\]\\]/g,
-                            "\\$&"
+                            '\\$&'
                         );
-
 
                     const regex =
                         new RegExp(
                             `\\b(${escaped})\\b`,
                             "gi"
                         );
-
 
                     result =
                         result.replace(
@@ -4148,10 +4605,11 @@
                                 onclick="event.stopPropagation(); openGlossary('${key}')"
                             >$1</span>`
                         );
+
                 });
 
+            return result;
 
-            return result.replace(/\n/g, "<br>");
         }
 
 
@@ -4160,35 +4618,30 @@
             const data =
                 glossaryDB[term];
 
-
             if (!data) {
                 return;
             }
 
+            document.getElementById(
+                "glossary-empty"
+            ).classList.add("hidden");
 
-            document
-                .getElementById("glossary-empty")
-                .classList.add("hidden");
+            document.getElementById(
+                "glossary-content"
+            ).classList.remove("hidden");
 
+            document.getElementById(
+                "glossary-title"
+            ).innerText = term;
 
-            document
-                .getElementById("glossary-content")
-                .classList.remove("hidden");
+            document.getElementById(
+                "glossary-def"
+            ).innerText = data.def;
 
+            document.getElementById(
+                "glossary-ex"
+            ).innerText = data.ex;
 
-            document
-                .getElementById("glossary-title")
-                .innerText = term;
-
-
-            document
-                .getElementById("glossary-def")
-                .innerText = data.def;
-
-
-            document
-                .getElementById("glossary-ex")
-                .innerText = data.ex;
         }
 
 
@@ -4198,111 +4651,111 @@
 
         function updateUI() {
 
-            document
-                .getElementById("level-display")
-                .innerText =
-                `HARI ${String(gameState.day).padStart(2,"0")}`;
+            document.getElementById(
+                "level-display"
+            ).innerText =
+                "HARI " +
+                String(gameState.day).padStart(2, "0");
 
 
-            document
-                .getElementById("page-number")
-                .innerText =
+            document.getElementById(
+                "page-number"
+            ).innerText =
                 gameState.day === 1
                     ? ""
-                    : `HAL ${gameState.day}.`;
+                    : "HAL 2.";
 
 
-            const b =
+            const bible =
                 gameState.currentBible;
 
-
-            if (!b) {
+            if (!bible) {
                 return;
             }
 
 
-            document
-                .getElementById("client-brief-content")
-                .innerHTML = `
+            document.getElementById(
+                "client-brief-content"
+            ).innerHTML = `
 
-                    <div class="brief-line">
+                <div class="brief-line">
 
-                        <span class="label">
-                            GENRE:
-                        </span>
+                    <span class="label">
+                        GENRE:
+                    </span>
 
-                        <span class="value">
-                            ${b.genre}
-                        </span>
+                    <span class="value">
+                        ${bible.genre}
+                    </span>
 
-                    </div>
+                    <span
+                        class="label"
+                        style="margin-left:18px;"
+                    >
+                        TEMA:
+                    </span>
 
+                    <span class="value">
+                        ${bible.theme}
+                    </span>
 
-                    <div class="brief-line">
-
-                        <span class="label">
-                            TEMA:
-                        </span>
-
-                        <span class="value">
-                            ${b.theme}
-                        </span>
-
-                    </div>
+                </div>
 
 
-                    <div class="brief-line">
+                <div class="brief-line">
 
-                        <span class="label">
-                            TOKOH:
-                        </span>
+                    <span class="label">
+                        TOKOH:
+                    </span>
 
-                        <span class="value">
-                            ${b.protagonist}
-                        </span>
+                    <span class="value">
+                        ${bible.protagonist}
+                    </span>
 
-                    </div>
+                    <span
+                        class="label"
+                        style="margin-left:18px;"
+                    >
+                        LOKASI:
+                    </span>
 
+                    <span class="value">
+                        ${bible.location}
+                    </span>
 
-                    <div class="brief-line">
-
-                        <span class="label">
-                            LOKASI:
-                        </span>
-
-                        <span class="value">
-                            ${b.location}
-                        </span>
-
-                    </div>
+                </div>
 
 
-                    <div class="brief-line">
+                <div class="brief-line">
 
-                        <span class="label">
-                            PLOT:
-                        </span>
+                    <span class="label">
+                        PLOT:
+                    </span>
 
-                        <span class="value">
-                            ${b.reqText}
-                        </span>
+                    <span class="value">
+                        ${bible.reqText}
+                    </span>
 
-                    </div>
+                </div>
 
 
-                    <div class="brief-line">
+                <div class="brief-line">
 
-                        <span class="label">
-                            FORMAT:
-                        </span>
+                    <span class="label">
+                        FORMAT:
+                    </span>
 
-                        <span class="value">
-                            ${b.formatText}
-                        </span>
+                    <span class="value">
+                        ${
+                            bible.formatText === "-"
+                                ? "BEBAS"
+                                : bible.formatText
+                        }
+                    </span>
 
-                    </div>
+                </div>
 
-                `;
+            `;
 
 
             const checklist =
@@ -4310,17 +4763,16 @@
                     "checklist-container"
                 );
 
-
             checklist.innerHTML = "";
 
 
-            if (b.reqText !== "-") {
+            if (bible.reqText !== "-") {
 
                 checklist.innerHTML += `
 
                     <div
-                        class="checklist-item"
                         id="chk-blocks"
+                        class="checklist-item"
                     >
 
                         <div class="checklist-box"></div>
@@ -4332,16 +4784,17 @@
                     </div>
 
                 `;
+
             }
 
 
-            if (b.formatId === "NO_TRANS") {
+            if (bible.formatId === "NO_TRANS") {
 
                 checklist.innerHTML += `
 
                     <div
-                        class="checklist-item"
                         id="chk-trans"
+                        class="checklist-item"
                     >
 
                         <div class="checklist-box"></div>
@@ -4356,17 +4809,16 @@
 
             }
 
-
             else if (
-                b.formatId === "CUT_TO" ||
-                b.formatId === "FADE_OUT"
+                bible.formatId === "CUT_TO" ||
+                bible.formatId === "FADE_OUT"
             ) {
 
                 checklist.innerHTML += `
 
                     <div
-                        class="checklist-item"
                         id="chk-trans"
+                        class="checklist-item"
                     >
 
                         <div class="checklist-box"></div>
@@ -4378,14 +4830,15 @@
                     </div>
 
                 `;
+
             }
 
 
             checklist.innerHTML += `
 
                 <div
-                    class="checklist-item"
                     id="chk-logic"
+                    class="checklist-item"
                 >
 
                     <div class="checklist-box"></div>
@@ -4398,8 +4851,8 @@
 
 
                 <div
-                    class="checklist-item"
                     id="chk-prof"
+                    class="checklist-item"
                 >
 
                     <div class="checklist-box"></div>
@@ -4413,49 +4866,37 @@
             `;
 
 
-            document
-                .getElementById("btn-open-hint")
-                .classList.toggle(
-                    "hint-disabled",
-                    gameState.hintUsed
-                );
-
-
             renderBlocksAndSlots();
 
             updateChecklist();
+
         }
 
 
         /* ==================================================
-           RENDER BLOCKS + SLOTS
+           RENDER BLOCKS
            ================================================== */
 
         function renderBlocksAndSlots() {
 
-            const inventory =
+            const container =
                 document.getElementById(
                     "block-container"
                 );
 
-
-            inventory.innerHTML = "";
-
-
-            const placedIds =
-                new Set(
-                    gameState.placedBlocks.filter(Boolean)
-                );
+            container.innerHTML = "";
 
 
             gameState.currentBlocks
                 .filter(
-                    b => !placedIds.has(b.id)
+                    b =>
+                        !gameState.placedBlocks
+                            .includes(b.id)
                 )
                 .forEach(b => {
 
-                    inventory.appendChild(
-                        createBlockEl(b, false)
+                    container.appendChild(
+                        createBlockEl(b)
                     );
 
                 });
@@ -4466,119 +4907,108 @@
                     "slots-container"
                 );
 
-
             slots.innerHTML = "";
 
 
             gameState.placedBlocks
-                .forEach((blockId, idx) => {
+                .forEach((id, index) => {
 
                     const row =
                         document.createElement("div");
 
-                    row.className = "slot-row";
+                    row.className =
+                        "slot-row";
 
 
                     const number =
                         document.createElement("div");
 
-                    number.className = "slot-number";
+                    number.className =
+                        "slot-number";
 
-                    number.innerText = idx + 1;
+                    number.innerText =
+                        index + 1;
 
 
-                    const drop =
+                    const slot =
                         document.createElement("div");
 
-                    drop.className = "drop-slot";
+                    slot.className =
+                        "drop-slot";
 
-                    drop.dataset.index = idx;
+                    slot.dataset.index =
+                        index;
 
 
-                    drop.ondragover =
+                    slot.ondragover =
                         handleDragOver;
 
-                    drop.ondragleave =
+                    slot.ondragleave =
                         handleDragLeave;
 
-                    drop.ondrop =
+                    slot.ondrop =
                         handleDrop;
 
+                    slot.onclick =
+                        () =>
+                            handleSlotClick(index);
 
-                    drop.onclick =
-                        () => handleSlotClick(idx);
 
+                    if (id) {
 
-                    if (blockId) {
-
-                        const b =
+                        const block =
                             gameState.currentBlocks
                                 .find(
-                                    x => x.id === blockId
+                                    b =>
+                                        b.id === id
                                 );
 
+                        if (block) {
 
-                        if (b) {
-
-                            drop.appendChild(
+                            slot.appendChild(
                                 createBlockEl(
-                                    b,
+                                    block,
                                     true,
-                                    idx
+                                    index
                                 )
                             );
 
+                            slot.style.border =
+                                "1px solid transparent";
 
-                            drop.style.border =
-                                "2px solid transparent";
-
-                            drop.style.background =
+                            slot.style.background =
                                 "transparent";
 
                         }
 
                     }
 
-
                     else {
 
-                        const placeholder =
-                            document.createElement("div");
-
-                        placeholder.style.width = "100%";
-
-                        placeholder.style.display =
-                            "flex";
-
-                        placeholder.style.alignItems =
-                            "center";
-
-                        placeholder.style.justifyContent =
-                            "center";
-
-                        placeholder.style.fontFamily =
-                            "var(--font-ui)";
-
-                        placeholder.style.fontSize =
-                            "0.9rem";
-
-                        placeholder.style.color =
-                            "var(--paper-dashed)";
-
-                        placeholder.innerText =
-                            "DRAG BLOCK KE SINI";
-
-
-                        drop.appendChild(
-                            placeholder
-                        );
+                        slot.innerHTML =
+                            `
+                            <div
+                                style="
+                                    width:100%;
+                                    display:flex;
+                                    align-items:center;
+                                    justify-content:center;
+                                    color:#aaa28e;
+                                    font-family:var(--font-ui);
+                                    font-size:.9rem;
+                                    pointer-events:none;
+                                "
+                            >
+                                DRAG BLOCK KE SINI
+                            </div>
+                            `;
 
                     }
 
 
                     row.appendChild(number);
 
-                    row.appendChild(drop);
+                    row.appendChild(slot);
 
                     slots.appendChild(row);
 
@@ -4587,21 +5017,22 @@
 
             requestAnimationFrame(() => {
 
-                const container =
+                const scroller =
                     document.getElementById(
                         "block-container"
                     );
 
-                container.dispatchEvent(
+                scroller.dispatchEvent(
                     new Event("scroll")
                 );
 
             });
+
         }
 
 
         /* ==================================================
-           CREATE BLOCK ELEMENT
+           CREATE BLOCK
            ================================================== */
 
         function createBlockEl(
@@ -4613,58 +5044,39 @@
             const el =
                 document.createElement("div");
 
-
             el.className =
                 "script-block";
 
 
-            el.draggable = true;
+            if (
+                gameState.selectedBlockId ===
+                b.id
+            ) {
+                el.classList.add("selected");
+            }
 
 
             el.id = b.id;
 
-
             el.dataset.type =
                 b.type;
 
-
-            if (isPlaced) {
-
-                el.dataset.slot =
-                    slotIdx;
-
-            }
+            el.draggable = true;
 
 
-            const typeLabel =
-                document.createElement("div");
+            el.innerHTML = `
 
+                <div class="block-type-label">
+                    ${b.type}
+                </div>
 
-            typeLabel.className =
-                "block-type-label";
+                <div class="block-text">
+                    ${processTextForGlossary(
+                        b.text
+                    )}
+                </div>
 
-
-            typeLabel.innerText =
-                b.type;
-
-
-            const text =
-                document.createElement("div");
-
-
-            text.className =
-                "block-text";
-
-
-            text.innerHTML =
-                processTextForGlossary(
-                    b.text
-                );
-
-
-            el.appendChild(typeLabel);
-
-            el.appendChild(text);
+            `;
 
 
             el.ondragstart =
@@ -4676,7 +5088,6 @@
                         slotIdx
                     );
 
-
             el.ondragend =
                 handleDragEnd;
 
@@ -4686,29 +5097,20 @@
 
                     e.stopPropagation();
 
-                    handleBlockClick(b.id);
+                    handleBlockClick(
+                        b.id
+                    );
 
                 };
 
 
-            if (
-                gameState.selectedBlockId === b.id
-            ) {
-
-                el.style.borderColor =
-                    "var(--accent-yellow)";
-
-                el.style.boxShadow =
-                    "0 0 0 2px var(--accent-yellow)";
-            }
-
-
             return el;
+
         }
 
 
         /* ==================================================
-           DRAG & DROP
+           DRAG AND DROP
            ================================================== */
 
         let draggedId = null;
@@ -4737,27 +5139,25 @@
             );
 
 
-            setTimeout(
-                () => {
+            setTimeout(() => {
 
-                    if (e.target) {
-                        e.target.style.opacity =
-                            "0.5";
-                    }
+                e.target.style.opacity =
+                    "0.5";
 
-                },
-                0
-            );
+            }, 0);
+
         }
 
 
         function handleDragEnd(e) {
 
-            e.target.style.opacity = "1";
+            e.target.style.opacity =
+                "1";
 
             draggedId = null;
 
             draggedFrom = null;
+
         }
 
 
@@ -4765,17 +5165,19 @@
 
             e.preventDefault();
 
-            e.currentTarget
-                .classList
-                .add("drag-over");
+            e.currentTarget.classList.add(
+                "drag-over"
+            );
+
         }
 
 
         function handleDragLeave(e) {
 
-            e.currentTarget
-                .classList
-                .remove("drag-over");
+            e.currentTarget.classList.remove(
+                "drag-over"
+            );
+
         }
 
 
@@ -4783,24 +5185,28 @@
 
             e.preventDefault();
 
-            e.currentTarget
-                .classList
-                .remove("drag-over");
+            e.currentTarget.classList.remove(
+                "drag-over"
+            );
 
 
             moveBlock(
                 draggedId,
+
                 parseInt(
                     e.currentTarget.dataset.index
                 ),
+
                 draggedFrom
             );
+
         }
 
 
         function handleDragOverPanel(e) {
 
             e.preventDefault();
+
         }
 
 
@@ -4819,9 +5225,15 @@
                     null,
                     draggedFrom
                 );
+
             }
+
         }
 
+
+        /* ==================================================
+           CLICK BLOCK
+           ================================================== */
 
         function handleBlockClick(id) {
 
@@ -4829,35 +5241,43 @@
                 gameState.selectedBlockId === id
             ) {
 
-                gameState.selectedBlockId = null;
+                gameState.selectedBlockId =
+                    null;
 
             }
 
             else {
 
-                gameState.selectedBlockId = id;
+                gameState.selectedBlockId =
+                    id;
 
             }
 
 
             renderBlocksAndSlots();
+
         }
 
+
+        /* ==================================================
+           CLICK SLOT
+           ================================================== */
 
         function handleSlotClick(idx) {
 
             if (gameState.selectedBlockId) {
 
-                let fromIdx =
-                    gameState.placedBlocks
-                        .indexOf(
-                            gameState.selectedBlockId
-                        );
+                const fromIdx =
+                    gameState.placedBlocks.indexOf(
+                        gameState.selectedBlockId
+                    );
 
 
                 moveBlock(
                     gameState.selectedBlockId,
+
                     idx,
+
                     fromIdx !== -1
                         ? fromIdx
                         : null
@@ -4876,11 +5296,16 @@
                 gameState.selectedBlockId =
                     gameState.placedBlocks[idx];
 
-
                 renderBlocksAndSlots();
+
             }
+
         }
 
+
+        /* ==================================================
+           MOVE BLOCK
+           ================================================== */
 
         function moveBlock(
             bId,
@@ -4905,7 +5330,6 @@
 
             }
 
-
             else {
 
                 const ex =
@@ -4920,7 +5344,6 @@
                         fromIdx
                     ] = ex;
 
-
                     gameState.placedBlocks[
                         toIdx
                     ] = bId;
@@ -4941,207 +5364,91 @@
             renderBlocksAndSlots();
 
             updateChecklist();
+
         }
 
+
+        /* ==================================================
+           CLEAR BOARD
+           ================================================== */
 
         function clearBoard() {
 
             gameState.placedBlocks.fill(null);
 
-            gameState.selectedBlockId = null;
+            gameState.selectedBlockId =
+                null;
 
             renderBlocksAndSlots();
 
             updateChecklist();
+
         }
 
 
         /* ==================================================
-           CHECKLIST
+           UPDATE CHECKLIST
            ================================================== */
 
         function updateChecklist() {
 
-            const placedIds =
-                gameState.placedBlocks
-                    .filter(Boolean);
+            const placed =
+                gameState.placedBlocks.filter(
+                    Boolean
+                );
 
 
             const required =
-                gameState.currentBlocks
-                    .filter(
-                        b => b.required
-                    );
+                gameState.currentBlocks.filter(
+                    b => b.required
+                );
 
 
             const allRequired =
                 required.every(
                     b =>
-                        placedIds.includes(b.id)
+                        placed.includes(b.id)
                 );
 
 
             const allFilled =
-                gameState.placedBlocks
-                    .every(Boolean);
+                gameState.placedBlocks.every(
+                    Boolean
+                );
 
 
-            const blockCheck =
+            const chkBlocks =
                 document.getElementById(
                     "chk-blocks"
                 );
 
+            if (chkBlocks) {
 
-            if (blockCheck) {
-
-                blockCheck.classList.toggle(
+                chkBlocks.classList.toggle(
                     "done",
                     allRequired
                 );
+
             }
 
 
-            const transCheck =
+            const chkTrans =
                 document.getElementById(
                     "chk-trans"
                 );
 
 
-            if (transCheck) {
-
-                let transOk = false;
-
-
-                if (
-                    gameState.currentBible
-                        .formatId === "NO_TRANS"
-                ) {
-
-                    transOk =
-                        !gameState.placedBlocks
-                            .some(id => {
-
-                                const b =
-                                    gameState.currentBlocks
-                                        .find(
-                                            x =>
-                                                x.id === id
-                                        );
-
-                                return (
-                                    b &&
-                                    b.type === "TRANSITION"
-                                );
-
-                            });
-
-                }
-
-                else {
-
-                    transOk =
-                        gameState.placedBlocks
-                            .some(id => {
-
-                                const b =
-                                    gameState.currentBlocks
-                                        .find(
-                                            x =>
-                                                x.id === id
-                                        );
-
-                                return (
-                                    b &&
-                                    b.correct &&
-                                    b.type === "TRANSITION"
-                                );
-
-                            });
-                }
-
-
-                transCheck.classList.toggle(
-                    "done",
-                    transOk
-                );
-            }
-
-
-            let sequenceOk = false;
+            let transOK = false;
 
 
             if (
-                allRequired &&
-                allFilled
+                gameState.currentBible.formatId ===
+                "NO_TRANS"
             ) {
 
-                let lastSeq = -1;
-
-                sequenceOk = true;
-
-
-                for (
-                    let i = 0;
-                    i < gameState.placedBlocks.length;
-                    i++
-                ) {
-
-                    const b =
-                        gameState.currentBlocks
-                            .find(
-                                x =>
-                                    x.id ===
-                                    gameState.placedBlocks[i]
-                            );
-
-
-                    if (!b) {
-                        sequenceOk = false;
-                        break;
-                    }
-
-
-                    if (
-                        b.sequence <= lastSeq
-                    ) {
-
-                        sequenceOk = false;
-                        break;
-
-                    }
-
-
-                    lastSeq =
-                        b.sequence;
-                }
-            }
-
-
-            const logicCheck =
-                document.getElementById(
-                    "chk-logic"
-                );
-
-
-            if (logicCheck) {
-
-                logicCheck.classList.toggle(
-                    "done",
-                    sequenceOk
-                );
-            }
-
-
-            let professionOk = true;
-
-
-            if (
-                allFilled
-            ) {
-
-                professionOk =
-                    gameState.placedBlocks
-                        .every(id => {
+                transOK =
+                    !gameState.placedBlocks.some(
+                        id => {
 
                             const b =
                                 gameState.currentBlocks
@@ -5152,26 +5459,145 @@
 
                             return (
                                 b &&
+                                b.type === "TRANSITION"
+                            );
+
+                        }
+                    );
+
+            }
+
+            else {
+
+                transOK =
+                    gameState.placedBlocks.some(
+                        id => {
+
+                            const b =
+                                gameState.currentBlocks
+                                    .find(
+                                        x =>
+                                            x.id === id
+                                    );
+
+                            return (
+                                b &&
+                                b.type === "TRANSITION" &&
                                 b.correct
                             );
 
-                        });
+                        }
+                    );
+
             }
 
 
-            const profCheck =
+            if (chkTrans) {
+
+                chkTrans.classList.toggle(
+                    "done",
+                    transOK
+                );
+
+            }
+
+
+            let sequenceOK = true;
+
+            let lastSequence = -1;
+
+
+            gameState.placedBlocks
+                .forEach(id => {
+
+                    const b =
+                        gameState.currentBlocks
+                            .find(
+                                x =>
+                                    x.id === id
+                            );
+
+                    if (!b) {
+                        return;
+                    }
+
+
+                    if (
+                        b.sequence > 0
+                    ) {
+
+                        if (
+                            b.sequence <=
+                            lastSequence
+                        ) {
+
+                            sequenceOK =
+                                false;
+
+                        }
+
+                        lastSequence =
+                            b.sequence;
+
+                    }
+
+                });
+
+
+            const chkLogic =
+                document.getElementById(
+                    "chk-logic"
+                );
+
+            if (chkLogic) {
+
+                chkLogic.classList.toggle(
+                    "done",
+                    allFilled &&
+                    sequenceOK
+                );
+
+            }
+
+
+            let hErr = false;
+
+
+            gameState.placedBlocks
+                .forEach(id => {
+
+                    const b =
+                        gameState.currentBlocks
+                            .find(
+                                x =>
+                                    x.id === id
+                            );
+
+                    if (
+                        b &&
+                        !b.correct
+                    ) {
+
+                        hErr = true;
+
+                    }
+
+                });
+
+
+            const chkProf =
                 document.getElementById(
                     "chk-prof"
                 );
 
+            if (chkProf) {
 
-            if (profCheck) {
-
-                profCheck.classList.toggle(
+                chkProf.classList.toggle(
                     "done",
-                    professionOk &&
-                    allFilled
+                    allFilled &&
+                    !hErr
                 );
+
             }
 
         }
@@ -5183,24 +5609,32 @@
 
         function checkScript() {
 
-            const placedIds =
-                gameState.placedBlocks
-                    .filter(Boolean);
+            const placed =
+                gameState.placedBlocks.filter(
+                    Boolean
+                );
 
 
-            if (!placedIds.length) {
+            const required =
+                gameState.currentBlocks.filter(
+                    b => b.required
+                );
+
+
+            if (!placed.length) {
 
                 alert(
-                    "Isi naskah terlebih dahulu."
+                    "Susun naskah terlebih dahulu."
                 );
 
                 return;
+
             }
 
 
             if (
-                gameState.placedBlocks
-                    .some(x => !x)
+                placed.length !==
+                gameState.placedBlocks.length
             ) {
 
                 alert(
@@ -5208,6 +5642,7 @@
                 );
 
                 return;
+
             }
 
 
@@ -5218,109 +5653,106 @@
             let sCh = 100;
 
 
-            let feedback = [];
+            const messages = [];
+
+
+            let aReq = true;
+
+
+            required.forEach(b => {
+
+                if (
+                    !placed.includes(b.id)
+                ) {
+
+                    aReq = false;
+
+                    sSt -= 30;
+
+                    messages.push(
+                        "Blok wajib belum ditempatkan: " +
+                        b.type
+                    );
+
+                }
+
+            });
 
 
             let hErr = false;
 
 
-            const required =
-                gameState.currentBlocks
-                    .filter(
-                        b => b.required
+            placed.forEach(id => {
+
+                const b =
+                    gameState.currentBlocks
+                        .find(
+                            x =>
+                                x.id === id
+                        );
+
+                if (
+                    b &&
+                    !b.correct
+                ) {
+
+                    hErr = true;
+
+                    sCh -= 40;
+
+                    sLg -= 20;
+
+                    messages.push(
+                        `${b.error || "Kesalahan"}: ${b.hint || "Periksa kembali blok tersebut."}`
                     );
 
+                }
 
-            const aReq =
-                required.every(
-                    b =>
-                        placedIds.includes(b.id)
-                );
-
-
-            if (!aReq) {
-
-                sSt -= 30;
-
-                feedback.push(
-                    "Ada bagian wajib yang belum ditempatkan."
-                );
-            }
-
-
-            gameState.placedBlocks
-                .forEach(id => {
-
-                    const b =
-                        gameState.currentBlocks
-                            .find(
-                                x =>
-                                    x.id === id
-                            );
-
-
-                    if (
-                        b &&
-                        !b.correct
-                    ) {
-
-                        hErr = true;
-
-                        sCh -= 40;
-
-                        sLg -= 20;
-
-
-                        feedback.push(
-                            `${b.error}: ${b.hint}`
-                        );
-                    }
-
-                });
+            });
 
 
             let sErr = false;
 
-            let lastSeq = -1;
+            let lSeq = -1;
 
 
-            gameState.placedBlocks
-                .forEach(id => {
+            placed.forEach(id => {
 
-                    const b =
-                        gameState.currentBlocks
-                            .find(
-                                x =>
-                                    x.id === id
-                            );
+                const b =
+                    gameState.currentBlocks
+                        .find(
+                            x =>
+                                x.id === id
+                        );
 
-
-                    if (!b) {
-                        return;
-                    }
-
+                if (
+                    b &&
+                    b.sequence > 0
+                ) {
 
                     if (
-                        b.sequence <= lastSeq
+                        b.sequence <= lSeq
                     ) {
 
                         sErr = true;
 
-                        sLg -= 30;
-
                     }
 
+                    lSeq = b.sequence;
 
-                    lastSeq =
-                        b.sequence;
-                });
+                }
+
+            });
 
 
             if (sErr) {
 
-                feedback.push(
-                    "Urutan blok tidak mengikuti struktur cerita."
+                sLg -= 30;
+
+                messages.push(
+                    "Urutan blok belum logis."
                 );
+
             }
 
 
@@ -5330,13 +5762,11 @@
                     sSt
                 );
 
-
             sLg =
                 Math.max(
                     0,
                     sLg
                 );
-
 
             sCh =
                 Math.max(
@@ -5345,118 +5775,109 @@
                 );
 
 
-            const tot =
+            const total =
                 Math.round(
                     (
                         sSt +
                         sLg +
                         sCh +
-                        (aReq ? 100 : 0)
+                        (
+                            aReq
+                                ? 100
+                                : 0
+                        )
                     ) / 4
                 );
 
 
-            document
-                .getElementById(
-                    "score-structure"
-                )
-                .innerText = sSt;
+            document.getElementById(
+                "score-structure"
+            ).innerText =
+                sSt;
 
 
-            document
-                .getElementById(
-                    "score-logic"
-                )
-                .innerText = sLg;
+            document.getElementById(
+                "score-logic"
+            ).innerText =
+                sLg;
 
 
-            document
-                .getElementById(
-                    "score-char"
-                )
-                .innerText = sCh;
+            document.getElementById(
+                "score-char"
+            ).innerText =
+                sCh;
 
 
-            document
-                .getElementById(
-                    "score-total"
-                )
-                .innerText = tot;
+            document.getElementById(
+                "score-total"
+            ).innerText =
+                total;
 
 
-            const approved =
-                tot >= 80 &&
-                !hErr &&
-                aReq &&
-                !sErr;
-
-
-            const evalTitle =
-                document.getElementById(
-                    "eval-title"
-                );
-
-
-            const feedbackBox =
+            const feedback =
                 document.getElementById(
                     "eval-feedback"
                 );
 
 
-            const nextBtn =
+            if (
+                total >= 80 &&
+                !hErr &&
+                aReq &&
+                !sErr
+            ) {
+
                 document.getElementById(
-                    "btn-next"
-                );
-
-
-            const reviseBtn =
-                document.getElementById(
-                    "btn-revisi"
-                );
-
-
-            if (approved) {
-
-                evalTitle.innerText =
+                    "eval-title"
+                ).innerText =
                     "NASKAH DISETUJUI";
 
+                feedback.innerHTML = `
 
-                feedbackBox.innerHTML =
-                    `
-                        <strong
-                            style="
-                                color:var(--color-scene);
-                            "
-                        >
-                            KLIEN PUAS.
-                        </strong>
-                        <br><br>
-                        Struktur naskah,
-                        logika cerita,
-                        dan kesesuaian brief
-                        telah terpenuhi.
-                    `;
+                    <div
+                        style="
+                            color:var(--color-scene);
+                            font-family:var(--font-ui);
+                            font-size:1.2rem;
+                            margin-bottom:10px;
+                        "
+                    >
+                        KLIEN PUAS.
+                    </div>
+
+                    Struktur naskah,
+                    logika cerita,
+                    dan kesesuaian brief
+                    telah memenuhi kebutuhan kasus.
+
+                `;
 
 
-                nextBtn.classList.remove(
+                document.getElementById(
+                    "btn-revisi"
+                ).innerText =
+                    "TUTUP";
+
+
+                const next =
+                    document.getElementById(
+                        "btn-next"
+                    );
+
+                next.classList.remove(
                     "hidden"
                 );
 
 
-                reviseBtn.innerText =
-                    "TUTUP";
-
-
                 if (
-                    nextBtn.dataset.saved !==
+                    next.dataset.saved !==
                     "true"
                 ) {
 
                     gameState.casesCompleted++;
 
                     gameState.totalScore +=
-                        tot;
-
+                        total;
 
                     gameState.history.push(
                         gameState.currentBible.genre
@@ -5465,52 +5886,69 @@
 
                     saveData();
 
-
-                    nextBtn.dataset.saved =
+                    next.dataset.saved =
                         "true";
+
                 }
 
             }
 
-
             else {
 
-                evalTitle.innerText =
+                document.getElementById(
+                    "eval-title"
+                ).innerText =
                     "REVISI DIPERLUKAN";
 
 
-                if (!feedback.length) {
+                feedback.innerHTML = `
 
-                    feedback.push(
-                        "Naskah belum memenuhi seluruh kriteria."
-                    );
-                }
+                    <div
+                        style="
+                            color:var(--color-char);
+                            font-family:var(--font-ui);
+                            font-size:1.2rem;
+                            margin-bottom:10px;
+                        "
+                    >
+                        NASKAH BELUM SIAP.
+                    </div>
+
+                    ${
+                        messages.length
+                            ? messages
+                                .map(
+                                    m =>
+                                        `<div>• ${m}</div>`
+                                )
+                                .join("")
+                            : "Periksa kembali struktur naskah."
+                    }
+
+                `;
 
 
-                feedbackBox.innerHTML =
-                    feedback
-                        .map(
-                            x => `• ${x}`
-                        )
-                        .join("<br>");
-
-
-                nextBtn.classList.add(
+                document.getElementById(
+                    "btn-next"
+                ).classList.add(
                     "hidden"
                 );
 
 
-                reviseBtn.innerText =
+                document.getElementById(
+                    "btn-revisi"
+                ).innerText =
                     "REVISI NASKAH";
 
             }
 
 
-            document
-                .getElementById(
-                    "modal-eval"
-                )
-                .classList.add("active");
+            document.getElementById(
+                "modal-eval"
+            ).classList.add(
+                "active"
+            );
+
         }
 
 
@@ -5522,7 +5960,6 @@
 
             gameState.day++;
 
-
             document
                 .getElementById(
                     "modal-eval"
@@ -5532,22 +5969,21 @@
                 );
 
 
-            document
-                .getElementById(
-                    "btn-next"
-                )
-                .dataset.saved =
+            document.getElementById(
+                "btn-next"
+            ).dataset.saved =
                 "false";
 
 
             setupNewCase();
 
             saveData();
+
         }
 
 
         /* ==================================================
-           MODAL
+           CLOSE MODAL
            ================================================== */
 
         function closeModal(id) {
@@ -5557,6 +5993,7 @@
                 .classList.remove(
                     "active"
                 );
+
         }
 
 
@@ -5568,6 +6005,7 @@
 
             localStorage.setItem(
                 "edsave",
+
                 JSON.stringify({
 
                     d:
@@ -5584,8 +6022,13 @@
 
                 })
             );
+
         }
 
+
+        /* ==================================================
+           LOAD
+           ================================================== */
 
         function loadData() {
 
@@ -5604,16 +6047,13 @@
 
 
                     gameState.day =
-                        d.d;
-
+                        d.d || 1;
 
                     gameState.casesCompleted =
-                        d.c;
-
+                        d.c || 0;
 
                     gameState.totalScore =
-                        d.s;
-
+                        d.s || 0;
 
                     gameState.history =
                         d.h || [];
@@ -5625,9 +6065,11 @@
 
                 catch (e) {
 
-                    localStorage.removeItem(
-                        "edsave"
+                    console.warn(
+                        "Save data rusak."
                     );
+
+                    return false;
 
                 }
 
@@ -5635,8 +6077,13 @@
 
 
             return false;
+
         }
 
+
+        /* ==================================================
+           RESET SAVE
+           ================================================== */
 
         function resetSave() {
 
@@ -5650,9 +6097,10 @@
                     "edsave"
                 );
 
-
                 location.reload();
+
             }
+
         }
 
 
@@ -5662,27 +6110,21 @@
 
         function showProfile() {
 
-            document
-                .getElementById(
-                    "stat-day"
-                )
-                .innerText =
+            document.getElementById(
+                "stat-day"
+            ).innerText =
                 gameState.day;
 
 
-            document
-                .getElementById(
-                    "stat-cases"
-                )
-                .innerText =
+            document.getElementById(
+                "stat-cases"
+            ).innerText =
                 gameState.casesCompleted;
 
 
-            document
-                .getElementById(
-                    "stat-score"
-                )
-                .innerText =
+            document.getElementById(
+                "stat-score"
+            ).innerText =
                 gameState.casesCompleted > 0
                     ? Math.round(
                         gameState.totalScore /
@@ -5691,30 +6133,25 @@
                     : 0;
 
 
-            document
-                .getElementById(
-                    "profile-stats"
-                )
-                .classList.remove(
-                    "hidden"
-                );
+            document.getElementById(
+                "profile-stats"
+            ).classList.remove(
+                "hidden"
+            );
 
 
-            document
-                .getElementById(
-                    "modal-start"
-                )
-                .classList.add(
-                    "active"
-                );
+            document.getElementById(
+                "modal-start"
+            ).classList.add(
+                "active"
+            );
 
 
-            document
-                .getElementById(
-                    "btn-start-game"
-                )
-                .innerText =
+            document.getElementById(
+                "btn-start-game"
+            ).innerText =
                 "LANJUTKAN";
+
         }
 
 
@@ -5738,12 +6175,14 @@
             ) {
 
                 setupNewCase();
+
             }
+
         }
 
 
         /* ==================================================
-           CUSTOM WINDOWS 95 SCROLLBAR
+           CUSTOM SCROLLBAR
            ================================================== */
 
         function initW95Scrollbars() {
@@ -5753,14 +6192,15 @@
                     "block-container"
                 );
 
-
             const scrollbar =
                 document.getElementById(
                     "script-scrollbar"
                 );
 
-
-            if (!container || !scrollbar) {
+            if (
+                !container ||
+                !scrollbar
+            ) {
                 return;
             }
 
@@ -5769,7 +6209,6 @@
                 scrollbar.querySelector(
                     ".w95-scroll-track"
                 );
-
 
             const thumb =
                 scrollbar.querySelector(
@@ -5782,34 +6221,33 @@
                 const scrollHeight =
                     container.scrollHeight;
 
-
                 const clientHeight =
                     container.clientHeight;
 
-
-                const maxScroll =
-                    scrollHeight -
-                    clientHeight;
+                const maxScrollTop =
+                    Math.max(
+                        0,
+                        scrollHeight -
+                        clientHeight
+                    );
 
 
                 if (
-                    maxScroll <= 1
+                    maxScrollTop <= 0
                 ) {
 
                     scrollbar.classList.add(
                         "disabled"
                     );
 
-
                     thumb.style.height =
                         "100%";
-
 
                     thumb.style.transform =
                         "translateY(0px)";
 
-
                     return;
+
                 }
 
 
@@ -5834,38 +6272,46 @@
                         : 40;
 
 
+                const calculated =
+                    trackHeight *
+                    (
+                        clientHeight /
+                        scrollHeight
+                    );
+
+
                 const thumbHeight =
                     Math.max(
                         minThumb,
-                        (
-                            clientHeight /
-                            scrollHeight
-                        ) * trackHeight
+                        Math.min(
+                            trackHeight,
+                            calculated
+                        )
                     );
 
 
                 thumb.style.height =
-                    `${Math.min(
-                        thumbHeight,
-                        trackHeight
-                    )}px`;
+                    thumbHeight + "px";
 
 
-                const maxThumbMove =
-                    trackHeight -
-                    thumbHeight;
+                const maxThumbTravel =
+                    Math.max(
+                        0,
+                        trackHeight -
+                        thumbHeight
+                    );
 
 
                 const ratio =
-                    container.scrollTop /
-                    maxScroll;
+                    maxScrollTop > 0
+                        ? container.scrollTop /
+                          maxScrollTop
+                        : 0;
 
 
                 thumb.style.transform =
-                    `translateY(${
-                        ratio *
-                        maxThumbMove
-                    }px)`;
+                    `translateY(${ratio * maxThumbTravel}px)`;
+
             }
 
 
@@ -5882,33 +6328,20 @@
             );
 
 
-            let observer;
-
-
-            if (
-                window.MutationObserver
-            ) {
-
-                observer =
-                    new MutationObserver(
-                        () => {
-
-                            requestAnimationFrame(
-                                updateScrollbar
-                            );
-
-                        }
-                    );
-
-
-                observer.observe(
-                    container,
-                    {
-                        childList: true,
-                        subtree: true
-                    }
+            const observer =
+                new MutationObserver(
+                    updateScrollbar
                 );
-            }
+
+
+            observer.observe(
+                container,
+                {
+                    childList: true,
+                    subtree: true,
+                    characterData: true
+                }
+            );
 
 
             let dragging = false;
@@ -5918,135 +6351,111 @@
             let startScroll = 0;
 
 
-            function pointerStart(e) {
+            thumb.addEventListener(
+                "pointerdown",
+                e => {
 
-                if (
-                    scrollbar.classList.contains(
-                        "disabled"
-                    )
-                ) {
-                    return;
-                }
-
-
-                dragging = true;
-
-                thumb.classList.add(
-                    "dragging"
-                );
-
-
-                startY =
-                    e.clientY;
-
-
-                startScroll =
-                    container.scrollTop;
-
-
-                if (
-                    e.pointerId !== undefined
-                ) {
-
-                    try {
-                        thumb.setPointerCapture(
-                            e.pointerId
-                        );
+                    if (
+                        scrollbar.classList.contains(
+                            "disabled"
+                        )
+                    ) {
+                        return;
                     }
 
-                    catch (_) {}
-                }
+
+                    e.preventDefault();
 
 
-                e.preventDefault();
-            }
+                    dragging = true;
+
+                    startY =
+                        e.clientY;
+
+                    startScroll =
+                        container.scrollTop;
 
 
-            function pointerMove(e) {
-
-                if (!dragging) {
-                    return;
-                }
-
-
-                const scrollHeight =
-                    container.scrollHeight;
-
-
-                const clientHeight =
-                    container.clientHeight;
-
-
-                const maxScroll =
-                    scrollHeight -
-                    clientHeight;
-
-
-                const trackHeight =
-                    track.clientHeight;
-
-
-                const thumbHeight =
-                    thumb.offsetHeight;
-
-
-                const maxThumbMove =
-                    trackHeight -
-                    thumbHeight;
-
-
-                if (
-                    maxThumbMove <= 0
-                ) {
-                    return;
-                }
-
-
-                const delta =
-                    e.clientY -
-                    startY;
-
-
-                const scrollDelta =
-                    delta *
-                    (
-                        maxScroll /
-                        maxThumbMove
+                    thumb.classList.add(
+                        "dragging"
                     );
 
 
-                container.scrollTop =
-                    startScroll +
-                    scrollDelta;
-            }
+                    thumb.setPointerCapture(
+                        e.pointerId
+                    );
+
+                }
+            );
 
 
-            function pointerEnd() {
+            thumb.addEventListener(
+                "pointermove",
+                e => {
+
+                    if (!dragging) {
+                        return;
+                    }
+
+
+                    const trackHeight =
+                        track.clientHeight;
+
+                    const thumbHeight =
+                        thumb.offsetHeight;
+
+                    const maxThumbTravel =
+                        Math.max(
+                            1,
+                            trackHeight -
+                            thumbHeight
+                        );
+
+
+                    const maxScroll =
+                        Math.max(
+                            0,
+                            container.scrollHeight -
+                            container.clientHeight
+                        );
+
+
+                    const delta =
+                        e.clientY -
+                        startY;
+
+
+                    container.scrollTop =
+                        startScroll +
+                        (
+                            delta /
+                            maxThumbTravel
+                        ) *
+                        maxScroll;
+
+                }
+            );
+
+
+            function stopDragging() {
 
                 dragging = false;
 
                 thumb.classList.remove(
                     "dragging"
                 );
+
             }
 
 
             thumb.addEventListener(
-                "pointerdown",
-                pointerStart
-            );
-
-
-            window.addEventListener(
-                "pointermove",
-                pointerMove,
-                { passive: false }
-            );
-
-
-            window.addEventListener(
                 "pointerup",
-                pointerEnd
+                stopDragging
+            );
+
+            thumb.addEventListener(
+                "pointercancel",
+                stopDragging
             );
 
 
@@ -6065,24 +6474,32 @@
                     const rect =
                         track.getBoundingClientRect();
 
-
                     const clickY =
                         e.clientY -
                         rect.top;
 
 
                     const thumbTop =
-                        thumb.offsetTop;
+                        parseFloat(
+                            getComputedStyle(
+                                thumb
+                            ).transform
+                                .match(
+                                    /matrix.*\((.+)\)/
+                                )?.[1]
+                                ?.split(",")[5] ||
+                            "0"
+                        );
 
 
                     const page =
-                        clientHeight *
+                        container.clientHeight *
                         0.85;
 
 
                     if (
                         clickY <
-                        thumbTop
+                        thumb.offsetTop
                     ) {
 
                         container.scrollTop -=
@@ -6094,6 +6511,7 @@
 
                         container.scrollTop +=
                             page;
+
                     }
 
                 }
@@ -6115,27 +6533,28 @@
                 updateScrollbar,
                 300
             );
+
         }
 
 
         /* ==================================================
-           WINDOW LOAD
+           INITIALIZE
            ================================================== */
 
         window.onload = function() {
 
             if (loadData()) {
 
-                document
-                    .getElementById(
-                        "btn-start-game"
-                    )
-                    .innerText =
+                document.getElementById(
+                    "btn-start-game"
+                ).innerText =
                     "LANJUTKAN";
+
             }
 
 
             initW95Scrollbars();
+
         };
 
     </script>
