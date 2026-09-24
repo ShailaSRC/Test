@@ -18,9 +18,11 @@
     >
 
     <style>
+
         /* ==================================================
            VARIABEL WARNA RETRO
            ================================================== */
+
         :root {
             --bg-app: #1e1e1c;
             --bg-panel: #2a2a28;
@@ -47,194 +49,322 @@
             --font-script: 'Courier Prime', monospace;
         }
 
+
         /* ==================================================
            RESET
            ================================================== */
-        * { box-sizing: border-box; }
 
-        html, body {
-            width: 100%; height: 100%; margin: 0; padding: 0;
-            overflow: hidden; /* Mencegah munculnya scroll global */
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; 
         }
 
         body {
             background-color: var(--bg-app);
             color: var(--text-normal);
             font-family: var(--font-ui);
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-            display: flex; flex-direction: column;
-            user-select: none; overscroll-behavior: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            user-select: none;
+            overscroll-behavior: none;
         }
 
-        /* ==================================================
-           CRT SCANLINE
-           ================================================== */
         body::after {
-            content: ""; display: block; position: absolute;
+            content: "";
+            display: block;
+            position: absolute;
             top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
             background-size: 100% 4px;
-            z-index: 100; pointer-events: none; opacity: 0.3;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0.3;
         }
+
 
         /* =========================================================
            GAME LAYOUT (Default / Landscape)
         ========================================================= */
         #game-layout {
-            width: 100%; height: 100dvh; min-height: 0;
-            display: flex; flex-direction: column;
-            padding: 10px; gap: 10px; position: relative; z-index: 10;
+            width: 100%;
+            height: 100dvh;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            gap: 10px;
+            position: relative;
+            z-index: 10;
         }
 
         #game-header {
-            flex: 0 0 auto; min-height: 82px;
-            display: grid; grid-template-columns: 250px minmax(0, 1fr) 250px; gap: 10px;
-            background: var(--bg-panel); border: 2px solid var(--border-dark);
-            padding: 10px; box-shadow: 2px 2px 0 rgba(0,0,0,0.3); align-items: stretch;
+            flex: 0 0 auto;
+            min-height: 82px;
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr) 250px;
+            gap: 10px;
+            background: var(--bg-panel);
+            border: 2px solid var(--border-dark);
+            padding: 10px;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            align-items: stretch;
         }
 
         #main-area {
-            flex: 1 1 auto; min-height: 0; display: grid;
-            grid-template-columns: 290px minmax(0, 1fr) 240px; gap: 10px;
+            flex: 1 1 auto;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: 290px minmax(0, 1fr) 240px;
+            gap: 10px;
         }
 
         .panel {
-            min-width: 0; min-height: 0; display: flex; flex-direction: column;
-            background: var(--bg-panel); border: 2px solid var(--border-dark);
+            min-width: 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-panel);
+            border: 2px solid var(--border-dark);
             box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+            position: relative;
         }
+
 
         /* ==================================================
            HEADER KIRI, TENGAH, KANAN (Interior Content)
            ================================================== */
-        .header-left { display: flex; flex-direction: row; align-items: center; gap: 10px; width: 100%; }
-        .settings-btn { color: var(--text-muted); font-size: 28px; cursor: pointer; transition: color 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .header-left {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .settings-btn {
+            color: var(--text-muted); font-size: 28px; cursor: pointer;
+            transition: color 0.2s; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
         .settings-btn:hover { color: var(--text-highlight); }
-        .title-area { display: flex; flex-direction: column; justify-content: center; }
-        .header-left h1 { margin: 0; font-size: 1.8rem; color: var(--text-highlight); letter-spacing: 2px; font-weight: normal; line-height: 1.1; }
+
+        .title-area {
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        .header-left h1 {
+            margin: 0; font-size: 1.8rem; color: var(--text-highlight);
+            letter-spacing: 2px; font-weight: normal; line-height: 1.1;
+            white-space: nowrap; /* Mencegah teks terpotong ke bawah */
+        }
         .header-left .day-text { font-size: 1rem; color: var(--text-muted); }
 
-        .header-center { display: flex; gap: 10px; align-items: stretch; width: 100%; justify-content: center; }
-        .client-avatar { width: 60px; flex-shrink: 0; background: #3b3a36; border: 2px solid var(--border-dark); border-radius: 4px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+        .header-center {
+            display: flex; gap: 10px; align-items: stretch; width: 100%; justify-content: center;
+        }
+
+        .client-avatar-container {
+            display: flex; flex-direction: column; align-items: center; gap: 4px; justify-content: center;
+        }
+
+        .client-avatar {
+            width: 60px; height: 60px; /* Ditambahkan agar mutlak 1:1 */
+            flex-shrink: 0; background: #3b3a36; border: 2px solid var(--border-dark);
+            border-radius: 4px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
         .client-avatar svg { width: 85%; height: auto; margin-bottom: -5px; fill: #1c1c1a; }
+
+        .client-avatar-title {
+            font-size: 0.65rem; color: var(--text-highlight); font-family: var(--font-ui);
+            text-transform: uppercase; text-align: center; letter-spacing: 1px; display: block;
+        }
+
+        .client-brief-box {
+            flex: 1; max-width: 500px; border: 2px solid var(--border-dark); background: var(--bg-app);
+            display: flex; flex-direction: column; justify-content: center; border-radius: 4px;
+            overflow-y: auto; overflow-x: hidden; min-height: 0; padding: 4px;
+        }
         
-        .client-brief-box { flex: 1; max-width: 500px; border: 2px solid var(--border-dark); background: var(--bg-app); display: flex; flex-direction: column; border-radius: 4px; overflow-y: auto; overflow-x: hidden; min-height: 0; }
-        .client-brief-box .brief-title { background: rgba(255,255,255,0.03); border-bottom: 2px solid var(--border-dark); padding: 4px 10px; font-size: 0.85rem; color: var(--text-muted); letter-spacing: 1px; }
-        .client-brief-box .brief-content { padding: 4px 10px; display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; font-family: var(--font-ui); text-transform: uppercase; color: var(--text-normal); }
+        .client-brief-box .brief-title { display: none; }
+        
+        .client-brief-box .brief-content {
+            padding: 4px 10px; display: flex; flex-direction: column; gap: 4px;
+            font-size: 0.8rem; font-family: var(--font-ui); text-transform: uppercase; color: var(--text-normal);
+        }
+
         .brief-line { display: flex; align-items: flex-start; line-height: 1.3; }
         .brief-line .label { color: var(--text-muted); margin-right: 8px; font-weight: bold; min-width: 60px; }
         .brief-line .value { color: var(--text-highlight); flex: 1; word-wrap: break-word; white-space: normal; }
 
-        .header-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; width: 100%; }
-        .retro-btn { background: var(--bg-panel); border: 2px solid var(--border-dark); color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.1rem; padding: 6px 14px; cursor: pointer; text-transform: uppercase; box-shadow: 2px 2px 0 rgba(0,0,0,0.5); transition: transform 0.1s, box-shadow 0.1s; display: flex; align-items: center; gap: 5px; }
+        .header-right {
+            display: flex; align-items: center; justify-content: flex-end; gap: 10px; width: 100%;
+        }
+        .retro-btn {
+            background: var(--bg-panel); border: 2px solid var(--border-dark); color: var(--text-highlight);
+            font-family: var(--font-ui); font-size: 1.1rem; padding: 6px 14px; cursor: pointer; text-transform: uppercase;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.5); transition: transform 0.1s, box-shadow 0.1s;
+            display: flex; align-items: center; gap: 5px; box-sizing: border-box;
+        }
         .retro-btn:active { transform: translate(2px,2px); box-shadow: none; }
         .retro-btn.primary { background: #b56c6c; color: #fff; border-color: #5c2f2f; }
 
+
         /* ==================================================
-           CUSTOM SCROLLBAR
+           CUSTOM SCROLLBAR & PANEL KIRI
            ================================================== */
+        .panel-header {
+            padding: 10px 15px; border-bottom: 2px solid var(--border-dark); background: rgba(0,0,0,0.2);
+            flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; flex-direction: row;
+        }
+        .panel-title { font-size: 1.3rem; color: var(--text-highlight); letter-spacing: 1px; margin: 0; }
+        
+        .btn-preview {
+            background: var(--bg-panel); border: 2px solid var(--border-dark); color: var(--text-highlight);
+            font-family: var(--font-ui); font-size: 1.2rem; width: 28px; height: 28px; cursor: pointer;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.5); transition: transform 0.1s, box-shadow 0.1s;
+            display: flex; align-items: center; justify-content: center; padding: 0; line-height: 1;
+        }
+        .btn-preview:active { transform: translate(2px,2px); box-shadow: none; }
+
         .retro-scrollbar {
-            position: relative; width: 100%; height: 100%;
-            overflow-y: scroll !important; overflow-x: hidden;
-            overscroll-behavior: none; scrollbar-width: none;
-            -ms-overflow-style: none; touch-action: pan-y;
+            position: relative; width: 100%; height: 100%; overflow-y: scroll !important; overflow-x: hidden;
+            overscroll-behavior: none; scrollbar-width: none; -ms-overflow-style: none; touch-action: pan-y;
         }
         .retro-scrollbar::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
 
-        .scroll-container { flex: 1; position: relative; min-height: 0; overflow: hidden; }
-
-        .w95-scrollbar {
-            position: absolute; top: 10px; right: 10px; bottom: 10px; width: 14px;
-            background: var(--bg-app); z-index: 50; box-sizing: border-box;
-            border-left: 2px solid var(--border-dark); user-select: none;
-            -webkit-user-select: none; touch-action: none; pointer-events: auto;
+        .scroll-container {
+            flex: 1; position: relative; min-height: 0; overflow: hidden; margin: 10px; margin-right: 2px;
         }
 
+        #block-container {
+            width: 100%; height: 100%; box-sizing: border-box; padding: 0; padding-right: 22px; padding-bottom: 0px; 
+        }
+
+        .w95-scrollbar {
+            position: absolute; top: 0; right: 0; bottom: 0; width: 14px; background: var(--bg-app);
+            z-index: 50; box-sizing: border-box; border-left: 2px solid var(--border-dark);
+            user-select: none; -webkit-user-select: none; touch-action: none; pointer-events: auto;
+        }
         .w95-scroll-track {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: #161514; box-sizing: border-box; cursor: pointer; touch-action: none;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #161514;
+            box-sizing: border-box; cursor: pointer; touch-action: none;
         }
         .w95-scroll-track::before {
             content: ""; position: absolute; inset: 0;
-            background-image: linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%), linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%);
-            background-size: 4px 4px; background-position: 0 0, 2px 2px;
-            opacity: 0.5; pointer-events: none;
+            background-image: linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%),
+                              linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%);
+            background-size: 4px 4px; background-position: 0 0, 2px 2px; opacity: 0.5; pointer-events: none;
         }
-
         .w95-scroll-thumb {
             position: absolute; left: 1px; right: 1px; top: 0; height: 40px; min-height: 40px;
             background: var(--border-light); box-sizing: border-box; cursor: grab; z-index: 2;
             border: 1px solid var(--border-dark); border-top: 1px solid #6a6a66; border-left: 1px solid #6a6a66;
             user-select: none; -webkit-user-select: none; touch-action: none; will-change: transform;
         }
-        .w95-scroll-thumb.dragging { cursor: grabbing; background: #3b3a36; border-top: 1px solid var(--border-dark); border-left: 1px solid var(--border-dark); border-right: 1px solid #6a6a66; border-bottom: 1px solid #6a6a66; }
+        /* PERLUASAN TARGET SENTUH SCROLLBAR MOBILE AGAR SANGAT MUDAH DITAHAN */
+        .w95-scroll-thumb::before {
+            content: ""; position: absolute;
+            top: -15px; bottom: -15px; left: -25px; right: -25px; z-index: 10;
+        }
+        .w95-scroll-thumb.dragging {
+            cursor: grabbing; background: #3b3a36;
+            border-top: 1px solid var(--border-dark); border-left: 1px solid var(--border-dark);
+            border-right: 1px solid #6a6a66; border-bottom: 1px solid #6a6a66;
+        }
         .w95-scroll-thumb::after {
             content: ""; position: absolute; left: 2px; right: 2px; top: 50%; height: 2px;
             transform: translateY(-50%); background: var(--bg-panel);
-            box-shadow: 0 -2px 0 var(--border-dark), 0 2px 0 var(--border-dark); pointer-events: none;
+            box-shadow: 0 -2px 0 var(--border-dark), 0 2px 0 var(--border-dark); pointer-events: none; z-index: 1;
         }
         .w95-scrollbar.disabled { opacity: 0.3; }
         .w95-scrollbar.disabled .w95-scroll-thumb { cursor: default; }
 
-        /* PEMOTONGAN SCROLL (CLIPPING) PRESISI EDGE-TO-EDGE */
-        #block-container {
-            /* Margin menciptakan ruang kosong fisik di luar kontainer yang sejajar dengan w95-scrollbar */
-            margin: 10px 0;
-            height: calc(100% - 20px);
-            padding: 0 34px 0 10px; /* Padding top/bottom 0 agar text langsung terpotong di tepi scrollbar */
-        }
-        .script-block:last-child { margin-bottom: 0 !important; }
-
         @media (pointer: coarse) {
             .w95-scrollbar { width: 18px; }
             .w95-scroll-thumb { min-height: 50px; }
-            #block-container { padding-right: 38px; } 
+            #block-container { padding-right: 26px; }
         }
 
-        /* ==================================================
-           INTERIOR PANEL KIRI (SCRIPT BLOCKS)
-           ================================================== */
-        .panel-header { padding: 10px 15px; border-bottom: 2px solid var(--border-dark); background: rgba(0,0,0,0.2); flex-shrink: 0; }
-        .panel-title { font-size: 1.3rem; color: var(--text-highlight); letter-spacing: 1px; margin: 0; }
-        .panel-subtitle { font-size: 0.85rem; color: var(--text-muted); }
         .script-block {
             background: var(--block-bg); border: 2px solid var(--block-border); color: var(--paper-text);
-            font-family: var(--font-script); font-size: 0.85rem; margin-bottom: 10px; display: flex; flex-direction: column;
-            cursor: grab; box-shadow: 3px 3px 0 rgba(0,0,0,0.3); transition: transform 0.1s; width: 100%; position: relative;
-            z-index: 1; padding: 8px 10px; box-sizing: border-box;
+            font-family: var(--font-script); font-size: 0.85rem; margin-bottom: 10px;
+            display: flex; flex-direction: column; cursor: grab;
+            box-shadow: 3px 3px 0 rgba(0,0,0,0.3); transition: transform 0.1s;
+            width: 100%; position: relative; z-index: 1; padding: 8px 10px; box-sizing: border-box;
         }
+        .script-block:last-child { margin-bottom: 0px; } /* Menghilangkan margin bawah block paling akhir */
         .script-block:active { cursor: grabbing; transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.3); }
-        .block-type-label { font-family: var(--font-ui); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px; opacity: 0.8; font-weight: bold; color: var(--paper-text); }
+        .script-block.highlighted { box-shadow: 0 0 8px 2px var(--accent-yellow); border-color: var(--accent-yellow); }
+        .block-type-label {
+            font-family: var(--font-ui); font-size: 0.85rem; text-transform: uppercase;
+            margin-bottom: 4px; letter-spacing: 1px; opacity: 0.8; font-weight: bold; color: var(--paper-text);
+        }
         .block-text { line-height: 1.3; text-align: left; }
 
+
         /* ==================================================
-           INTERIOR PANEL TENGAH (PAPER)
+           INTERIOR PANEL TENGAH
            ================================================== */
-        #center-panel { background: #1c1c1b; align-items: center; padding: 15px; overflow-y: auto; overflow-x: hidden; }
-        .paper-sheet {
-            background: var(--paper-bg); width: 100%; max-width: 750px; height: auto; min-height: 100%; flex-shrink: 0;
-            border: 1px solid var(--paper-border); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); display: flex; flex-direction: column;
-            color: var(--paper-text); padding: 20px 25px; position: relative;
+        #center-panel { background: #1c1c1b; position: relative; }
+        
+        .center-scroll-area {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow-y: auto; overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center; padding: 15px;
         }
-        .paper-header { display: flex; justify-content: space-between; font-family: var(--font-ui); font-size: 1.2rem; color: #333; margin-bottom: 15px; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 4px; flex-shrink: 0; }
+
+        .paper-sheet {
+            background: var(--paper-bg); width: 100%; max-width: 750px; height: auto; min-height: 100%;
+            border: 1px solid var(--paper-border); box-shadow: 4px 4px 0 rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; color: var(--paper-text); padding: 20px 25px;
+            position: relative; flex-shrink: 0;
+        }
+        .paper-header {
+            display: flex; justify-content: space-between; font-family: var(--font-ui); font-size: 1.2rem; color: #333;
+            margin-bottom: 15px; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 4px; flex-shrink: 0;
+        }
         .paper-header .title { flex: 1; text-align: center; font-weight: bold; }
         .paper-header .page-num { width: 60px; text-align: right; }
+
         .slot-row { display: flex; align-items: stretch; margin-bottom: 8px; min-height: 45px; width: 100%; }
-        .slot-number { width: 25px; font-family: var(--font-script); color: #777; font-size: 0.9rem; padding-top: 8px; text-align: left; flex-shrink: 0; }
-        .drop-slot { flex: 1; border: 2px dashed var(--paper-dashed); display: flex; align-items: stretch; transition: background 0.2s, border-color 0.2s; min-height: 45px; background: rgba(0,0,0,0.02); width: 100%; }
+        .slot-number {
+            width: 25px; font-family: var(--font-script); color: #777; font-size: 0.9rem; padding-top: 8px; text-align: left; flex-shrink: 0;
+        }
+        .drop-slot {
+            flex: 1; border: 2px dashed var(--paper-dashed); display: flex; align-items: stretch; transition: background 0.2s, border-color 0.2s;
+            min-height: 45px; background: rgba(0,0,0,0.02); width: 100%;
+        }
         .drop-slot.drag-over { background: rgba(0,0,0,0.08); border-color: #555; }
-        .drop-slot > .script-block { margin-bottom: 0 !important; width: 100%; box-shadow: none; background: transparent; border: 1px solid var(--paper-dashed); padding: 6px 8px; }
+        .drop-slot > .script-block {
+            margin-bottom: 0; width: 100%; box-shadow: none; background: transparent; border: 1px solid var(--paper-dashed); padding: 6px 8px;
+        }
         .drop-slot > .script-block .block-text { text-align: justify; }
         .drop-slot > .script-block[data-type="TRANSITION"] .block-text { text-align: right !important; }
 
+        /* Tombol Preview Kertas Statis di sudut (tidak ikut terscroll) */
+        .btn-preview-paper {
+            position: absolute; bottom: 15px; right: 15px; z-index: 100;
+            display: none; /* Disembunyikan di Landscape */
+        }
+
+
         /* ==================================================
-           INTERIOR PANEL KANAN (CHECKLIST DLL)
+           INTERIOR PANEL KANAN
            ================================================== */
         #right-panel { padding: 15px; }
-        .right-panel-content { flex: 1 1 0; overflow-y: auto; overflow-x: hidden !important; display: flex; flex-direction: column; min-height: 0; padding-bottom: 10px; }
+        .right-panel-content { flex: 1 1 0; overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; min-height: 0; padding-bottom: 10px; max-width: 100%; }
         .right-section-title { font-size: 1.1rem; color: var(--text-highlight); margin-bottom: 10px; border-bottom: 2px solid var(--border-light); padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-        
-        .checklist-item { display: flex; align-items: flex-start; margin-bottom: 8px; color: var(--text-muted); font-family: var(--font-ui); font-size: 0.8rem; width: 100%; box-sizing: border-box; word-wrap: break-word; }
+        .checklist-item { display: flex; align-items: flex-start; margin-bottom: 8px; color: var(--text-muted); font-family: var(--font-ui); font-size: 0.8rem; width: 100%; box-sizing: border-box; line-height: 1.2; }
         .checklist-box { width: 12px; height: 12px; border: 2px solid var(--text-muted); margin-right: 8px; margin-top: 2px; position: relative; flex-shrink: 0; background: #1a1a1a; }
         .checklist-item.done .checklist-box::after { content: "✔"; color: var(--color-scene); position: absolute; top: -5px; left: 0px; font-size: 12px; font-family: var(--font-ui); }
         .checklist-item.done { color: var(--text-normal); }
@@ -244,20 +374,24 @@
         .hint-btn-style:hover:not(.hint-disabled) { background: rgba(255,255,255,0.05); color: #fff; }
         .hint-btn-style:active:not(.hint-disabled) { transform: translate(1px,1px); }
         
-        .notification-badge { position: absolute; top: -6px; right: -6px; background: var(--color-char); color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-panel); font-family: sans-serif; font-weight: bold; box-shadow: 1px 1px 0 rgba(0,0,0,0.5); pointer-events: none; }
+        .notification-badge {
+            position: absolute; top: -5px; right: 0px; /* Digeser ke dalam agar tidak terpotong */
+            background: var(--color-char); color: white; border-radius: 50%; width: 16px; height: 16px; font-size: 0.65rem;
+            display: flex; align-items: center; justify-content: center; border: 2px solid var(--bg-panel); font-family: sans-serif;
+            font-weight: bold; box-shadow: 1px 1px 0 rgba(0,0,0,0.5); pointer-events: none; z-index: 5;
+        }
         .hint-disabled { opacity: 0.3; pointer-events: none; border-style: solid !important; }
-
-        .glossary-term-link { color: #5a8ca8; cursor: pointer; text-decoration: none; font-weight: bold; border-bottom: 1px dotted #5a8ca8; }
-        .glossary-term-link:hover { background: rgba(90,140,168,0.2); }
 
         .kamus-tab-container { display: flex; flex-direction: column; width: 100%; margin-top: 5px; flex-shrink: 0; flex: 1; box-sizing: border-box; }
         .kamus-tab-title { background: rgba(255,255,255,0.05); border: 2px solid var(--border-light); border-bottom: none; border-radius: 6px 6px 0 0; padding: 2px 10px; display: inline-block; width: max-content; font-size: 1rem; margin-bottom: 0; color: var(--accent-yellow); font-family: var(--font-ui); }
         .kamus-tab-content { border: 2px solid var(--border-light); background: rgba(0,0,0,0.15); border-radius: 0 6px 6px 6px; padding: 8px; flex: 1; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
         #glossary-content { display: flex; flex-direction: column; font-family: sans-serif; color: var(--text-normal); }
         .g-term-title { color: #5a8ca8; font-family: var(--font-ui); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px; border-bottom: 1px solid #5a8ca8; padding-bottom: 2px; }
-        .g-def-text { font-size: 0.7rem; line-height: 1.3; margin-bottom: 8px; word-wrap: break-word; }
+        .g-def-text { font-size: 0.7rem; line-height: 1.3; margin-bottom: 8px; }
         .g-example-title { color: #5a8ca8; font-family: var(--font-ui); font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 2px; }
-        .g-example-text { color: var(--text-muted); font-style: italic; background: rgba(0,0,0,0.2); padding: 4px; border-left: 2px solid #5a8ca8; font-size: 0.65rem; word-wrap: break-word;}
+        .g-example-text { color: var(--text-muted); font-style: italic; background: rgba(0,0,0,0.2); padding: 4px; border-left: 2px solid #5a8ca8; font-size: 0.65rem; }
+        .glossary-term-link { color: #5a8ca8; cursor: pointer; text-decoration: none; font-weight: bold; border-bottom: 1px dotted #5a8ca8; }
+        .glossary-term-link:hover { background: rgba(90,140,168,0.2); }
 
         .pagination-area { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: auto; padding-top: 10px; border-top: 2px dashed var(--border-light); flex-shrink: 0; width: 100%; box-sizing: border-box; }
         .nav-arrow { width: 26px; height: 26px; background: var(--bg-panel); border: 2px solid var(--border-dark); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
@@ -268,204 +402,212 @@
         .page-indicator { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid var(--accent-yellow); display: none; }
         .page-thumb.active + .page-indicator { display: block; }
 
+
         /* ==================================================
-           MODAL & UTILITY
+           MODAL PREVIEW & POPUPS
            ================================================== */
-        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-content { background: var(--bg-panel); border: 2px solid var(--text-highlight); padding: 25px; max-width: 550px; width: 90%; color: var(--text-highlight); text-align: center; box-shadow: 5px 5px 0 rgba(0,0,0,0.5); }
-
-        .hidden { display: none !important; }
-        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
-        .mb-2 { margin-bottom: 0.5rem; } .mb-4 { margin-bottom: 1rem; } .mb-6 { margin-bottom: 1.5rem; }
-        .mt-4 { margin-top: 1rem; } .mt-6 { margin-top: 1.5rem; }
-        .text-sm { font-size: 0.875rem; line-height: 1.25rem; } .text-xs { font-size: 0.75rem; line-height: 1rem; }
-        .text-center { text-align: center; } .text-left { text-align: left; } .text-right { text-align: right; }
-        .font-bold { font-weight: 700; }
-        .flex { display: flex; } .justify-between { justify-content: space-between; } .justify-center { justify-content: center; } .items-center { align-items: center; }
-        .grid { display: grid; } .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); } .gap-2 { gap: 0.5rem; }
-        .p-3 { padding: 0.75rem; } .pb-2 { padding-bottom: 0.5rem; }
-        .border-b { border-bottom-width: 1px; border-style: solid; } .border-t { border-top-width: 1px; border-style: solid; } .border { border-width: 1px; border-style: solid; }
-        .cursor-pointer { cursor: pointer; } .hover\:text-\[var\(--text-highlight\)\]:hover { color: var(--text-highlight); }
-
-        /* =========================================================
-           PENYESUAIAN LAYAR EKSTRA KECIL (LANDSCAPE)
-           ========================================================= */
-        @media (max-height: 550px) and (orientation: landscape) {
-            #game-header { grid-template-columns: 210px minmax(0,1fr) 210px; padding: 6px 10px; min-height: 60px; }
-            #main-area { grid-template-columns: 250px minmax(0,1fr) 205px; }
-            .header-left h1 { font-size: 1.4rem; }
-            .header-left .day-text { font-size: 0.9rem; }
-            .client-avatar { width: 50px; }
-            .client-brief-box .brief-content { padding: 4px; font-size: 0.7rem; }
-            .retro-btn { font-size: 0.85rem; padding: 4px 8px; }
-            .hide-mobile { display: none !important; }
-            #right-panel { padding: 10px; }
-            .right-section-title { font-size: 1rem; margin-bottom: 8px; }
-            .script-block { padding: 6px 8px; font-size: 0.75rem; }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85); z-index: 1000;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s;
         }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-content {
+            background: var(--bg-panel); border: 2px solid var(--text-highlight);
+            padding: 25px; max-width: 550px; width: 90%;
+            color: var(--text-highlight); text-align: center;
+            box-shadow: 5px 5px 0 rgba(0,0,0,0.5); display: flex; flex-direction: column; max-height: 90vh;
+        }
+
+        /* Khusus Preview Block Grid */
+        #modal-preview-blocks .modal-content {
+            padding: 15px; width: fit-content; max-width: 95vw;
+        }
+        #preview-block-grid {
+            display: grid; gap: 10px; overflow-y: auto; padding: 5px;
+            grid-template-columns: repeat(3, minmax(140px, 190px)); /* max 3 kolom di landscape, lebar max 190px */
+            justify-content: center;
+        }
+
+        @media (orientation: portrait) {
+            #preview-block-grid {
+                grid-template-columns: repeat(2, minmax(130px, 1fr)); /* 2 kolom untuk mode portrait */
+            }
+        }
+
+        #modal-preview-blocks .script-block { cursor: pointer; margin-bottom: 0; width: 100%; max-width: 100%; }
+        
+        /* Modal Preview Paper (Portrait Only) */
+        #modal-preview-paper .modal-content { padding: 10px; width: 95%; max-width: 800px; background: #1c1c1b; border: 2px solid var(--border-dark); }
+        #modal-preview-paper .center-scroll-area { position: relative; max-height: 80vh; padding: 10px; }
+        #modal-preview-paper .paper-sheet { margin: 0 auto; height: auto; min-height: 100%; } 
+
+        /* Floating Popup Selected */
+        #popup-selected {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: var(--bg-panel); border: 2px solid var(--accent-yellow); color: var(--text-highlight);
+            padding: 10px 20px; font-family: var(--font-ui); font-size: 1rem; box-shadow: 0 0 15px rgba(214, 176, 84, 0.5);
+            z-index: 999; border-radius: 4px; text-align: center; opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        #popup-selected.active { opacity: 1; }
+
 
         /* =========================================================
            PORTRAIT LAYOUT (Mobile / Layar Tegak)
-           (Diletakkan paling bawah agar menang prioritas CSS)
         ========================================================= */
         @media (orientation: portrait) {
             #game-layout { height: 100dvh; padding: 6px; gap: 6px; }
 
             #game-header {
-                min-height: 0; display: grid;
-                grid-template-columns: 1fr 1fr; /* Kolom Kiri Kanan */
-                grid-template-rows: auto auto;  /* Baris Atas Bawah */
-                gap: 6px; padding: 6px 10px; position: relative; /* Penting untuk Judul absolut */
+                min-height: 0; padding: 6px 10px; display: grid; gap: 8px; position: relative;
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto; /* 2 Baris Presisi */
             }
 
+            /* HARI 01 ditaruh di samping kiri */
+            .header-left { justify-content: flex-start; }
+            .title-area { position: static; transform: none; flex-direction: row; align-items: center; gap: 8px; }
+            .header-left .day-text { margin-left: 5px; }
+
+            /* Judul Utama di Tengah Absolut */
+            .header-left h1 { position: absolute; left: 50%; transform: translateX(-50%); }
+
+            /* Tombol Kanan Atas Absolut */
+            .header-right { position: absolute; right: 10px; top: 10px; width: auto; gap: 6px; }
+
+            /* Kotak Client Brief dan Foto Berdampingan di Baris Kedua */
+            .header-center { 
+                flex-direction: row !important; flex-wrap: nowrap !important; align-items: stretch; justify-content: flex-start; 
+                padding-top: 0; margin-top: 4px; 
+            }
+            .client-avatar-container { gap: 2px; flex-shrink: 0; }
+            .client-avatar { width: 45px; height: 45px; } /* Jaga ratio */
+            
+            /* Mengembalikan Kotak pada Brief Content */
+            .client-brief-box { 
+                flex: 1; border: 2px solid var(--border-dark) !important; background: var(--bg-app) !important; 
+                border-radius: 4px; margin-left: 5px; padding: 4px !important; justify-content: flex-start;
+            }
+            .client-brief-box .brief-content { padding: 2px 4px; font-size: 0.65rem; gap: 2px; }
+            .brief-line .label { min-width: 48px; } /* Mensejajarkan titik dua (:) */
+            
+            /* Pengaturan Ukuran Tombol & Judul Menyamai Text Checklist */
+            .header-left h1 { font-size: 0.75rem; }
+            .header-left .day-text { font-size: 0.75rem; }
+            .settings-btn { font-size: 20px; }
+            .retro-btn { font-size: 0.75rem; padding: 4px 8px; height: 26px; box-sizing: border-box; }
+            .hide-mobile { display: none; }
+            
+            /* Main Area Layout Proporsional 1.25:1 dan 1:1 */
             #main-area {
-                flex: 1 1 auto; min-height: 0; display: grid;
-                /* RASIO DIUBAH MENJADI 1.25fr Kiri : 1fr Kanan */
-                grid-template-columns: 1.25fr 1fr; 
-                /* RASIO ATAS-BAWAH DIUBAH MENJADI 1:1 */
-                grid-template-rows: 1fr 1fr; 
-                gap: 6px; 
+                flex: 1 1 auto; min-height: 0; display: grid; gap: 6px;
+                grid-template-columns: 1.25fr 1fr; /* Panel Kiri Block Sedikit Lebih Besar */
+                grid-template-rows: 1fr 1fr;  /* Rasio Atas Bawah Presisi Sama */
             }
 
             #center-panel { grid-column: 1 / -1; grid-row: 1; }
             #left-panel { grid-column: 1; grid-row: 2; position: relative; }
             #right-panel { grid-column: 2; grid-row: 2; display: flex; position: relative; padding: 6px !important; }
-
-            /* --- HEADER ADJUSTMENTS PORTRAIT --- */
-            .header-left { 
-                grid-column: 1 / 2; grid-row: 1; 
-                justify-content: flex-start; /* HARI mengalir ke sebelah kiri samping setting */
-                position: static; gap: 6px; /* jarak ketat antar icon setting dan teks Hari */
-            }
-            .header-right { 
-                grid-column: 2 / 3; grid-row: 1; 
-                justify-content: flex-end; /* PERIKSA dan RESET sejajar di kanan atas */
-            }
-            .header-center { 
-                grid-column: 1 / -1; grid-row: 2; 
-                justify-content: flex-start; /* Client Brief berada di bawah elemen lain */
-            }
             
-            .title-area { flex-direction: row; align-items: center; gap: 6px; }
+            /* Jarak Edge to Edge 5px pada mode portrait */
+            .scroll-container { margin: 5px; margin-right: 2px; }
+            #block-container { padding-right: 26px; padding-bottom: 0px; }
+            .script-block { padding: 6px !important; font-size: 0.7rem !important; margin-bottom: 5px !important; }
             
-            /* Teks Judul ditengah (Absolute) #game-header, terlepas dari arus flex HARI dan SETTINGS */
-            .header-left h1 { 
-                position: absolute; left: 50%; top: 11px; transform: translateX(-50%);
-                font-size: 0.75rem !important; letter-spacing: 1px !important; margin: 0; font-weight: bold;
-            }
+            .right-section-title { font-size: 1rem !important; margin-bottom: 6px !important; }
+            .checklist-item { font-size: 0.75rem !important; margin-bottom: 4px !important; }
+            .kamus-tab-content { padding: 4px !important; }
+            .g-def-text { font-size: 0.65rem !important; margin-bottom: 4px !important; }
             
-            .header-left .day-text { font-size: 0.75rem !important; }
-            .settings-btn { font-size: 16px !important; margin-right: 2px; }
+            .center-scroll-area { padding: 8px; }
+            .paper-sheet { padding: 10px 15px !important; }
             
-            .retro-btn { 
-                font-size: 0.75rem !important; padding: 0 8px !important; 
-                border-width: 1px !important; height: 26px !important; 
-                display: inline-flex !important; align-items: center !important; justify-content: center !important;
-                box-sizing: border-box !important; margin: 0 !important;
-            }
-            
-            .client-avatar { width: 32px !important; height: 32px !important; border-width: 1px !important; border-radius: 2px; align-self: center; }
-            .client-avatar svg { width: 85% !important; margin-bottom: 0px !important; }
-            
-            .client-brief-box { max-height: none; overflow: hidden; border-width: 1px !important; justify-content: center; }
-            .client-brief-box .brief-title { display: block !important; padding: 2px 6px !important; font-size: 0.65rem !important; border-bottom-width: 1px !important; letter-spacing: 0px !important; }
-            .client-brief-box .brief-content { display: flex !important; flex-direction: column !important; padding: 4px 6px !important; font-size: 0.65rem !important; gap: 2px !important; }
-            .brief-line { line-height: 1.1 !important; align-items: flex-start !important; margin-bottom: 0 !important; width: 100% !important; }
-            .brief-line .label { min-width: 48px !important; margin-right: 4px !important; display: inline-block !important; }
-
-            .hide-mobile { display: none !important; }
-            
-            /* --- RIGHT PANEL ADJUSTMENTS PORTRAIT --- */
-            .right-section-title { font-size: 0.85rem !important; margin-bottom: 4px !important; padding-bottom: 2px !important; }
-            .checklist-item { font-size: 0.75rem !important; margin-bottom: 4px !important; line-height: 1.2 !important; }
-            .checklist-box { width: 12px !important; height: 12px !important; margin-right: 6px !important; border-width: 1px !important; }
-            .checklist-item.done .checklist-box::after { font-size: 12px !important; top: -4px !important; left: 0px !important; }
-            
-            .hint-section { margin: 6px 0 !important; }
-            .hint-btn-style { font-size: 0.75rem !important; padding: 6px !important; border-width: 1px !important; }
-            .notification-badge { width: 16px !important; height: 16px !important; font-size: 0.65rem !important; border-width: 1px !important; top: -4px !important; right: -4px !important; }
-            
-            .kamus-tab-title { font-size: 0.8rem !important; padding: 2px 6px !important; }
-            .kamus-tab-content { padding: 6px !important; overflow-x: hidden !important; }
-            .g-term-title { font-size: 0.75rem !important; margin-bottom: 2px !important; }
-            .g-def-text { font-size: 0.7rem !important; margin-bottom: 4px !important; line-height: 1.2 !important; }
-            .g-example-title { font-size: 0.7rem !important; }
-            .g-example-text { font-size: 0.65rem !important; padding: 4px !important; }
-            
-            .panel-header { padding: 6px 10px !important; border-bottom-width: 1px !important; }
-            .panel-title { font-size: 0.95rem !important; }
-            .panel-subtitle { font-size: 0.7rem !important; }
-
-            /* --- SCRIPT BLOCK & SCROLLBAR (5px GAP + CLIPPING) PORTRAIT --- */
-            .w95-scrollbar {
-                top: 5px; right: 5px; bottom: 5px; width: 14px;
-            }
-            #block-container {
-                /* Margin 5px atas-bawah memaksa Scrollbox berada tepat sejajar batas scrollbar */
-                margin: 5px 0 !important;
-                height: calc(100% - 10px) !important;
-                /* Hilangkan padding vertikal. Gap Horizontal: Jarak Kanan(5px) + Scrollbar(14px) + Kesenjangan(5px) = 24px */
-                padding: 0 24px 0 5px !important; 
-            }
-            .script-block { padding: 6px 8px !important; font-size: 0.7rem !important; margin-bottom: 5px !important; border-width: 1px !important; }
-            
-            /* --- PAPER & PAGINATION PORTRAIT --- */
-            .paper-sheet { padding: 12px 16px !important; }
-            .paper-header { font-size: 1rem !important; margin-bottom: 8px !important; padding-bottom: 4px !important; }
-            .slot-row { min-height: 40px !important; margin-bottom: 6px !important; }
-            .drop-slot { min-height: 40px !important; }
-            .slot-number { width: 20px !important; font-size: 0.8rem !important; padding-top: 6px !important; }
-            
-            .pagination-area { padding-top: 6px !important; margin-top: auto !important; border-top-width: 1px !important; }
-            .nav-arrow { width: 24px !important; height: 24px !important; font-size: 0.8rem !important; }
-            .page-thumb { width: 26px !important; height: 32px !important; font-size: 0.75rem !important; padding: 2px 4px !important; }
+            .btn-preview-paper { display: flex; } /* Munculkan Preview Kertas hanya di Portrait */
         }
 
-        /* --- PORTRAIT TOUCH DEVICE (COARSE) --- */
-        @media (orientation: portrait) and (pointer: coarse) {
-            .w95-scrollbar { width: 18px !important; }
-            #block-container {
-                /* Gap Horizontal Layar Sentuh: Jarak Kanan(5px) + Scrollbar(18px) + Kesenjangan(5px) = 28px */
-                padding-right: 28px !important;
-            }
+
+        /* =========================================================
+           PENYESUAIAN LAYAR EKSTRA KECIL
+        ========================================================= */
+        @media (max-height: 550px) and (orientation: landscape) {
+            #game-header { grid-template-columns: 210px minmax(0,1fr) 210px; padding: 6px 10px; min-height: 60px; }
+            #main-area { grid-template-columns: 250px minmax(0,1fr) 205px; }
+            .header-left h1 { font-size: 1.4rem; }
+            .header-left .day-text { font-size: 0.9rem; }
+            .client-avatar { width: 50px; height: 50px; }
+            .client-brief-box .brief-content { padding: 4px; font-size: 0.7rem; }
+            .retro-btn { font-size: 0.85rem; padding: 4px 8px; }
+            .hide-mobile { display: none; }
+            #right-panel { padding: 10px; }
+            .right-section-title { font-size: 1rem; margin-bottom: 8px; }
         }
 
-        /* --- EXTRA SMALL PORTRAIT --- */
-        @media (max-width: 380px) and (orientation: portrait) {
-            #main-area { 
-                /* Sesuaikan rasio menjadi 1:1 di device sangat kecil juga */
-                grid-template-rows: 1fr 1fr; 
-            }
-            .script-block { padding: 4px !important; font-size: 0.65rem !important; }
-        }
+
+        /* ==================================================
+           UTILITY
+           ================================================== */
+        .hidden { display: none !important; }
+        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
+        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+        .text-xs { font-size: 0.75rem; line-height: 1rem; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .font-bold { font-weight: 700; }
+        .flex { display: flex; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .items-center { align-items: center; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .gap-2 { gap: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .pb-2 { padding-bottom: 0.5rem; }
+        .border-b { border-bottom-width: 1px; border-style: solid; }
+        .border-t { border-top-width: 1px; border-style: solid; }
+        .border { border-width: 1px; border-style: solid; }
+        .cursor-pointer { cursor: pointer; }
+        .hover\:text-\[var\(--text-highlight\)\]:hover { color: var(--text-highlight); }
 
     </style>
 </head>
 
 <body>
-    <!-- GAME LAYOUT -->
-    <div id="game-layout">
 
-        <!-- HEADER -->
+    <div id="game-layout">
+        <!-- ==================================================
+             HEADER
+             ================================================== -->
         <header id="game-header">
+            <!-- HEADER KIRI -->
             <div class="header-left">
                 <div class="settings-btn" onclick="showProfile()" title="Profil & Progress">⚙</div>
+                <div class="day-text" id="level-display">HARI 01</div>
                 <div class="title-area">
                     <h1>EDITOR SCRIPT</h1>
-                    <div class="day-text" id="level-display">HARI 01</div>
                 </div>
             </div>
 
+            <!-- HEADER TENGAH -->
             <div class="header-center">
-                <div class="client-avatar">
-                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                        <circle cx="9" cy="9" r="1.5" fill="#3b3a36"/>
-                        <circle cx="15" cy="9" r="1.5" fill="#3b3a36"/>
-                        <path d="M8 8.5h2M14 8.5h2M10.5 12h3" stroke="#3b3a36" stroke-width="1.5"/>
-                    </svg>
+                <div class="client-avatar-container">
+                    <div class="client-avatar">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            <circle cx="9" cy="9" r="1.5" fill="#3b3a36"/>
+                            <circle cx="15" cy="9" r="1.5" fill="#3b3a36"/>
+                            <path d="M8 8.5h2M14 8.5h2M10.5 12h3" stroke="#3b3a36" stroke-width="1.5"/>
+                        </svg>
+                    </div>
+                    <div class="client-avatar-title">CLIENT BRIEF</div>
                 </div>
                 <div class="client-brief-box">
                     <div class="brief-title">CLIENT BRIEF</div>
@@ -473,6 +615,7 @@
                 </div>
             </div>
 
+            <!-- HEADER KANAN -->
             <div class="header-right">
                 <button class="retro-btn" onclick="clearBoard()" title="Kembalikan semua blok ke inventory">
                     ⟲ <span class="hide-mobile">RESET</span>
@@ -483,14 +626,21 @@
             </div>
         </header>
 
-        <!-- MAIN AREA -->
+        <!-- ==================================================
+             MAIN AREA
+             ================================================== -->
         <div id="main-area">
 
-            <!-- PANEL KIRI (SCRIPT BLOCKS) -->
+            <!-- ==================================================
+                 PANEL KIRI
+                 ================================================== -->
             <div id="left-panel" class="panel">
                 <div class="panel-header">
-                    <h2 class="panel-title">SCRIPT BLOCKS</h2>
-                    <div class="panel-subtitle">(TARIK KE HALAMAN)</div>
+                    <div>
+                        <h2 class="panel-title">SCRIPT BLOCKS</h2>
+                        <div class="panel-subtitle">(TARIK KE HALAMAN)</div>
+                    </div>
+                    <button class="btn-preview" onclick="openPreviewBlocks()" title="Preview Blocks">➚</button>
                 </div>
                 <div class="scroll-container">
                     <div class="retro-scrollbar" id="block-container" ondragover="handleDragOverPanel(event)" ondrop="handleDropToPanel(event)"></div>
@@ -502,23 +652,32 @@
                 </div>
             </div>
 
-            <!-- PANEL TENGAH (PAPER) -->
+            <!-- ==================================================
+                 PANEL TENGAH
+                 ================================================== -->
             <div id="center-panel" class="panel">
-                <div class="paper-sheet" id="script-paper">
-                    <div class="paper-header">
-                        <span class="title">UNTITLED</span>
-                        <span class="page-num" id="page-number"></span>
+                <div class="center-scroll-area">
+                    <div class="paper-sheet" id="script-paper">
+                        <div class="paper-header">
+                            <span class="title">UNTITLED</span>
+                            <span class="page-num" id="page-number"></span>
+                        </div>
+                        <div id="slots-container"></div>
                     </div>
-                    <div id="slots-container"></div>
                 </div>
+                <button class="btn-preview btn-preview-paper" onclick="openPreviewPaper()" title="Preview Paper">➚</button>
             </div>
 
-            <!-- PANEL KANAN (CHECKLIST & TOOLS) -->
+            <!-- ==================================================
+                 PANEL KANAN
+                 ================================================== -->
             <div id="right-panel" class="panel">
+                
                 <div class="right-panel-content">
                     <div class="right-section-title">CHECKLIST</div>
                     <div id="checklist-container"></div>
 
+                    <!-- HINT -->
                     <div class="hint-section">
                         <button id="btn-open-hint" class="hint-btn-style" onclick="openHint()">
                             <span>HINT</span>
@@ -526,6 +685,7 @@
                         </button>
                     </div>
 
+                    <!-- KAMUS -->
                     <div class="kamus-tab-container">
                         <div class="kamus-tab-title">KAMUS</div>
                         <div class="kamus-tab-content">
@@ -542,6 +702,7 @@
                     </div>
                 </div>
 
+                <!-- PAGINATION -->
                 <div class="pagination-area">
                     <div class="nav-arrow">◄</div>
                     <div class="page-thumb-wrapper">
@@ -553,45 +714,59 @@
                     </div>
                     <div class="nav-arrow">►</div>
                 </div>
-            </div>
 
+            </div>
         </div>
     </div>
 
-    <!-- MODAL HINT -->
+
+    <!-- ==================================================
+         MODAL PREVIEW BLOCKS
+         ================================================== -->
+    <div id="modal-preview-blocks" class="modal-overlay">
+        <div class="modal-content">
+            <div style="display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 15px;">
+                <h2 class="text-2xl" style="color: var(--text-highlight); margin: 0; padding: 0;">SEMUA BLOK</h2>
+                <button class="btn-preview" style="position: absolute; right: 0; color: var(--color-char); border-color: var(--color-char);" onclick="closeModal('modal-preview-blocks')">✖</button>
+            </div>
+            <div id="preview-block-grid"></div>
+        </div>
+    </div>
+
+    <!-- ==================================================
+         MODAL PREVIEW PAPER
+         ================================================== -->
+    <div id="modal-preview-paper" class="modal-overlay">
+        <div class="modal-content" style="background: none; border: none; box-shadow: none;">
+            <div style="display: flex; justify-content: center; align-items: center; position: relative; margin-bottom: 10px;">
+                <button class="btn-preview" style="position: absolute; right: 0; top: 0; color: var(--color-char); border-color: var(--color-char); z-index: 10;" onclick="closeModal('modal-preview-paper')">✖</button>
+            </div>
+            <div class="center-scroll-area">
+                <div class="paper-sheet" id="preview-paper-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP SELECTED BLOCK -->
+    <div id="popup-selected">BLOCK DIPILIH</div>
+
+
+    <!-- ==================================================
+         MODAL LAINNYA
+         ================================================== -->
     <div id="modal-hint" class="modal-overlay">
         <div class="modal-content" style="max-width: 650px; text-align: left;">
             <h2 class="text-2xl mb-4 border-b pb-2" style="color: var(--accent-yellow); border-color: var(--border-light); text-align: center;">ANATOMI NASKAH</h2>
             <div style="font-family: sans-serif; font-size: 0.9rem; color: var(--text-normal); line-height: 1.6; max-height: 65vh; padding-right: 15px; overflow-y: auto;">
                 <p class="mb-4">Setiap tipe blok memiliki peran penting. Perhatikan formatnya untuk menyusun alur yang benar.</p>
-                <div class="mb-4">
-                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">1. SCENE HEADING (Slugline)</strong><br>
-                    Penanda awal adegan (Lokasi & Waktu). Selalu kapital.<br>
-                    <span style="color: var(--text-muted); font-style: italic;">Contoh: INT. RUANG SIDANG - SIANG</span>
-                </div>
-                <div class="mb-4">
-                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">2. ACTION</strong><br>
-                    Deskripsi kejadian/tindakan fisik karakter yang terlihat di layar.<br>
-                    <span style="color: var(--text-muted); font-style: italic;">Contoh: Seorang Hakim mengetuk palu.</span>
-                </div>
-                <div class="mb-4">
-                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">3. DIALOGUE / CHARACTER</strong><br>
-                    Ucapan tokoh. Nama tokoh selalu kapital di atas dialog.<br>
-                    <span style="color: var(--text-muted); font-style: italic;">JAKSA<br>Saya keberatan!</span>
-                </div>
-                <div class="mb-4">
-                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">4. TRANSITION</strong><br>
-                    Instruksi penyuntingan (kamera). Selalu di rata kanan.<br>
-                    <span style="color: var(--text-muted); font-style: italic;">Contoh: CUT TO:</span>
-                </div>
+                <div class="mb-4"><strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">1. SCENE HEADING (Slugline)</strong><br>Penanda awal adegan (Lokasi & Waktu). Selalu kapital.<br><span style="color: var(--text-muted); font-style: italic;">Contoh: INT. RUANG SIDANG - SIANG</span></div>
+                <div class="mb-4"><strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">2. ACTION</strong><br>Deskripsi kejadian/tindakan fisik karakter yang terlihat di layar.<br><span style="color: var(--text-muted); font-style: italic;">Contoh: Seorang Hakim mengetuk palu.</span></div>
+                <div class="mb-4"><strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">3. DIALOGUE / CHARACTER</strong><br>Ucapan tokoh. Nama tokoh selalu kapital di atas dialog.<br><span style="color: var(--text-muted); font-style: italic;">JAKSA<br>Saya keberatan!</span></div>
+                <div class="mb-4"><strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">4. TRANSITION</strong><br>Instruksi penyuntingan (kamera). Selalu di rata kanan.<br><span style="color: var(--text-muted); font-style: italic;">Contoh: CUT TO:</span></div>
             </div>
-            <div class="flex justify-center mt-6">
-                <button class="retro-btn primary" onclick="closeHint()">SAYA MENGERTI (TUTUP)</button>
-            </div>
+            <div class="flex justify-center mt-6"><button class="retro-btn primary" onclick="closeHint()">SAYA MENGERTI (TUTUP)</button></div>
         </div>
     </div>
-
-    <!-- MODAL EVALUASI -->
     <div id="modal-eval" class="modal-overlay">
         <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
             <h2 id="eval-title" class="text-2xl mb-4 border-b pb-2" style="color: var(--text-highlight); border-color: var(--border-light);">EVALUASI KLIEN</h2>
@@ -609,14 +784,10 @@
             </div>
         </div>
     </div>
-
-    <!-- MODAL START / PROFILE -->
     <div id="modal-start" class="modal-overlay active">
         <div class="modal-content">
             <h1 class="text-4xl mb-2">EDITOR SCRIPT</h1>
-            <p class="text-sm mb-6 font-sans" style="color: var(--text-muted);">
-                Setiap cerita memiliki masalah. Tugasmu memastikan setiap bagian memiliki alasan yang logis.
-            </p>
+            <p class="text-sm mb-6 font-sans" style="color: var(--text-muted);">Setiap cerita memiliki masalah. Tugasmu memastikan setiap bagian memiliki alasan yang logis.</p>
             <div id="profile-stats" class="text-sm mb-6 hidden border p-3 text-left font-sans" style="color: var(--text-normal); border-color: var(--border-light);">
                 <div class="grid grid-cols-2 gap-2">
                     <div>Hari Dicapai:</div><div id="stat-day" class="text-right" style="color: var(--text-highlight);">1</div>
@@ -630,8 +801,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- CUSTOM ALERT/CONFIRM MODAL -->
     <div id="modal-msg" class="modal-overlay">
         <div class="modal-content" style="max-width: 400px;">
             <h2 id="msg-title" class="text-2xl mb-4 border-b pb-2" style="color: var(--accent-yellow); border-color: var(--border-light);">INFO</h2>
@@ -643,8 +812,15 @@
         </div>
     </div>
 
-    <!-- JAVASCRIPT -->
+
+    <!-- ==================================================
+         JAVASCRIPT LOGIC
+         ================================================== -->
     <script>
+
+        /* ==================================================
+           CUSTOM ALERT & CONFIRM LOGIC
+           ================================================== */
         function customAlert(text) {
             document.getElementById('msg-title').innerText = "PERHATIAN";
             document.getElementById('msg-body').innerText = text;
@@ -664,6 +840,9 @@
             document.getElementById('modal-msg').classList.add('active');
         }
 
+        /* ==================================================
+           GLOSSARY & TEMPLATE
+           ================================================== */
         const glossaryDB = {
             "JAKSA": { def: "Pejabat yang berwenang mengajukan tuntutan/dakwaan terhadap terdakwa di pengadilan.", ex: "\"Jaksa membacakan dakwaan di sidang.\"" },
             "ALIBI": { def: "Keterangan bukti bahwa tersangka berada di tempat lain saat kejadian kriminal terjadi.", ex: "\"Tersangka memiliki alibi kuat berupa rekaman CCTV.\"" },
@@ -686,6 +865,7 @@
         ];
 
         let gameState = { day: 1, casesCompleted: 0, totalScore: 0, history: [], currentBible: null, currentBlocks: [], placedBlocks: [], selectedBlockId: null, hintUsed: false };
+        let isSelectedFromPreview = false;
 
         function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
@@ -697,77 +877,58 @@
             }
             if (available.length === 0) available = storyTemplates;
             const t = pickRandom(available);
-            const formats = [ { id: 'CUT_TO', text: "Akhiri naskah dengan transisi CUT TO:" }, { id: 'FADE_OUT', text: "Akhiri naskah dengan transisi FADE OUT." }, { id: 'NO_TRANS', text: "-" }, { id: 'ANY_TRANS', text: "-" } ];
+            const formats = [{ id: 'CUT_TO', text: "Akhiri naskah dengan transisi CUT TO:" }, { id: 'FADE_OUT', text: "Akhiri naskah dengan transisi FADE OUT." }, { id: 'NO_TRANS', text: "-" }, { id: 'ANY_TRANS', text: "-" }];
             const chosenFormat = pickRandom(formats);
             return { genre: t.genre, theme: t.theme, reqText: t.reqText, protagonist: pickRandom(t.protagonists), location: pickRandom(t.locations), conflict: pickRandom(t.conflicts), ending: t.ending, formatId: chosenFormat.id, formatText: chosenFormat.text };
         }
 
         function generateBlocksForBible(bible) {
-            let blocks = [];
-            let cid = 1;
+            let blocks = []; let cid = 1;
             const cb = (type, text, isCorrect, seq, req, err, hint) => ({ id: 'blk_' + cid++, type, text, isCorrect, sequenceOrder: seq, required: req, errorReason: err, hint });
             blocks.push(cb('SCENE HEADING', `INT. ${bible.location} - SIANG`, true, 1, true));
-            if (gameState.day >= 4) {
-                blocks.push(cb('SCENE HEADING', `EXT. JALAN RAYA - MALAM`, false, 0, false, "Lokasi Salah", "Perhatikan lokasi relevan sesuai profesi di kasus ini."));
-                blocks.push(cb('SCENE HEADING', `INT. RESTORAN CEPAT SAJI - PAGI`, false, 0, false, "Lokasi Salah", "Konteks adegan tidak terjadi di restoran."));
-            }
+            if (gameState.day >= 4) { blocks.push(cb('SCENE HEADING', `EXT. JALAN RAYA - MALAM`, false, 0, false, "Lokasi Salah", "Perhatikan lokasi relevan sesuai profesi di kasus ini.")); blocks.push(cb('SCENE HEADING', `INT. RESTORAN CEPAT SAJI - PAGI`, false, 0, false, "Lokasi Salah", "Konteks adegan tidak terjadi di restoran.")); }
             if (bible.protagonist === 'JAKSA') {
-                blocks.push(cb('ACTION', `Seorang JAKSA merapikan berkas di meja dengan gugup.`, true, 2, true));
-                blocks.push(cb('DIALOGUE', `JAKSA\nKita harus periksa ALIBI terdakwa dengan saksama.`, true, 3, true));
-                blocks.push(cb('ACTION', `JAKSA mengetuk palu dan memutuskan vonis penjara.`, false, 0, false, "Kewenangan", "Periksa batas wewenang profesi Jaksa di pengadilan."));
-                blocks.push(cb('DIALOGUE', `JAKSA\nSaya akan melakukan AUTOPSI sekarang juga.`, false, 0, false, "Kewenangan", "Jaksa bukan tenaga forensik."));
-                blocks.push(cb('ACTION', `Hakim menyuruh JAKSA membacakan PLEDOI.`, false, 0, false, "Kewenangan", "Pledoi adalah tugas terdakwa/pengacara pembela."));
+                blocks.push(cb('ACTION', `Seorang JAKSA merapikan berkas di meja dengan gugup.`, true, 2, true)); blocks.push(cb('DIALOGUE', `JAKSA\nKita harus periksa ALIBI terdakwa dengan saksama.`, true, 3, true)); blocks.push(cb('ACTION', `JAKSA mengetuk palu dan memutuskan vonis penjara.`, false, 0, false, "Kewenangan", "Periksa batas wewenang profesi Jaksa di pengadilan.")); blocks.push(cb('DIALOGUE', `JAKSA\nSaya akan melakukan AUTOPSI sekarang juga.`, false, 0, false, "Kewenangan", "Jaksa bukan tenaga forensik.")); blocks.push(cb('ACTION', `Hakim menyuruh JAKSA membacakan PLEDOI.`, false, 0, false, "Kewenangan", "Pledoi adalah tugas terdakwa/pengacara pembela."));
             } else if (bible.protagonist === 'DOKTER') {
-                blocks.push(cb('ACTION', `DOKTER memeriksa kondisi KLINIS pasien secara manual.`, true, 2, true));
-                blocks.push(cb('ACTION', `Ia mengambil STETOSKOP dan menarik napas panjang.`, true, 3, true));
-                blocks.push(cb('ACTION', `DOKTER mengeluarkan pistol dan memborgol pelaku.`, false, 0, false, "Kewenangan", "Dokter sipil tidak berwenang menangkap."));
-                blocks.push(cb('ACTION', `DOKTER memasang GARIS POLISI di sekitar ranjang.`, false, 0, false, "Kewenangan", "Tindakan ini wewenang kepolisian."));
-                blocks.push(cb('DIALOGUE', `DOKTER\nSaya akan mengajukan PLEDOI untuk pasien ini.`, false, 0, false, "Konteks", "Istilah hukum tak lazim dalam medis. Ia harusnya menulis RESEP."));
+                blocks.push(cb('ACTION', `DOKTER memeriksa kondisi KLINIS pasien secara manual.`, true, 2, true)); blocks.push(cb('ACTION', `Ia mengambil STETOSKOP dan menarik napas panjang.`, true, 3, true)); blocks.push(cb('ACTION', `DOKTER mengeluarkan pistol dan memborgol pelaku.`, false, 0, false, "Kewenangan", "Dokter sipil tidak berwenang menangkap.")); blocks.push(cb('ACTION', `DOKTER memasang GARIS POLISI di sekitar ranjang.`, false, 0, false, "Kewenangan", "Tindakan ini wewenang kepolisian.")); blocks.push(cb('DIALOGUE', `DOKTER\nSaya akan mengajukan PLEDOI untuk pasien ini.`, false, 0, false, "Konteks", "Istilah hukum tak lazim dalam medis. Ia harusnya menulis RESEP."));
             } else {
-                blocks.push(cb('ACTION', `POLISI merunduk di bawah GARIS POLISI.`, true, 2, true));
-                blocks.push(cb('DIALOGUE', `POLISI\nArea ini steril. Amankan BARANG BUKTI!`, true, 3, true));
-                blocks.push(cb('ACTION', `POLISI melakukan pembedahan KLINIS pada mayat.`, false, 0, false, "Kewenangan", "Pembedahan ranah forensik (Autopsi)."));
-                blocks.push(cb('ACTION', `POLISI membacakan PLEDOI di depan saksi.`, false, 0, false, "Kewenangan", "Ini tugas pengacara di persidangan."));
-                blocks.push(cb('ACTION', `POLISI menuliskan RESEP untuk korban luka.`, false, 0, false, "Kewenangan", "Hanya dokter yang berhak meresepkan."));
+                blocks.push(cb('ACTION', `POLISI merunduk di bawah GARIS POLISI.`, true, 2, true)); blocks.push(cb('DIALOGUE', `POLISI\nArea ini steril. Amankan BARANG BUKTI!`, true, 3, true)); blocks.push(cb('ACTION', `POLISI melakukan pembedahan KLINIS pada mayat.`, false, 0, false, "Kewenangan", "Pembedahan ranah forensik (Autopsi).")); blocks.push(cb('ACTION', `POLISI membacakan PLEDOI di depan saksi.`, false, 0, false, "Kewenangan", "Ini tugas pengacara di persidangan.")); blocks.push(cb('ACTION', `POLISI menuliskan RESEP untuk korban luka.`, false, 0, false, "Kewenangan", "Hanya dokter yang berhak meresepkan."));
             }
             blocks.push(cb('ACTION', `Tiba-tiba, ${bible.conflict}.`, true, 4, true));
             let reqTrans = bible.formatId;
-            if (reqTrans === 'CUT_TO') {
-                blocks.push(cb('TRANSITION', `CUT TO:`, true, 5, true));
-                if (gameState.day >= 4) blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format Transisi", "Klien meminta CUT TO: secara spesifik."));
-            } else if (reqTrans === 'FADE_OUT') {
-                blocks.push(cb('TRANSITION', `FADE OUT.`, true, 5, true));
-                if (gameState.day >= 4) blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format Transisi", "Klien meminta FADE OUT secara spesifik."));
-            } else if (reqTrans === 'NO_TRANS') {
-                if (gameState.day >= 4) {
-                    blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format Transisi", "Naskah ini diminta tanpa transisi di akhir."));
-                    blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format Transisi", "Naskah ini diminta tanpa transisi di akhir."));
-                }
-            } else if (reqTrans === 'ANY_TRANS') {
-                blocks.push(cb('TRANSITION', pickRandom([`CUT TO:`, `FADE OUT.`]), true, 5, true));
-                if (gameState.day >= 4) blocks.push(cb('TRANSITION', `DISSOLVE TO:`, false, 0, false, "Format Transisi", "Gunakan transisi standar yang lazim seperti CUT TO atau FADE OUT."));
-            }
+            if (reqTrans === 'CUT_TO') { blocks.push(cb('TRANSITION', `CUT TO:`, true, 5, true)); if (gameState.day >= 4) blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format Transisi", "Klien meminta CUT TO: secara spesifik.")); } 
+            else if (reqTrans === 'FADE_OUT') { blocks.push(cb('TRANSITION', `FADE OUT.`, true, 5, true)); if (gameState.day >= 4) blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format Transisi", "Klien meminta FADE OUT secara spesifik.")); }
+            else if (reqTrans === 'NO_TRANS') { if (gameState.day >= 4) { blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format", "Diminta tanpa transisi.")); blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format", "Diminta tanpa transisi.")); } }
+            else if (reqTrans === 'ANY_TRANS') { blocks.push(cb('TRANSITION', pickRandom([`CUT TO:`, `FADE OUT.`]), true, 5, true)); if (gameState.day >= 4) blocks.push(cb('TRANSITION', `DISSOLVE TO:`, false, 0, false, "Format", "Gunakan standar CUT TO atau FADE OUT.")); }
             return blocks.sort(() => Math.random() - 0.5);
         }
 
         function setupNewCase() {
             gameState.currentBible = generateStoryBible();
             gameState.currentBlocks = generateBlocksForBible(gameState.currentBible);
-            const reqCount = gameState.currentBlocks.filter(b => b.required).length;
-            gameState.placedBlocks = new Array(reqCount).fill(null);
-            gameState.selectedBlockId = null;
-            gameState.hintUsed = false;
+            gameState.placedBlocks = new Array(gameState.currentBlocks.filter(b => b.required).length).fill(null);
+            gameState.selectedBlockId = null; isSelectedFromPreview = false; gameState.hintUsed = false;
             document.getElementById('hint-badge').style.display = 'flex';
             document.getElementById('btn-open-hint').classList.remove('hint-disabled');
             document.getElementById('glossary-empty').classList.remove('hidden');
             document.getElementById('glossary-content').classList.add('hidden');
-            updateUI();
+            hidePopup(); updateUI();
         }
 
         function openHint() { if (gameState.hintUsed) return; document.getElementById('modal-hint').classList.add('active'); }
         function closeHint() { document.getElementById('modal-hint').classList.remove('active'); gameState.hintUsed = true; document.getElementById('hint-badge').style.display = 'none'; document.getElementById('btn-open-hint').classList.add('hint-disabled'); }
-        function processTextForGlossary(text) { let p = text; for (const key in glossaryDB) { const r = new RegExp(`\\b(${key})\\b`, 'gi'); p = p.replace(r, `<span class="glossary-term-link" onclick="event.stopPropagation(); openGlossary('${key}')">$&</span>`); } return p; }
-        function openGlossary(term) { const key = term.toUpperCase(); if (glossaryDB[key]) { document.getElementById('glossary-empty').classList.add('hidden'); document.getElementById('glossary-content').classList.remove('hidden'); document.getElementById('glossary-title').innerText = key; document.getElementById('glossary-def').innerText = glossaryDB[key].def; document.getElementById('glossary-ex').innerText = glossaryDB[key].ex; } }
+        function processTextForGlossary(text) {
+            let p = text;
+            for (const key in glossaryDB) { const r = new RegExp(`\\b(${key})\\b`, 'gi'); p = p.replace(r, `<span class="glossary-term-link" onclick="event.stopPropagation(); openGlossary('${key}')">$&</span>`); }
+            return p;
+        }
+        function openGlossary(term) {
+            const key = term.toUpperCase();
+            if (glossaryDB[key]) {
+                document.getElementById('glossary-empty').classList.add('hidden'); document.getElementById('glossary-content').classList.remove('hidden');
+                document.getElementById('glossary-title').innerText = key; document.getElementById('glossary-def').innerText = glossaryDB[key].def; document.getElementById('glossary-ex').innerText = glossaryDB[key].ex;
+            }
+        }
 
         function updateUI() {
             document.getElementById('level-display').innerText = `HARI 0${gameState.day}`;
@@ -785,20 +946,25 @@
             checklistHTML += `<div class="checklist-item" id="chk-logic"><span class="checklist-box"></span>Urutan logis</div><div class="checklist-item" id="chk-prof"><span class="checklist-box"></span>Karakter sesuai profesi</div>`;
             document.getElementById('checklist-container').innerHTML = checklistHTML;
             if (gameState.hintUsed) { document.getElementById('hint-badge').style.display = 'none'; document.getElementById('btn-open-hint').classList.add('hint-disabled'); }
-            renderBlocksAndSlots();
-            updateChecklist();
+            renderBlocksAndSlots(); updateChecklist();
         }
 
         function renderBlocksAndSlots() {
             const bc = document.getElementById('block-container');
             const sc = document.getElementById('slots-container');
             bc.innerHTML = ''; sc.innerHTML = '';
-            gameState.currentBlocks.forEach(b => { if (!gameState.placedBlocks.includes(b.id)) { bc.appendChild(createBlockEl(b, false)); } });
+
+            gameState.currentBlocks.forEach(b => {
+                if (!gameState.placedBlocks.includes(b.id)) bc.appendChild(createBlockEl(b, false));
+            });
+
             for (let i = 0; i < gameState.placedBlocks.length; i++) {
                 const row = document.createElement('div'); row.className = 'slot-row';
                 const num = document.createElement('div'); num.className = 'slot-number'; num.innerText = i + 1;
                 const slot = document.createElement('div'); slot.className = 'drop-slot'; slot.dataset.index = i;
-                slot.addEventListener('dragover', handleDragOver); slot.addEventListener('dragleave', handleDragLeave); slot.addEventListener('drop', handleDrop); slot.addEventListener('click', () => handleSlotClick(i));
+                slot.addEventListener('dragover', handleDragOver); slot.addEventListener('dragleave', handleDragLeave);
+                slot.addEventListener('drop', handleDrop); slot.addEventListener('click', () => handleSlotClick(i));
+                
                 const pId = gameState.placedBlocks[i];
                 if (pId) {
                     const block = gameState.currentBlocks.find(x => x.id === pId);
@@ -806,23 +972,73 @@
                 }
                 row.appendChild(num); row.appendChild(slot); sc.appendChild(row);
             }
-            requestAnimationFrame(() => { const container = document.getElementById('block-container'); if (container) container.dispatchEvent(new Event('scroll')); });
+            requestAnimationFrame(() => { const c = document.getElementById('block-container'); if (c) c.dispatchEvent(new Event('scroll')); });
+            
+            if(gameState.selectedBlockId && isSelectedFromPreview) {
+                const selB = gameState.currentBlocks.find(x => x.id === gameState.selectedBlockId);
+                if(selB) showPopup(`MENAHAN: [${selB.type}]`);
+            } else {
+                hidePopup();
+            }
         }
 
-        function createBlockEl(b, isPlaced = false, slotIdx = null) {
+        function createBlockEl(b, isPlaced = false, slotIdx = null, isForPreview = false) {
             const div = document.createElement('div');
             div.className = 'script-block';
-            if (gameState.selectedBlockId === b.id) div.style.borderColor = 'var(--text-highlight)';
-            div.draggable = true; div.id = b.id; div.dataset.type = b.type;
-            div.innerHTML = `<div class="block-type-label">b.type</div><divclass="block-text">{processTextForGlossary(b.text.replace(/\n/g, '<br>'))}</div>`;
-            div.addEventListener('dragstart', e => handleDragStart(e, b.id, isPlaced, slotIdx));
+            if (gameState.selectedBlockId === b.id) div.classList.add('highlighted');
+            div.draggable = true; div.id = isForPreview ? 'prev_'+b.id : b.id; div.dataset.type = b.type;
+            div.innerHTML = `<div class="block-type-label">${b.type}</div><div class="block-text">${processTextForGlossary(b.text.replace(/\n/g, '<br>'))}</div>`;
+            div.addEventListener('dragstart', e => handleDragStart(e, b.id, isPlaced, slotIdx, isForPreview));
             div.addEventListener('dragend', handleDragEnd);
-            div.addEventListener('click', e => { if (!e.target.classList.contains('glossary-term-link')) handleBlockClick(b.id); });
+            div.addEventListener('click', e => {
+                if (!e.target.classList.contains('glossary-term-link')) {
+                    if(isForPreview) { handlePreviewBlockClick(b.id); } 
+                    else { isSelectedFromPreview = false; handleBlockClick(b.id); }
+                }
+            });
             return div;
         }
 
-        let draggedId = null, draggedFrom = null;
-        function handleDragStart(e, id, isPlaced, idx) { draggedId = id; draggedFrom = isPlaced ? idx : null; e.dataTransfer.setData('text/plain', id); setTimeout(() => { e.target.style.opacity = '0.5'; }, 0); }
+        function openPreviewBlocks() {
+            const grid = document.getElementById('preview-block-grid');
+            grid.innerHTML = '';
+            gameState.currentBlocks.forEach(b => {
+                if (!gameState.placedBlocks.includes(b.id)) grid.appendChild(createBlockEl(b, false, null, true));
+            });
+            document.getElementById('modal-preview-blocks').classList.add('active');
+        }
+
+        function handlePreviewBlockClick(id) {
+            gameState.selectedBlockId = id;
+            isSelectedFromPreview = true;
+            closeModal('modal-preview-blocks');
+            renderBlocksAndSlots();
+        }
+
+        function openPreviewPaper() {
+            const c = document.getElementById('preview-paper-content');
+            const originalPaper = document.getElementById('script-paper');
+            c.innerHTML = originalPaper.innerHTML; 
+            document.getElementById('modal-preview-paper').classList.add('active');
+        }
+
+        function showPopup(text) {
+            const pop = document.getElementById('popup-selected');
+            pop.innerText = text; pop.classList.add('active');
+        }
+        function hidePopup() { document.getElementById('popup-selected').classList.remove('active'); }
+
+
+        let draggedId = null; let draggedFrom = null;
+        function handleDragStart(e, id, isPlaced, idx, isForPreview) {
+            draggedId = id; draggedFrom = isPlaced ? idx : null;
+            e.dataTransfer.setData('text/plain', id);
+            setTimeout(() => { e.target.style.opacity = '0.5'; }, 0);
+            if(isForPreview) {
+                gameState.selectedBlockId = id; isSelectedFromPreview = true;
+                closeModal('modal-preview-blocks'); renderBlocksAndSlots();
+            }
+        }
         function handleDragEnd(e) { e.target.style.opacity = '1'; draggedId = null; draggedFrom = null; }
         function handleDragOver(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over'); }
         function handleDragLeave(e) { e.currentTarget.classList.remove('drag-over'); }
@@ -831,36 +1047,58 @@
         function handleDropToPanel(e) { e.preventDefault(); if (draggedId && draggedFrom !== null) moveBlock(draggedId, null, draggedFrom); }
         function handleBlockClick(id) { gameState.selectedBlockId = gameState.selectedBlockId === id ? null : id; renderBlocksAndSlots(); }
         function handleSlotClick(idx) {
-            if (gameState.selectedBlockId) { let fromIdx = gameState.placedBlocks.indexOf(gameState.selectedBlockId); moveBlock(gameState.selectedBlockId, idx, fromIdx !== -1 ? fromIdx : null); gameState.selectedBlockId = null; }
-            else if (gameState.placedBlocks[idx]) { gameState.selectedBlockId = gameState.placedBlocks[idx]; renderBlocksAndSlots(); }
+            if (gameState.selectedBlockId) {
+                let fromIdx = gameState.placedBlocks.indexOf(gameState.selectedBlockId);
+                moveBlock(gameState.selectedBlockId, idx, fromIdx !== -1 ? fromIdx : null);
+                gameState.selectedBlockId = null; isSelectedFromPreview = false; hidePopup();
+            } else if (gameState.placedBlocks[idx]) {
+                gameState.selectedBlockId = gameState.placedBlocks[idx]; renderBlocksAndSlots();
+            }
         }
         function moveBlock(bId, toIdx, fromIdx) {
             if (!bId) return;
-            if (toIdx === null) { if (fromIdx !== null) gameState.placedBlocks[fromIdx] = null; }
-            else { const ex = gameState.placedBlocks[toIdx]; if (fromIdx !== null) { gameState.placedBlocks[fromIdx] = ex; gameState.placedBlocks[toIdx] = bId; } else { gameState.placedBlocks[toIdx] = bId; } }
+            if (toIdx === null) { if (fromIdx !== null) gameState.placedBlocks[fromIdx] = null; } 
+            else {
+                const ex = gameState.placedBlocks[toIdx];
+                if (fromIdx !== null) { gameState.placedBlocks[fromIdx] = ex; gameState.placedBlocks[toIdx] = bId; } 
+                else { gameState.placedBlocks[toIdx] = bId; }
+            }
             renderBlocksAndSlots(); updateChecklist();
         }
-        function clearBoard() { gameState.placedBlocks.fill(null); gameState.selectedBlockId = null; renderBlocksAndSlots(); updateChecklist(); }
+        function clearBoard() { gameState.placedBlocks.fill(null); gameState.selectedBlockId = null; isSelectedFromPreview = false; renderBlocksAndSlots(); updateChecklist(); }
 
         function updateChecklist() {
             const pIds = gameState.placedBlocks.filter(i => i !== null);
             const rCount = gameState.currentBlocks.filter(b => b.required).length;
-            const cBlocks = document.getElementById('chk-blocks'), cTrans = document.getElementById('chk-trans'), cLogic = document.getElementById('chk-logic'), cProf = document.getElementById('chk-prof');
+            const cBlocks = document.getElementById('chk-blocks'); const cTrans = document.getElementById('chk-trans');
+            const cLogic = document.getElementById('chk-logic'); const cProf = document.getElementById('chk-prof');
             if (!cLogic || !cProf) return;
+
             let placedReq = 0;
             gameState.currentBlocks.forEach(b => { if (b.required && pIds.includes(b.id)) placedReq++; });
+
             if (placedReq >= rCount && pIds.length === gameState.placedBlocks.length) {
                 if (cBlocks) cBlocks.classList.add('done');
                 if (cTrans) {
-                    if (gameState.currentBible.formatId === 'NO_TRANS') { let hasTrans = pIds.some(id => gameState.currentBlocks.find(x => x.id === id).type === 'TRANSITION'); if (!hasTrans) cTrans.classList.add('done'); else cTrans.classList.remove('done'); }
-                    else { let hasCorrectTrans = pIds.some(id => { const b = gameState.currentBlocks.find(x => x.id === id); return b.type === 'TRANSITION' && b.isCorrect; }); if (hasCorrectTrans) cTrans.classList.add('done'); else cTrans.classList.remove('done'); }
+                    if (gameState.currentBible.formatId === 'NO_TRANS') {
+                        let hasTrans = pIds.some(id => gameState.currentBlocks.find(x => x.id === id).type === 'TRANSITION');
+                        if (!hasTrans) cTrans.classList.add('done'); else cTrans.classList.remove('done');
+                    } else {
+                        let hasCorrectTrans = pIds.some(id => { const b = gameState.currentBlocks.find(x => x.id === id); return b.type === 'TRANSITION' && b.isCorrect; });
+                        if (hasCorrectTrans) cTrans.classList.add('done'); else cTrans.classList.remove('done');
+                    }
                 }
-                let sErr = false, hErr = false, lSeq = -1;
-                pIds.forEach(id => { const b = gameState.currentBlocks.find(x => x.id === id); if (b.sequenceOrder > 0) { if (b.sequenceOrder < lSeq) sErr = true; lSeq = b.sequenceOrder; } if (!b.isCorrect) hErr = true; });
+                let sErr = false; let hErr = false; let lSeq = -1;
+                pIds.forEach(id => {
+                    const b = gameState.currentBlocks.find(x => x.id === id);
+                    if (b.sequenceOrder > 0) { if (b.sequenceOrder < lSeq) sErr = true; lSeq = b.sequenceOrder; }
+                    if (!b.isCorrect) hErr = true;
+                });
                 if (!sErr) cLogic.classList.add('done'); else cLogic.classList.remove('done');
                 if (!hErr) cProf.classList.add('done'); else cProf.classList.remove('done');
             } else {
-                if (cBlocks) cBlocks.classList.remove('done'); if (cTrans) cTrans.classList.remove('done'); cLogic.classList.remove('done'); cProf.classList.remove('done');
+                if (cBlocks) cBlocks.classList.remove('done'); if (cTrans) cTrans.classList.remove('done');
+                cLogic.classList.remove('done'); cProf.classList.remove('done');
             }
         }
 
@@ -868,25 +1106,36 @@
             const pIds = gameState.placedBlocks.filter(i => i !== null);
             if (pIds.length === 0) { customAlert("Naskah kosong!"); return; }
             if (pIds.length < gameState.placedBlocks.length) { customAlert("Masih ada bagian naskah yang kosong! Harap isi semua slot yang tersedia sebelum memeriksa."); return; }
-            let sSt = 100, sLg = 100, sCh = 100, msgs = [], aReq = true, lSeq = -1, hErr = false, sErr = false;
+
+            let sSt = 100, sLg = 100, sCh = 100;
+            let msgs = [], aReq = true, lSeq = -1, hErr = false, sErr = false;
+
             gameState.currentBlocks.filter(b => b.required).forEach(rb => { if (!pIds.includes(rb.id)) aReq = false; });
             if (!aReq) { sSt -= 30; msgs.push("- <strong>Kekurangan adegan kunci.</strong> Pastikan requirement klien terpenuhi."); }
+
             pIds.forEach(id => {
                 const b = gameState.currentBlocks.find(x => x.id === id);
                 if (b && b.sequenceOrder > 0) { if (b.sequenceOrder < lSeq) sErr = true; lSeq = b.sequenceOrder; }
                 if (b && !b.isCorrect) { hErr = true; sCh -= 40; sLg -= 20; msgs.push(`- <strong>KONTINUITAS/LOGIKA:</strong> ${b.hint}`); }
             });
+
             if (sErr) { sLg -= 30; msgs.push("- <strong>URUTAN ADEGAN SALAH:</strong> Kejadian melompat atau sebab-akibat rancu."); }
             updateChecklist();
             sSt = Math.max(0, sSt); sLg = Math.max(0, sLg); sCh = Math.max(0, sCh);
             const tot = Math.round((sSt + sLg + sCh + (aReq ? 100 : 0)) / 4);
+
             document.getElementById('score-structure').innerText = sSt; document.getElementById('score-logic').innerText = sLg; document.getElementById('score-char').innerText = sCh; document.getElementById('score-total').innerText = tot;
-            const fB = document.getElementById('eval-feedback'), bNx = document.getElementById('btn-next');
+            const fB = document.getElementById('eval-feedback'); const bNx = document.getElementById('btn-next');
+
             if (tot >= 80 && !hErr && aReq && !sErr) {
-                fB.style.borderColor = "var(--color-scene)"; fB.style.color = "var(--color-scene)"; fB.innerHTML = "<strong>STATUS: DISETUJUI.</strong><br><br>Naskah solid, logis, dan karakter bertindak sesuai dengan kapasitas/kewenangannya."; bNx.classList.remove('hidden'); document.getElementById('btn-revisi').innerText = "TUTUP";
+                fB.style.borderColor = "var(--color-scene)"; fB.style.color = "var(--color-scene)";
+                fB.innerHTML = "<strong>STATUS: DISETUJUI.</strong><br><br>Naskah solid, logis, dan karakter bertindak sesuai dengan kapasitas/kewenangannya.";
+                bNx.classList.remove('hidden'); document.getElementById('btn-revisi').innerText = "TUTUP";
                 if (bNx.dataset.saved !== "true") { gameState.casesCompleted++; gameState.totalScore += tot; gameState.history.push({ genre: gameState.currentBible.genre }); saveData(); bNx.dataset.saved = "true"; }
             } else {
-                fB.style.borderColor = "var(--color-char)"; fB.style.color = "var(--color-char)"; fB.innerHTML = "<strong>STATUS: REVISI DIBUTUHKAN.</strong><br><br>" + msgs.join("<br><br>"); bNx.classList.add('hidden'); document.getElementById('btn-revisi').innerText = "REVISI NASKAH";
+                fB.style.borderColor = "var(--color-char)"; fB.style.color = "var(--color-char)";
+                fB.innerHTML = "<strong>STATUS: REVISI DIBUTUHKAN.</strong><br><br>" + msgs.join("<br><br>");
+                bNx.classList.add('hidden'); document.getElementById('btn-revisi').innerText = "REVISI NASKAH";
             }
             document.getElementById('modal-eval').classList.add('active');
         }
@@ -894,38 +1143,148 @@
         function nextDay() { gameState.day++; document.getElementById('modal-eval').classList.remove('active'); document.getElementById('btn-next').dataset.saved = "false"; setupNewCase(); saveData(); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
         function saveData() { localStorage.setItem('edsave', JSON.stringify({ d: gameState.day, c: gameState.casesCompleted, s: gameState.totalScore, h: gameState.history })); }
-        function loadData() { const sv = localStorage.getItem('edsave'); if (sv) { const d = JSON.parse(sv); gameState.day = d.d; gameState.casesCompleted = d.c; gameState.totalScore = d.s; gameState.history = d.h || []; return true; } return false; }
+        function loadData() {
+            const sv = localStorage.getItem('edsave');
+            if (sv) { const d = JSON.parse(sv); gameState.day = d.d; gameState.casesCompleted = d.c; gameState.totalScore = d.s; gameState.history = d.h || []; return true; }
+            return false;
+        }
         function resetSave() { customConfirm("Hapus progress?", () => { localStorage.removeItem('edsave'); location.reload(); }); }
-        function showProfile() { document.getElementById('stat-day').innerText = gameState.day; document.getElementById('stat-cases').innerText = gameState.casesCompleted; document.getElementById('stat-score').innerText = gameState.casesCompleted > 0 ? Math.round(gameState.totalScore / gameState.casesCompleted) : 0; document.getElementById('profile-stats').classList.remove('hidden'); document.getElementById('modal-start').classList.add('active'); document.getElementById('btn-start-game').innerText = "LANJUTKAN"; }
+        function showProfile() {
+            document.getElementById('stat-day').innerText = gameState.day; document.getElementById('stat-cases').innerText = gameState.casesCompleted;
+            document.getElementById('stat-score').innerText = gameState.casesCompleted > 0 ? Math.round(gameState.totalScore / gameState.casesCompleted) : 0;
+            document.getElementById('profile-stats').classList.remove('hidden'); document.getElementById('modal-start').classList.add('active'); document.getElementById('btn-start-game').innerText = "LANJUTKAN";
+        }
         function startGame() { document.getElementById('modal-start').classList.remove('active'); if (gameState.currentBlocks.length === 0) setupNewCase(); }
 
+
+        /* ==================================================
+           CUSTOM SCROLLBAR LOGIC (DI PERBAIKI UNTUK SENTUHAN MOBILE)
+           ================================================== */
         function initW95Scrollbars() {
-            const container = document.getElementById('block-container'); const scrollbar = document.getElementById('script-scrollbar');
+            const container = document.getElementById('block-container');
+            const scrollbar = document.getElementById('script-scrollbar');
             if (!container || !scrollbar) return;
-            const track = scrollbar.querySelector('.w95-scroll-track'); const thumb = scrollbar.querySelector('.w95-scroll-thumb');
+            const track = scrollbar.querySelector('.w95-scroll-track');
+            const thumb = scrollbar.querySelector('.w95-scroll-thumb');
             if (!track || !thumb) return;
+
+            let isDragging = false;
+            let pointerStartY = 0;
+            let scrollStartTop = 0;
+
             function updateScrollbar() {
-                const scrollHeight = container.scrollHeight; const clientHeight = container.clientHeight; const maxScrollTop = Math.max(0, scrollHeight - clientHeight);
-                if (maxScrollTop <= 0 || scrollHeight <= clientHeight) { scrollbar.classList.add('disabled'); thumb.style.height = '100%'; thumb.style.transform = 'translate3d(0, 0, 0)'; return; }
+                const scrollHeight = container.scrollHeight;
+                const clientHeight = container.clientHeight;
+                const maxScrollTop = Math.max(0, scrollHeight - clientHeight);
+
+                if (maxScrollTop <= 0 || scrollHeight <= clientHeight) {
+                    scrollbar.classList.add('disabled');
+                    thumb.style.height = '100%';
+                    thumb.style.transform = 'translate3d(0, 0, 0)';
+                    return;
+                }
                 scrollbar.classList.remove('disabled');
-                const trackHeight = track.clientHeight; const ratio = clientHeight / scrollHeight; const minThumbHeight = window.matchMedia('(pointer: coarse)').matches ? 50 : 40;
-                const thumbHeight = Math.max(minThumbHeight, trackHeight * ratio); const finalThumbHeight = Math.min(thumbHeight, trackHeight);
+
+                const trackHeight = track.clientHeight;
+                const ratio = clientHeight / scrollHeight;
+                const minThumbHeight = window.matchMedia('(pointer: coarse)').matches ? 50 : 40;
+                const thumbHeight = Math.max(minThumbHeight, trackHeight * ratio);
+                const finalThumbHeight = Math.min(thumbHeight, trackHeight);
                 thumb.style.height = `${finalThumbHeight}px`;
-                const maxThumbTop = Math.max(0, trackHeight - finalThumbHeight); let scrollTop = Math.max(0, Math.min(container.scrollTop, maxScrollTop));
-                const scrollRatio = maxScrollTop > 0 ? scrollTop / maxScrollTop : 0; const thumbTop = scrollRatio * maxThumbTop;
+
+                const maxThumbTop = Math.max(0, trackHeight - finalThumbHeight);
+                let scrollTop = Math.max(0, Math.min(container.scrollTop, maxScrollTop));
+                const scrollRatio = maxScrollTop > 0 ? scrollTop / maxScrollTop : 0;
+                const thumbTop = scrollRatio * maxThumbTop;
+                
                 thumb.style.transform = `translate3d(0, ${thumbTop}px, 0)`;
             }
-            container.addEventListener('scroll', updateScrollbar, { passive: true }); window.addEventListener('resize', updateScrollbar);
-            const observer = new MutationObserver(() => requestAnimationFrame(updateScrollbar)); observer.observe(container, { childList: true, subtree: true, attributes: true, characterData: true });
-            let isDragging = false, pointerStartY = 0, scrollStartTop = 0;
-            function onPointerDown(e) { if (scrollbar.classList.contains('disabled')) return; if (e.pointerType === 'mouse' && e.button !== 0) return; isDragging = true; pointerStartY = e.clientY; scrollStartTop = container.scrollTop; thumb.classList.add('dragging'); try { thumb.setPointerCapture(e.pointerId); } catch (err) {} e.preventDefault(); e.stopPropagation(); }
-            function onPointerMove(e) { if (!isDragging) return; e.preventDefault(); e.stopPropagation(); const deltaY = e.clientY - pointerStartY; const trackHeight = track.clientHeight; const thumbHeight = thumb.offsetHeight; const maxThumbTop = Math.max(0, trackHeight - thumbHeight); const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight); if (maxThumbTop <= 0 || maxScrollTop <= 0) return; const scrollPerPixel = maxScrollTop / maxThumbTop; let newScrollTop = scrollStartTop + (deltaY * scrollPerPixel); newScrollTop = Math.max(0, Math.min(newScrollTop, maxScrollTop)); container.scrollTop = newScrollTop; }
-            function onPointerUp(e) { if (!isDragging) return; isDragging = false; thumb.classList.remove('dragging'); try { thumb.releasePointerCapture(e.pointerId); } catch (err) {} requestAnimationFrame(updateScrollbar); e.preventDefault(); e.stopPropagation(); }
-            thumb.addEventListener('pointerdown', onPointerDown); thumb.addEventListener('pointermove', onPointerMove); thumb.addEventListener('pointerup', onPointerUp); thumb.addEventListener('pointercancel', onPointerUp);
-            track.addEventListener('pointerdown', function(e) { if (e.target === thumb || scrollbar.classList.contains('disabled')) return; const rect = track.getBoundingClientRect(); const clickY = e.clientY - rect.top; const thumbRect = thumb.getBoundingClientRect(); const thumbTop = thumbRect.top - rect.top; const thumbBottom = thumbTop + thumb.offsetHeight; const pageAmount = container.clientHeight * 0.85; if (clickY < thumbTop) { container.scrollBy({ top: -pageAmount, behavior: 'smooth' }); } else if (clickY > thumbBottom) { container.scrollBy({ top: pageAmount, behavior: 'smooth' }); } e.preventDefault(); });
-            requestAnimationFrame(() => updateScrollbar()); setTimeout(updateScrollbar, 100); setTimeout(updateScrollbar, 300);
+
+            container.addEventListener('scroll', updateScrollbar, { passive: true });
+            window.addEventListener('resize', updateScrollbar);
+            const observer = new MutationObserver(() => requestAnimationFrame(updateScrollbar));
+            observer.observe(container, { childList: true, subtree: true, attributes: true, characterData: true });
+
+            function onDragStart(e) {
+                if (scrollbar.classList.contains('disabled')) return;
+                // Abaikan klik kanan
+                if (e.type === 'pointerdown' && e.pointerType === 'mouse' && e.button !== 0) return;
+                
+                isDragging = true;
+                pointerStartY = (e.touches && e.touches.length > 0) ? e.touches[0].clientY : e.clientY;
+                scrollStartTop = container.scrollTop;
+                thumb.classList.add('dragging');
+                
+                e.preventDefault(); e.stopPropagation();
+            }
+
+            function onDragMove(e) {
+                if (!isDragging) return;
+                const currentY = (e.touches && e.touches.length > 0) ? e.touches[0].clientY : e.clientY;
+                const deltaY = currentY - pointerStartY;
+                
+                const trackHeight = track.clientHeight;
+                const thumbHeight = thumb.offsetHeight;
+                const maxThumbTop = Math.max(0, trackHeight - thumbHeight);
+                const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight);
+
+                if (maxThumbTop <= 0 || maxScrollTop <= 0) return;
+                const scrollPerPixel = maxScrollTop / maxThumbTop;
+                
+                let newScrollTop = scrollStartTop + (deltaY * scrollPerPixel);
+                newScrollTop = Math.max(0, Math.min(newScrollTop, maxScrollTop));
+                container.scrollTop = newScrollTop;
+                
+                e.preventDefault(); e.stopPropagation();
+            }
+
+            function onDragEnd(e) {
+                if (!isDragging) return;
+                isDragging = false;
+                thumb.classList.remove('dragging');
+                requestAnimationFrame(updateScrollbar);
+            }
+
+            // Mendaftarkan event listener dengan aman ke Window untuk mencegah drag terputus
+            thumb.addEventListener('pointerdown', onDragStart);
+            thumb.addEventListener('touchstart', onDragStart, { passive: false });
+
+            window.addEventListener('pointermove', onDragMove, { passive: false });
+            window.addEventListener('touchmove', onDragMove, { passive: false });
+
+            window.addEventListener('pointerup', onDragEnd);
+            window.addEventListener('touchend', onDragEnd);
+            window.addEventListener('pointercancel', onDragEnd);
+            window.addEventListener('touchcancel', onDragEnd);
+
+            track.addEventListener('pointerdown', function(e) {
+                if (e.target === thumb || scrollbar.classList.contains('disabled')) return;
+                const rect = track.getBoundingClientRect();
+                const clickY = e.clientY - rect.top;
+                const thumbRect = thumb.getBoundingClientRect();
+                const thumbTop = thumbRect.top - rect.top;
+                const thumbBottom = thumbTop + thumb.offsetHeight;
+                const pageAmount = container.clientHeight * 0.85;
+
+                if (clickY < thumbTop) { container.scrollBy({ top: -pageAmount, behavior: 'smooth' }); } 
+                else if (clickY > thumbBottom) { container.scrollBy({ top: pageAmount, behavior: 'smooth' }); }
+                e.preventDefault();
+            });
+
+            requestAnimationFrame(() => updateScrollbar());
+            setTimeout(updateScrollbar, 100);
+            setTimeout(updateScrollbar, 300);
         }
-        window.onload = function() { if (loadData()) { document.getElementById('btn-start-game').innerText = "LANJUTKAN"; } initW95Scrollbars(); };
+
+        window.onload = function() {
+            if (loadData()) {
+                document.getElementById('btn-start-game').innerText = "LANJUTKAN";
+            }
+            initW95Scrollbars();
+        };
+
     </script>
 </body>
 </html>
+
+```
