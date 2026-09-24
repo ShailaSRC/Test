@@ -2,19 +2,26 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
     <title>EDITOR SCRIPT: Permainan Penyuntingan Naskah</title>
 
     <!-- Polyfill untuk drag-and-drop di layar sentuh -->
     <script src="https://unpkg.com/drag-drop-touch"></script>
 
     <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=VT323&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=VT323&display=swap"
+        rel="stylesheet"
+    >
 
     <style>
         /* ==================================================
            VARIABEL WARNA RETRO
            ================================================== */
+
         :root {
             --bg-app: #1e1e1c;
             --bg-panel: #2a2a28;
@@ -44,7 +51,10 @@
         /* ==================================================
            RESET
            ================================================== */
-        * { box-sizing: border-box; }
+
+        * {
+            box-sizing: border-box;
+        }
 
         html, body {
             width: 100%; height: 100%; margin: 0; padding: 0;
@@ -54,6 +64,7 @@
         /* ==================================================
            BODY & SCANLINE
            ================================================== */
+
         body {
             background-color: var(--bg-app);
             color: var(--text-normal);
@@ -103,7 +114,7 @@
         }
 
         /* ==================================================
-           HEADER (Landscape)
+           HEADER KIRI, TENGAH, KANAN (Interior Content)
            ================================================== */
         .header-left {
             display: flex; flex-direction: row; align-items: center; gap: 10px; width: 100%;
@@ -163,7 +174,7 @@
         .retro-btn.primary { background: #b56c6c; color: #fff; border-color: #5c2f2f; }
 
         /* ==================================================
-           CUSTOM SCROLLBAR (W95 STYLE)
+           CUSTOM SCROLLBAR
            ================================================== */
         .retro-scrollbar {
             position: relative; width: 100%; height: 100%;
@@ -204,10 +215,10 @@
         .w95-scrollbar.disabled .w95-scroll-thumb { cursor: default; }
 
         /* Jarak Edge-to-Edge presisi untuk SCROLL CONTAINER (Landscape = 10px) */
-        #block-container { padding: 10px; padding-right: 28px; }
+        #block-container { padding: 10px; padding-right: 28px; } /* 10px padding + 14px scrollbar + 4px sisa */
         @media (pointer: coarse) {
             .w95-scrollbar { width: 18px; } .w95-scroll-thumb { min-height: 50px; }
-            #block-container { padding-right: 32px; }
+            #block-container { padding-right: 32px; } /* 10px padding + 18px scrollbar + 4px sisa */
         }
 
         /* ==================================================
@@ -232,7 +243,7 @@
             display: flex; flex-direction: column; cursor: grab; box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
             transition: transform 0.1s; width: 100%; position: relative; z-index: 1; padding: 8px 10px; box-sizing: border-box;
         }
-        .script-block:last-child { margin-bottom: 0; }
+        .script-block:last-child { margin-bottom: 0; } /* Rata bawah dengan container */
         .script-block:active { cursor: grabbing; transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.3); }
 
         .block-type-label { font-family: var(--font-ui); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px; opacity: 0.8; font-weight: bold; color: var(--paper-text); }
@@ -396,12 +407,11 @@
 
         /* =========================================================
            PORTRAIT LAYOUT (Mobile / Layar Tegak)
-           Menggunakan struktur header dari coding lama yang lebih rapi
         ========================================================= */
         @media (orientation: portrait) {
             #game-layout { height: 100dvh; padding: 6px; gap: 6px; }
 
-            /* --- HEADER PORTRAIT (Dari Coding Lama) --- */
+            /* --- HEADER PORTRAIT KUSTOM --- */
             #game-header {
                 min-height: 0; display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto;
                 gap: 6px; padding: 6px 10px; position: relative;
@@ -442,7 +452,7 @@
 
             .hide-mobile { display: none !important; }
 
-            /* --- MAIN AREA PORTRAIT --- */
+            /* --- MAIN AREA PORTRAIT KUSTOM --- */
             #main-area {
                 flex: 1 1 auto; min-height: 0; display: grid; gap: 6px;
                 grid-template-columns: 1.25fr 1fr;
@@ -453,7 +463,7 @@
             #left-panel { grid-column: 1; grid-row: 2; position: relative; }
             #right-panel { grid-column: 2; grid-row: 2; display: flex; position: relative; padding: 6px !important; }
 
-            #block-container { padding: 5px !important; padding-right: 21px !important; }
+            #block-container { padding: 5px !important; padding-right: 21px !important; } /* 5px + 14px scrollbar + 2px */
 
             .right-section-title { font-size: 0.85rem !important; margin-bottom: 4px !important; padding-bottom: 2px !important; }
             .checklist-item { font-size: 0.75rem !important; margin-bottom: 4px !important; line-height: 1.2 !important; }
@@ -493,11 +503,11 @@
 
         /* Koreksi lebar scroll untuk HP Layar Sentuh */
         @media (orientation: portrait) and (pointer: coarse) {
-            #block-container { padding-right: 25px !important; }
+            #block-container { padding-right: 25px !important; } /* 5px + 18px scrollbar + 2px */
         }
 
         /* ==================================================
-           UTILITY
+           UTILITY KELAS WARNA & TEKS
            ================================================== */
         .hidden { display: none !important; }
         .text-2xl { font-size: 1.5rem; line-height: 2rem; }
@@ -527,6 +537,7 @@
         .border { border-width: 1px; border-style: solid; }
         .cursor-pointer { cursor: pointer; }
         .hover\:text-\[var\(--text-highlight\)\]:hover { color: var(--text-highlight); }
+
     </style>
 </head>
 
@@ -585,7 +596,9 @@
              ================================================== -->
         <div id="main-area">
 
-            <!-- PANEL KIRI -->
+            <!-- ==================================================
+                 PANEL KIRI
+                 ================================================== -->
             <div id="left-panel" class="panel">
                 <div class="panel-header">
                     <div class="panel-header-text">
@@ -596,7 +609,7 @@
                 </div>
                 <div class="scroll-container">
                     <div class="retro-scrollbar" id="block-container" ondragover="handleDragOverPanel(event)" ondrop="handleDropToPanel(event)"></div>
-                    <!-- CUSTOM SCROLLBAR (Dari Coding Lama) -->
+                    <!-- CUSTOM SCROLLBAR -->
                     <div class="w95-scrollbar" id="script-scrollbar">
                         <div class="w95-scroll-track">
                             <div class="w95-scroll-thumb"></div>
@@ -605,7 +618,9 @@
                 </div>
             </div>
 
-            <!-- PANEL TENGAH -->
+            <!-- ==================================================
+                 PANEL TENGAH
+                 ================================================== -->
             <div id="center-panel" class="panel">
                 <div class="center-scroll-area">
                     <div class="paper-sheet" id="script-paper">
@@ -619,7 +634,9 @@
                 <button class="retro-btn btn-expand btn-expand-paper" onclick="openPreviewScript()" title="Perbesar Halaman">➚</button>
             </div>
 
-            <!-- PANEL KANAN -->
+            <!-- ==================================================
+                 PANEL KANAN
+                 ================================================== -->
             <div id="right-panel" class="panel">
                 
                 <div class="right-panel-content">
@@ -669,7 +686,7 @@
     </div>
 
     <!-- ==================================================
-         SELECTED BLOCK POPUP
+         SELECTED BLOCK POPUP (Khusus via Preview)
          ================================================== -->
     <div id="selected-block-popup">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 4px;">
@@ -908,8 +925,11 @@
             hintUsed: false
         };
 
-        let selectedFromPreview = false;
+        let selectedFromPreview = false; // Flag status asal block yang diselect
 
+        /* ==================================================
+           RANDOM
+           ================================================== */
         function pickRandom(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
@@ -1039,7 +1059,8 @@
             const reqCount = gameState.currentBlocks.filter(b => b.required).length;
             gameState.placedBlocks = new Array(reqCount).fill(null);
             
-            deselectBlock();
+            deselectBlock(); // Clear selection
+            
             gameState.hintUsed = false;
             
             document.getElementById('hint-badge').style.display = 'flex';
@@ -1069,7 +1090,7 @@
             let p = text;
             for (const key in glossaryDB) {
                 const r = new RegExp(`\\b(${key})\\b`, 'gi');
-                p = p.replace(r, `<span class="glossary-term-link" onclick="event.stopPropagation(); openGlossary('${key}')">$&</span>`);
+                p = p.replace(r, `<span class="glossary-term-link" onclick="event.stopPropagation(); openGlossary('key')">&</span>`);
             }
             return p;
         }
@@ -1179,6 +1200,7 @@
             const div = document.createElement('div');
             div.className = 'script-block';
             
+            // Highlight Style
             if (gameState.selectedBlockId === b.id) {
                 div.style.borderColor = 'var(--accent-yellow)';
                 div.style.boxShadow = '0 0 6px var(--accent-yellow)';
@@ -1196,7 +1218,7 @@
             div.addEventListener('dragend', handleDragEnd);
             div.addEventListener('click', e => {
                 if (!e.target.classList.contains('glossary-term-link')) {
-                    handleBlockClick(b.id, false);
+                    handleBlockClick(b.id, false); // Klik langsung dari Panel, Popup = false
                 }
             });
             return div;
@@ -1254,12 +1276,12 @@
                     div.style.boxShadow = '0 0 6px var(--accent-yellow)';
                 }
                 
-                div.innerHTML = `<div class="block-type-label">${b.type}</div><div class="block-text">${processTextForGlossary(b.text.replace(/\n/g, '<br>'))}</div>`;
+                div.innerHTML = `<div class="block-type-label">b.type</div><divclass="block-text">{processTextForGlossary(b.text.replace(/\n/g, '<br>'))}</div>`;
                 
                 div.addEventListener('click', (e) => {
                     e.stopPropagation();
                     closeModal('modal-preview-blocks');
-                    handleBlockClick(b.id, true);
+                    handleBlockClick(b.id, true); // True, panggil Popup
                 });
                 
                 div.addEventListener('dragstart', (e) => {
@@ -1277,8 +1299,10 @@
             container.innerHTML = '';
             
             const clone = document.getElementById('script-paper').cloneNode(true);
+            
+            // Clean up the clone & adjust to content height for readability
             clone.style.width = '100%';
-            clone.style.minHeight = '100%';
+            clone.style.minHeight = '100%'; // Full height to cover black background
             clone.style.margin = '0';
             clone.style.boxShadow = 'none';
             clone.style.transform = 'none'; 
@@ -1332,7 +1356,7 @@
             if (gameState.selectedBlockId) {
                 let fromIdx = gameState.placedBlocks.indexOf(gameState.selectedBlockId);
                 moveBlock(gameState.selectedBlockId, idx, fromIdx !== -1 ? fromIdx : null);
-                deselectBlock();
+                deselectBlock(); // Clears popup auto when placed
             } else if (gameState.placedBlocks[idx]) {
                 gameState.selectedBlockId = gameState.placedBlocks[idx];
                 selectedFromPreview = false;
@@ -1354,6 +1378,7 @@
                     gameState.placedBlocks[toIdx] = bId;
                 }
             }
+            // Automatis clear select status setelah di move/drop
             gameState.selectedBlockId = null;
             selectedFromPreview = false;
             
@@ -1568,7 +1593,7 @@
         }
 
         /* ==================================================
-           CUSTOM SCROLLBAR INITIALIZATION (Dari Coding Lama)
+           CUSTOM SCROLLBAR INITIALIZATION
            ================================================== */
         function initW95Scrollbars() {
             const container = document.getElementById('block-container');
@@ -1609,7 +1634,7 @@
             container.addEventListener('scroll', updateScrollbar, { passive: true });
             window.addEventListener('resize', updateScrollbar);
             const observer = new MutationObserver(() => requestAnimationFrame(updateScrollbar));
-            observer.observe(container, { childList: true, subtree: true });
+            observer.observe(container, { childList: true, subtree: true, attributes: true, characterData: true });
 
             let isDragging = false;
             let pointerStartY = 0;
@@ -1688,3 +1713,4 @@
     </script>
 </body>
 </html>
+
