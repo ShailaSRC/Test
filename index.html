@@ -423,7 +423,7 @@
             }
 
             .header-left {
-                grid-row: 1; grid-column: 1; justify-content: flex-start; gap: 6px; width: 100%; position: static; z-index: 1;
+                grid-row: 1; grid-column: 1; justify-content: flex-start; gap: 6px; width: 100%; position: static !important; z-index: 1;
             }
             
             .header-right {
@@ -434,18 +434,14 @@
 
             .header-center {
                 grid-row: 2; grid-column: 1; justify-content: flex-start; align-items: center !important;
-                flex-direction: row !important; flex-wrap: nowrap !important;
             }
 
-            .title-area { flex-direction: row; align-items: baseline; gap: 6px; }
-            
-            /* Posisi Judul Absolut Tengah Layar, Relatif terhadap Header Baris 1 */
+            .title-area { flex-direction: row; align-items: baseline; gap: 6px; position: static !important; }
             .header-left h1 {
-                position: absolute; left: 50%; top: 18px; transform: translate(-50%, -50%);
+                position: absolute; left: 50%; top: 19px; transform: translate(-50%, -50%);
                 font-size: 0.75rem !important; letter-spacing: 1px !important; margin: 0; font-weight: bold;
-                white-space: nowrap;
+                white-space: nowrap; z-index: 10;
             }
-            
             .header-left .day-text { font-size: 0.75rem !important; }
             .settings-btn { font-size: 18px !important; margin-right: 2px; }
 
@@ -1666,58 +1662,80 @@
 
             function onPointerDown(e) {
                 if (scrollbar.classList.contains('disabled')) return;
-                if (e.pointerType === 'mouse' && e.button !== 0) return;
                 isDragging = true;
-                pointerStartY = e.clientY;
+                
+                if (e.touches) {
+                    pointerStartY = e.touches[0].clientY;
+                } else {
+                    pointerStartY = e.clientY;
+                }
+                
                 scrollStartTop = container.scrollTop;
                 thumb.classList.add('dragging');
-                try { thumb.setPointerCapture(e.pointerId); } catch (err) {}
                 
-                // Binding event ke Window agar sentuhan tidak lepas saat drag di HP
-                window.addEventListener('pointermove', onPointerMove, { passive: false });
-                window.addEventListener('pointerup', onPointerUp);
-                window.addEventListener('pointercancel', onPointerUp);
+                document.addEventListener('pointermove', onMove, { passive: false });
+                document.addEventListener('pointerup', onUp);
+                document.addEventListener('pointercancel', onUp);
+                
+                document.addEventListener('touchmove', onTouchMove, { passive: false });
+                document.addEventListener('touchend', onUp);
+                document.addEventListener('touchcancel', onUp);
 
-                e.preventDefault(); e.stopPropagation();
+                if (e.cancelable) e.preventDefault();
+                e.stopPropagation();
             }
 
-            function onPointerMove(e) {
+            function onMove(e) {
                 if (!isDragging) return;
-                e.preventDefault(); e.stopPropagation();
-                const deltaY = e.clientY - pointerStartY;
+                if (e.cancelable) e.preventDefault();
+                doScroll(e.clientY);
+            }
+            
+            function onTouchMove(e) {
+                if (!isDragging) return;
+                if (e.cancelable) e.preventDefault();
+                doScroll(e.touches[0].clientY);
+            }
+
+            function doScroll(clientY) {
+                const deltaY = clientY - pointerStartY;
                 const trackHeight = track.clientHeight;
                 const thumbHeight = thumb.offsetHeight;
                 const maxThumbTop = Math.max(0, trackHeight - thumbHeight);
                 const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight);
 
                 if (maxThumbTop <= 0 || maxScrollTop <= 0) return;
+                
                 const scrollPerPixel = maxScrollTop / maxThumbTop;
                 let newScrollTop = scrollStartTop + (deltaY * scrollPerPixel);
                 newScrollTop = Math.max(0, Math.min(newScrollTop, maxScrollTop));
+                
                 container.scrollTop = newScrollTop;
             }
 
-            function onPointerUp(e) {
+            function onUp(e) {
                 if (!isDragging) return;
                 isDragging = false;
                 thumb.classList.remove('dragging');
-                try { thumb.releasePointerCapture(e.pointerId); } catch (err) {}
                 
-                // Menghapus event dari window setelah dilepas
-                window.removeEventListener('pointermove', onPointerMove);
-                window.removeEventListener('pointerup', onPointerUp);
-                window.removeEventListener('pointercancel', onPointerUp);
+                document.removeEventListener('pointermove', onMove);
+                document.removeEventListener('pointerup', onUp);
+                document.removeEventListener('pointercancel', onUp);
+                
+                document.removeEventListener('touchmove', onTouchMove);
+                document.removeEventListener('touchend', onUp);
+                document.removeEventListener('touchcancel', onUp);
 
                 requestAnimationFrame(updateScrollbar);
-                // e.preventDefault(); e.stopPropagation();
             }
 
             thumb.addEventListener('pointerdown', onPointerDown);
+            thumb.addEventListener('touchstart', onPointerDown, {passive: false});
 
-            track.addEventListener('pointerdown', function(e) {
+            function handleTrackClick(e) {
                 if (e.target === thumb || scrollbar.classList.contains('disabled')) return;
                 const rect = track.getBoundingClientRect();
-                const clickY = e.clientY - rect.top;
+                const clickY = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
                 const thumbRect = thumb.getBoundingClientRect();
                 const thumbTop = thumbRect.top - rect.top;
                 const thumbBottom = thumbTop + thumb.offsetHeight;
@@ -1728,8 +1746,11 @@
                 } else if (clickY > thumbBottom) {
                     container.scrollBy({ top: pageAmount, behavior: 'smooth' });
                 }
-                e.preventDefault();
-            });
+                if (e.cancelable) e.preventDefault();
+            }
+
+            track.addEventListener('pointerdown', handleTrackClick);
+            track.addEventListener('touchstart', handleTrackClick, {passive: false});
 
             requestAnimationFrame(() => updateScrollbar());
             setTimeout(updateScrollbar, 100);
