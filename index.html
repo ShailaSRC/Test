@@ -1,1769 +1,1989 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    >
-    <title>EDITOR SCRIPT: Permainan Penyuntingan Naskah</title>
-
-    <!-- Polyfill untuk drag-and-drop di layar sentuh -->
-    <script src="https://unpkg.com/drag-drop-touch"></script>
-
-    <!-- Font -->
-    <link
-        href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=VT323&display=swap"
-        rel="stylesheet"
-    >
-
-    <style>
-        /* ==================================================
-           VARIABEL WARNA RETRO
-           ================================================== */
-
-        :root {
-            --bg-app: #1e1e1c;
-            --bg-panel: #2a2a28;
-            --border-dark: #121211;
-            --border-light: #4a4a47;
-
-            --text-muted: #88867c;
-            --text-normal: #b5b3a6;
-            --text-highlight: #e0ddcc;
-
-            --paper-bg: #e6dfc8;
-            --paper-border: #b0a688;
-            --paper-text: #2a2926;
-            --paper-dashed: #b5aa8b;
-
-            --block-bg: #d9d1ba;
-            --block-border: #999075;
-
-            --accent-yellow: #d6b054;
-            --color-scene: #7fa37f;
-            --color-char: #b56c6c;
-
-            --font-ui: 'VT323', monospace;
-            --font-script: 'Courier Prime', monospace;
-        }
-
-        /* ==================================================
-           RESET
-           ================================================== */
-
-        * {
-            box-sizing: border-box;
-        }
-
-        html, body {
-            width: 100%; height: 100%; margin: 0; padding: 0;
-            overflow: hidden;
-        }
-
-        /* ==================================================
-           BODY & SCANLINE
-           ================================================== */
-
-        body {
-            background-color: var(--bg-app);
-            color: var(--text-normal);
-            font-family: var(--font-ui);
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            display: flex;
-            flex-direction: column;
-            user-select: none;
-            overscroll-behavior: none;
-        }
-
-        body::after {
-            content: ""; display: block; position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-            background-size: 100% 4px; z-index: 100;
-            pointer-events: none; opacity: 0.3;
-        }
-
-        /* =========================================================
-           GAME LAYOUT (Default / Landscape)
-        ========================================================= */
-        #game-layout {
-            width: 100%; height: 100dvh; min-height: 0;
-            display: flex; flex-direction: column;
-            padding: 10px; gap: 10px; position: relative; z-index: 10;
-        }
-
-        #game-header {
-            flex: 0 0 auto; min-height: 82px;
-            display: grid; grid-template-columns: 250px minmax(0, 1fr) 250px;
-            gap: 10px; background: var(--bg-panel);
-            border: 2px solid var(--border-dark); padding: 10px;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.3); align-items: stretch;
-            position: relative; /* Menjadi tumpuan judul absolut */
-        }
-
-        #main-area {
-            flex: 1 1 auto; min-height: 0; display: grid;
-            grid-template-columns: 290px minmax(0, 1fr) 240px; gap: 10px;
-        }
-
-        .panel {
-            min-width: 0; min-height: 0; display: flex; flex-direction: column;
-            background: var(--bg-panel); border: 2px solid var(--border-dark);
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-        }
-
-        /* ==================================================
-           HEADER KIRI, TENGAH, KANAN (Interior Content)
-           ================================================== */
-        .header-left {
-            display: flex; flex-direction: row; align-items: center; gap: 10px; width: 100%;
-        }
-
-        .settings-btn {
-            color: var(--text-muted); font-size: 28px; cursor: pointer; transition: color 0.2s;
-            flex-shrink: 0; display: flex; align-items: center; justify-content: center;
-        }
-        .settings-btn:hover { color: var(--text-highlight); }
-
-        .title-area { display: flex; flex-direction: column; justify-content: center; position: relative; }
-        .header-left h1 { margin: 0; font-size: 1.8rem; color: var(--text-highlight); letter-spacing: 2px; font-weight: normal; line-height: 1.1; white-space: nowrap; }
-        .header-left .day-text { font-size: 1rem; color: var(--text-muted); }
-
-        .header-center { display: flex; gap: 10px; align-items: stretch; width: 100%; justify-content: center; }
-        
-        .avatar-wrapper { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; justify-content: center; }
-        
-        /* Modifikasi: Teks terlihat & Avatar 1:1 */
-        .avatar-title { display: block; font-family: var(--font-ui); font-size: 0.75rem; color: var(--text-highlight); letter-spacing: 1px; text-align: center; margin-top: 4px; }
-        .client-avatar {
-            width: 60px; height: 60px; background: #3b3a36; border: 2px solid var(--border-dark);
-            border-radius: 4px; display: flex; align-items: flex-end; justify-content: center;
-            overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); flex-shrink: 0;
-        }
-        .client-avatar svg { width: 85%; height: auto; margin-bottom: -5px; fill: #1c1c1a; }
-
-        .client-brief-box {
-            flex: 1; max-width: 500px; border: 2px solid var(--border-dark);
-            background: var(--bg-app); display: flex; flex-direction: column;
-            border-radius: 4px; overflow-y: auto; overflow-x: hidden; min-height: 0;
-        }
-
-        /* Menyembunyikan judul panel Client Brief di semua mode (Sesuai Permintaan) */
-        .client-brief-box .brief-title { display: none !important; }
-
-        .client-brief-box .brief-content {
-            padding: 8px 10px; display: flex; flex-direction: column; justify-content: center; gap: 4px;
-            font-size: 0.8rem; font-family: var(--font-ui); text-transform: uppercase; color: var(--text-normal); height: 100%;
-        }
-
-        .brief-line { display: flex; align-items: flex-start; line-height: 1.3; }
-        .brief-line .label { color: var(--text-muted); margin-right: 8px; font-weight: bold; min-width: 60px; }
-        .brief-line .value { color: var(--text-highlight); flex: 1; word-wrap: break-word; white-space: normal; }
-
-        .header-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; width: 100%; }
-        .retro-btn {
-            background: var(--bg-panel); border: 2px solid var(--border-dark);
-            color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.1rem;
-            padding: 6px 14px; cursor: pointer; text-transform: uppercase;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.5); transition: transform 0.1s, box-shadow 0.1s;
-            display: flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box;
-        }
-        .retro-btn:active { transform: translate(2px,2px); box-shadow: none; }
-        .retro-btn.primary { background: #b56c6c; color: #fff; border-color: #5c2f2f; }
-
-        /* ==================================================
-           CUSTOM SCROLLBAR
-           ================================================== */
-        .retro-scrollbar {
-            position: relative; width: 100%; height: 100%;
-            overflow-y: scroll !important; overflow-x: hidden;
-            overscroll-behavior: none; scrollbar-width: none; -ms-overflow-style: none; touch-action: pan-y;
-        }
-        .retro-scrollbar::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
-        .scroll-container { flex: 1; position: relative; min-height: 0; overflow: hidden; }
-        
-        .w95-scrollbar {
-            position: absolute; top: 2px; right: 2px; bottom: 2px; width: 14px;
-            background: var(--bg-app); z-index: 50; box-sizing: border-box;
-            border-left: 2px solid var(--border-dark); pointer-events: auto;
-        }
-        .w95-scroll-track {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: #161514; box-sizing: border-box; cursor: pointer;
-        }
-        .w95-scroll-track::before {
-            content: ""; position: absolute; inset: 0;
-            background-image: linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%), linear-gradient(45deg, #2a2a28 25%, transparent 25%, transparent 75%, #2a2a28 75%);
-            background-size: 4px 4px; background-position: 0 0, 2px 2px; opacity: 0.5; pointer-events: none;
-        }
-        .w95-scroll-thumb {
-            position: absolute; left: 1px; right: 1px; top: 0; height: 40px; min-height: 40px;
-            background: var(--border-light); box-sizing: border-box; cursor: grab; z-index: 2;
-            border: 1px solid var(--border-dark); border-top: 1px solid #6a6a66; border-left: 1px solid #6a6a66;
-        }
-        /* Perluasan area hit untuk scrollbar mobile agar mudah dipencet */
-        .w95-scroll-thumb::before {
-            content: ""; position: absolute; top: -25px; bottom: -25px; left: -25px; right: -25px; z-index: -1;
-        }
-        .w95-scroll-thumb.dragging {
-            cursor: grabbing; background: #3b3a36; border-top: 1px solid var(--border-dark);
-            border-left: 1px solid var(--border-dark); border-right: 1px solid #6a6a66; border-bottom: 1px solid #6a6a66;
-        }
-        .w95-scroll-thumb::after {
-            content: ""; position: absolute; left: 2px; right: 2px; top: 50%; height: 2px;
-            transform: translateY(-50%); background: var(--bg-panel);
-            box-shadow: 0 -2px 0 var(--border-dark), 0 2px 0 var(--border-dark); pointer-events: none;
-        }
-        .w95-scrollbar.disabled { opacity: 0.3; }
-        .w95-scrollbar.disabled .w95-scroll-thumb { cursor: default; }
-
-        /* Jarak Edge-to-Edge presisi untuk SCROLL CONTAINER (Landscape = 10px) */
-        #block-container { padding: 10px; padding-right: 28px; } /* 10px padding + 14px scrollbar + 4px sisa */
-        @media (pointer: coarse) {
-            .w95-scrollbar { width: 18px; } .w95-scroll-thumb { min-height: 50px; }
-            #block-container { padding-right: 32px; } /* 10px padding + 18px scrollbar + 4px sisa */
-        }
-
-        /* ==================================================
-           INTERIOR PANEL KIRI (Script Blocks)
-           ================================================== */
-        .panel-header {
-            padding: 10px 15px; border-bottom: 2px solid var(--border-dark); background: rgba(0,0,0,0.2);
-            flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;
-        }
-        .panel-header-text { display: flex; flex-direction: column; }
-        .panel-title { font-size: 1.3rem; color: var(--text-highlight); letter-spacing: 1px; margin: 0; }
-        .panel-subtitle { font-size: 0.85rem; color: var(--text-muted); }
-        
-        .btn-expand {
-            padding: 0 !important; width: 28px !important; height: 28px !important; font-size: 1.1rem !important;
-            display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; line-height: 1;
-        }
-
-        .script-block {
-            background: var(--block-bg); border: 2px solid var(--block-border); color: var(--paper-text);
-            font-family: var(--font-script); font-size: 0.85rem; margin-bottom: 10px;
-            display: flex; flex-direction: column; cursor: grab; box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
-            transition: transform 0.1s; width: 100%; position: relative; z-index: 1; padding: 8px 10px; box-sizing: border-box;
-        }
-        .script-block:last-child { margin-bottom: 0; } /* Rata bawah dengan container */
-        .script-block:active { cursor: grabbing; transform: translate(2px, 2px); box-shadow: 1px 1px 0 rgba(0,0,0,0.3); }
-
-        .block-type-label { font-family: var(--font-ui); font-size: 0.85rem; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px; opacity: 0.8; font-weight: bold; color: var(--paper-text); }
-        .block-text { line-height: 1.3; text-align: left; }
-
-        /* ==================================================
-           INTERIOR PANEL TENGAH (Paper)
-           ================================================== */
-        #center-panel { background: #1c1c1b; position: relative; padding: 0; overflow: hidden; }
-        
-        .center-scroll-area {
-            width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden;
-            padding: 15px; display: flex; flex-direction: column; align-items: center;
-        }
-        
-        .btn-expand-paper { position: absolute; bottom: 15px; right: 15px; z-index: 50; }
-
-        .paper-sheet {
-            background: var(--paper-bg); width: 100%; max-width: 750px; height: auto; min-height: 100%;
-            border: 1px solid var(--paper-border); box-shadow: 4px 4px 0 rgba(0,0,0,0.5); display: flex;
-            flex-direction: column; color: var(--paper-text); padding: 20px 25px; position: relative; flex-shrink: 0;
-        }
-
-        .paper-header {
-            display: flex; justify-content: space-between; font-family: var(--font-ui); font-size: 1.2rem;
-            color: #333; margin-bottom: 15px; border-bottom: 2px solid rgba(0,0,0,0.1); padding-bottom: 4px; flex-shrink: 0;
-        }
-        .paper-header .title { flex: 1; text-align: center; font-weight: bold; }
-        .paper-header .page-num { width: 60px; text-align: right; }
-
-        .slot-row { display: flex; align-items: stretch; margin-bottom: 8px; min-height: 45px; width: 100%; }
-        .slot-number { width: 25px; font-family: var(--font-script); color: #777; font-size: 0.9rem; padding-top: 8px; text-align: left; flex-shrink: 0; }
-
-        .drop-slot {
-            flex: 1; border: 2px dashed var(--paper-dashed); display: flex; align-items: stretch;
-            transition: background 0.2s, border-color 0.2s; min-height: 45px; background: rgba(0,0,0,0.02); width: 100%;
-        }
-        .drop-slot.drag-over { background: rgba(0,0,0,0.08); border-color: #555; }
-        .drop-slot > .script-block { margin-bottom: 0 !important; width: 100%; box-shadow: none; background: transparent; border: 1px solid var(--paper-dashed); padding: 6px 8px; }
-        .drop-slot > .script-block .block-text { text-align: justify; }
-        .drop-slot > .script-block[data-type="TRANSITION"] .block-text { text-align: right !important; }
-
-        /* ==================================================
-           INTERIOR PANEL KANAN (Checklist, dll)
-           ================================================== */
-        #right-panel { padding: 15px; }
-        .right-panel-content {
-            flex: 1 1 0; overflow-y: auto; display: flex; flex-direction: column; min-height: 0; padding-bottom: 10px; max-width: 100%; overflow-x: hidden;
-        }
-
-        .right-section-title {
-            font-size: 1.1rem; color: var(--text-highlight); margin-bottom: 10px; border-bottom: 2px solid var(--border-light);
-            padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
-        }
-
-        .checklist-item { display: flex; align-items: flex-start; margin-bottom: 8px; color: var(--text-muted); font-family: var(--font-ui); font-size: 0.9rem; width: 100%; box-sizing: border-box; }
-        .checklist-box {
-            width: 12px; height: 12px; border: 2px solid var(--text-muted); margin-right: 8px; margin-top: 2px; position: relative; flex-shrink: 0; background: #1a1a1a;
-        }
-        .checklist-item.done .checklist-box::after { content: "✔"; color: var(--color-scene); position: absolute; top: -5px; left: 0px; font-size: 12px; font-family: var(--font-ui); }
-        .checklist-item.done { color: var(--text-normal); }
-
-        .hint-section { margin: 10px 0; width: 100%; display: block; flex-shrink: 0; box-sizing: border-box; }
-        .hint-btn-style {
-            width: 100%; display: flex; justify-content: center; align-items: center; font-size: 0.95rem; padding: 8px; border: 2px solid var(--border-light);
-            background: rgba(0,0,0,0.25); color: var(--text-highlight); font-family: var(--font-ui); letter-spacing: 1px; position: relative; cursor: pointer; transition: background 0.1s, color 0.1s; box-sizing: border-box;
-        }
-        .hint-btn-style:hover:not(.hint-disabled) { background: rgba(255,255,255,0.05); color: #fff; }
-        .hint-btn-style:active:not(.hint-disabled) { transform: translate(1px,1px); }
-
-        .notification-badge {
-            position: absolute; top: -3px; right: 2px; background: var(--color-char); color: white; border-radius: 50%;
-            width: 16px; height: 16px; font-size: 0.65rem; display: flex; align-items: center; justify-content: center;
-            border: 2px solid var(--bg-panel); font-family: sans-serif; font-weight: bold; box-shadow: 1px 1px 0 rgba(0,0,0,0.5); pointer-events: none;
-        }
-        .hint-disabled { opacity: 0.3; pointer-events: none; border-style: solid !important; }
-
-        .glossary-term-link { color: #5a8ca8; cursor: pointer; text-decoration: none; font-weight: bold; border-bottom: 1px dotted #5a8ca8; }
-        .glossary-term-link:hover { background: rgba(90,140,168,0.2); }
-
-        .kamus-tab-container { display: flex; flex-direction: column; width: 100%; margin-top: 5px; flex-shrink: 0; flex: 1; box-sizing: border-box; }
-        .kamus-tab-title {
-            background: rgba(255,255,255,0.05); border: 2px solid var(--border-light); border-bottom: none; border-radius: 6px 6px 0 0; padding: 2px 10px;
-            display: inline-block; width: max-content; font-size: 1rem; margin-bottom: 0; color: var(--accent-yellow); font-family: var(--font-ui);
-        }
-        .kamus-tab-content { border: 2px solid var(--border-light); background: rgba(0,0,0,0.15); border-radius: 0 6px 6px 6px; padding: 8px; flex: 1; display: flex; flex-direction: column; width: 100%; box-sizing: border-box; }
-
-        #glossary-content { display: flex; flex-direction: column; font-family: sans-serif; color: var(--text-normal); }
-        .g-term-title { color: #5a8ca8; font-family: var(--font-ui); font-size: 0.8rem; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px; border-bottom: 1px solid #5a8ca8; padding-bottom: 2px; }
-        .g-def-text { font-size: 0.7rem; line-height: 1.3; margin-bottom: 8px; }
-        .g-example-title { color: #5a8ca8; font-family: var(--font-ui); font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 2px; }
-        .g-example-text { color: var(--text-muted); font-style: italic; background: rgba(0,0,0,0.2); padding: 4px; border-left: 2px solid #5a8ca8; font-size: 0.65rem; }
-
-        .pagination-area { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: auto; padding-top: 10px; border-top: 2px dashed var(--border-light); flex-shrink: 0; width: 100%; box-sizing: border-box; }
-        .nav-arrow { width: 26px; height: 26px; background: var(--bg-panel); border: 2px solid var(--border-dark); display: flex; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; font-size: 0.9rem; }
-        .nav-arrow:hover { color: var(--text-highlight); }
-        .page-thumb-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; }
-        .page-thumb { width: 30px; height: 38px; background: #8e8877; border: 2px solid var(--border-dark); display: flex; align-items: flex-start; padding: 2px 4px; font-size: 0.75rem; color: #333; cursor: pointer; box-shadow: 2px 2px 0 rgba(0,0,0,0.3); }
-        .page-thumb.active { background: var(--paper-bg); box-shadow: none; transform: translate(1px,1px); }
-        .page-indicator { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 4px solid var(--accent-yellow); display: none; }
-        .page-thumb.active + .page-indicator { display: block; }
-
-        /* ==================================================
-           MODAL UMUM & MODAL PREVIEW
-           ================================================== */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 1000;
-            display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s;
-        }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
-        .modal-content {
-            background: var(--bg-panel); border: 2px solid var(--text-highlight); padding: 25px; max-width: 550px; width: 90%;
-            color: var(--text-highlight); text-align: center; box-shadow: 5px 5px 0 rgba(0,0,0,0.5); position: relative;
-        }
-
-        .modal-close-x {
-            position: absolute; top: -10px; right: -10px; background: var(--color-char); color: #fff;
-            border: 2px solid #5c2f2f; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center;
-            font-family: var(--font-ui); font-size: 1.2rem; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 0 rgba(0,0,0,0.5); z-index: 101; padding: 0;
-        }
-        .modal-close-x:active { transform: translate(2px,2px); box-shadow: none; }
-
-        /* Preview Blocks Grid */
-        #modal-preview-blocks .modal-content { max-width: 650px; width: auto; }
-        #preview-blocks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding-top: 10px; max-height: none; }
-        #preview-blocks-grid .script-block { width: 100%; flex-shrink: 0; cursor: pointer; font-size: 0.7rem !important; padding: 8px !important; margin-bottom: 0 !important; }
-        
-        @media (orientation: landscape) {
-            #preview-blocks-grid { grid-template-columns: repeat(3, 190px); justify-content: center; }
-            .btn-expand-paper { display: none !important; }
-        }
-
-        /* Preview Script */
-        #preview-script-container {
-            width: 100%; height: 65vh; display: flex; justify-content: center; align-items: flex-start; overflow-x: hidden; overflow-y: auto; background: #1c1c1b; border: 1px solid var(--border-light);
-        }
-
-        /* Selected Block Pop-Up */
-        #selected-block-popup {
-            position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 350px; background: var(--bg-panel);
-            border: 2px solid var(--accent-yellow); padding: 8px 12px; z-index: 900; box-shadow: 4px 4px 0 rgba(0,0,0,0.6); display: none; flex-direction: column; gap: 4px; pointer-events: auto;
-        }
-        #selected-block-popup.active { display: flex; }
-
-        /* ==================================================
-           PENYESUAIAN LAYAR EKSTRA KECIL (Landscape)
-           ================================================== */
-        @media (max-height: 550px) and (orientation: landscape) {
-            #game-header { grid-template-columns: 210px minmax(0,1fr) 210px; padding: 6px 10px; min-height: 60px; }
-            #main-area { grid-template-columns: 250px minmax(0,1fr) 205px; }
-            .header-left h1 { font-size: 1.4rem; }
-            .header-left .day-text { font-size: 0.9rem; }
-            .client-avatar { width: 50px; height: 50px; }
-            .avatar-title { font-size: 0.65rem; }
-            .client-brief-box .brief-content { padding: 4px; font-size: 0.7rem; }
-            .retro-btn { font-size: 0.85rem; padding: 4px 8px; }
-            .hide-mobile { display: none; }
-            #right-panel { padding: 10px; }
-            .right-section-title { font-size: 1rem; margin-bottom: 8px; }
-        }
-
-        /* =========================================================
-           PORTRAIT LAYOUT (Mobile / Layar Tegak)
-        ========================================================= */
-        @media (orientation: portrait) {
-            #game-layout { height: 100dvh; padding: 6px; gap: 6px; }
-
-            /* --- HEADER PORTRAIT KUSTOM --- */
-            #game-header {
-                min-height: 0; display: grid; grid-template-columns: 1fr; grid-template-rows: auto auto;
-                gap: 6px; padding: 6px 10px; position: relative;
-            }
-
-            .header-left {
-                grid-row: 1; grid-column: 1; justify-content: flex-start; gap: 6px; width: 100%; position: static !important; z-index: 1;
-            }
-            
-            .header-right {
-                grid-row: 1; grid-column: 1; justify-content: flex-end; position: relative; right: auto; top: auto;
-                gap: 6px; width: 100%; pointer-events: none; z-index: 2;
-            }
-            .header-right button { pointer-events: auto; }
-
-            .header-center {
-                grid-row: 2; grid-column: 1; justify-content: flex-start; align-items: center !important;
-            }
-
-            .title-area { flex-direction: row; align-items: baseline; gap: 6px; position: static !important; }
-            .header-left h1 {
-                position: absolute; left: 50%; top: 19px; transform: translate(-50%, -50%);
-                font-size: 0.75rem !important; letter-spacing: 1px !important; margin: 0; font-weight: bold;
-                white-space: nowrap; z-index: 10;
-            }
-            .header-left .day-text { font-size: 0.75rem !important; }
-            .settings-btn { font-size: 18px !important; margin-right: 2px; }
-
-            .retro-btn { font-size: 0.75rem !important; padding: 0 8px !important; border-width: 1px !important; height: 26px !important; box-sizing: border-box !important; margin: 0 !important; }
-            
-            /* Kunci Button Reset menjadi Persegi agar Ikon Center Sempurna */
-            #btn-reset { width: 26px !important; padding: 0 !important; justify-content: center !important; }
-
-            .client-avatar { width: 38px !important; height: 38px !important; border-width: 1px !important; border-radius: 2px; align-self: center; }
-            .avatar-title { display: block; font-family: var(--font-ui); font-size: 0.6rem; color: var(--text-highlight); letter-spacing: 1px; margin-top: 2px; }
-            
-            .client-brief-box { max-height: none; overflow: hidden; border-width: 1px !important; justify-content: center; }
-            .client-brief-box .brief-title { display: none !important; }
-            .client-brief-box .brief-content { display: flex !important; flex-direction: column !important; padding: 4px 6px !important; font-size: 0.65rem !important; gap: 2px !important; }
-            .brief-line { line-height: 1.1 !important; align-items: flex-start !important; margin-bottom: 0 !important; width: 100% !important; }
-            .brief-line .label { min-width: 48px !important; margin-right: 4px !important; display: inline-block !important; }
-
-            .hide-mobile { display: none !important; }
-
-            /* --- MAIN AREA PORTRAIT KUSTOM --- */
-            #main-area {
-                flex: 1 1 auto; min-height: 0; display: grid; gap: 6px;
-                grid-template-columns: 1.25fr 1fr;
-                grid-template-rows: 1fr 1fr;
-            }
-
-            #center-panel { grid-column: 1 / -1; grid-row: 1; }
-            #left-panel { grid-column: 1; grid-row: 2; position: relative; }
-            #right-panel { grid-column: 2; grid-row: 2; display: flex; position: relative; padding: 6px !important; }
-
-            #block-container { padding: 5px !important; padding-right: 21px !important; } /* 5px + 14px scrollbar + 2px */
-
-            .right-section-title { font-size: 0.85rem !important; margin-bottom: 4px !important; padding-bottom: 2px !important; }
-            .checklist-item { font-size: 0.75rem !important; margin-bottom: 4px !important; line-height: 1.2 !important; }
-            .checklist-box { width: 12px !important; height: 12px !important; margin-right: 6px !important; border-width: 1px !important; }
-            .checklist-item.done .checklist-box::after { font-size: 12px !important; top: -4px !important; left: 0px !important; }
-            
-            .hint-section { margin: 6px 0 !important; }
-            .hint-btn-style { font-size: 0.75rem !important; padding: 6px !important; border-width: 1px !important; }
-            .notification-badge { width: 14px !important; height: 14px !important; font-size: 0.6rem !important; border-width: 1px !important; top: -2px !important; right: 2px !important; }
-            
-            .kamus-tab-title { font-size: 0.8rem !important; padding: 2px 6px !important; }
-            .kamus-tab-content { padding: 6px !important; }
-            .g-term-title { font-size: 0.75rem !important; margin-bottom: 2px !important; }
-            .g-def-text { font-size: 0.7rem !important; margin-bottom: 4px !important; line-height: 1.2 !important; }
-            .g-example-title { font-size: 0.7rem !important; }
-            .g-example-text { font-size: 0.65rem !important; padding: 4px !important; }
-            
-            #left-panel .panel-header { padding: 6px 10px !important; border-bottom-width: 1px !important; }
-            .panel-title { font-size: 0.95rem !important; }
-            .panel-subtitle { font-size: 0.7rem !important; }
-
-            .script-block { padding: 6px 8px !important; font-size: 0.7rem !important; margin-bottom: 5px !important; border-width: 1px !important; }
-            
-            .center-scroll-area { padding: 10px 5px !important; }
-            .btn-expand-paper { bottom: 10px !important; right: 10px !important; }
-
-            .paper-sheet { padding: 12px 16px !important; flex-shrink: 0; }
-            .paper-header { font-size: 1rem !important; margin-bottom: 8px !important; padding-bottom: 4px !important; }
-            .slot-row { min-height: 40px !important; margin-bottom: 6px !important; }
-            .drop-slot { min-height: 40px !important; }
-            .slot-number { width: 20px !important; font-size: 0.8rem !important; padding-top: 6px !important; }
-            
-            .pagination-area { padding-top: 6px !important; margin-top: auto !important; border-top-width: 1px !important; }
-            .nav-arrow { width: 24px !important; height: 24px !important; font-size: 0.8rem !important; }
-            .page-thumb { width: 26px !important; height: 32px !important; font-size: 0.75rem !important; padding: 2px 4px !important; }
-            
-            /* Modal Lebih Kecil di Portrait */
-            #modal-preview-blocks .modal-content { padding: 12px !important; width: 90% !important; }
-            #preview-blocks-grid { gap: 6px !important; padding-top: 6px !important; }
-            #modal-preview-script .modal-content { padding: 12px !important; width: 95% !important; }
-            #preview-script-container { height: 55vh !important; }
-            .modal-content h2 { font-size: 1.2rem !important; margin-bottom: 10px !important; }
-        }
-
-        /* Koreksi lebar scroll untuk HP Layar Sentuh */
-        @media (orientation: portrait) and (pointer: coarse) {
-            #block-container { padding-right: 25px !important; } /* 5px + 18px scrollbar + 2px */
-        }
-
-        /* ==================================================
-           UTILITY KELAS WARNA & TEKS
-           ================================================== */
-        .hidden { display: none !important; }
-        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-        .text-4xl { font-size: 2.25rem; line-height: 2.5rem; }
-        .mb-2 { margin-bottom: 0.5rem; }
-        .mb-4 { margin-bottom: 1rem; }
-        .mb-6 { margin-bottom: 1.5rem; }
-        .mt-4 { margin-top: 1rem; }
-        .mt-6 { margin-top: 1.5rem; }
-        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-        .text-xs { font-size: 0.75rem; line-height: 1rem; }
-        .text-center { text-align: center; }
-        .text-left { text-align: left; }
-        .text-right { text-align: right; }
-        .font-bold { font-weight: 700; }
-        .flex { display: flex; }
-        .justify-between { justify-content: space-between; }
-        .justify-center { justify-content: center; }
-        .items-center { align-items: center; }
-        .grid { display: grid; }
-        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .gap-2 { gap: 0.5rem; }
-        .p-3 { padding: 0.75rem; }
-        .pb-2 { padding-bottom: 0.5rem; }
-        .border-b { border-bottom-width: 1px; border-style: solid; }
-        .border-t { border-top-width: 1px; border-style: solid; }
-        .border { border-width: 1px; border-style: solid; }
-        .cursor-pointer { cursor: pointer; }
-        .hover\:text-\[var\(--text-highlight\)\]:hover { color: var(--text-highlight); }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>EDITOR SCRIPT: Arcade Mode</title>
+
+<!-- Firebase Web SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+  import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+  import {
+    getFirestore, collection, addDoc, query, orderBy, limit, getDocs,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+  import {
+    getStorage, ref, getDownloadURL
+  } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-storage.js";
+
+  /*
+    ============================================================
+    FIREBASE CONFIG
+    ============================================================
+    1. Create a Firebase Web App.
+    2. Copy its firebaseConfig here.
+    3. If you leave this object unchanged, the game automatically
+       uses localStorage for testing.
+  */
+  const firebaseConfig = {
+    apiKey: "PASTE_YOUR_API_KEY",
+    authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
+    projectId: "PASTE_YOUR_PROJECT_ID",
+    storageBucket: "PASTE_YOUR_STORAGE_BUCKET",
+    messagingSenderId: "PASTE_YOUR_MESSAGING_SENDER_ID",
+    appId: "PASTE_YOUR_APP_ID"
+  };
+
+  const firebaseReady =
+    firebaseConfig.apiKey &&
+    !firebaseConfig.apiKey.startsWith("PASTE_") &&
+    firebaseConfig.projectId &&
+    !firebaseConfig.projectId.startsWith("PASTE_");
+
+  let app = null;
+  let auth = null;
+  let db = null;
+  let storage = null;
+  let currentUser = null;
+
+  if (firebaseReady) {
+    try {
+      app = initializeApp(firebaseConfig);
+      auth = getAuth(app);
+      db = getFirestore(app);
+      storage = getStorage(app);
+
+      onAuthStateChanged(auth, user => {
+        currentUser = user || null;
+        window.dispatchEvent(new CustomEvent("firebase-ready", {
+          detail: { user }
+        }));
+      });
+
+      signInAnonymously(auth).catch(err => {
+        console.warn("Firebase Anonymous Auth gagal:", err);
+        window.dispatchEvent(new CustomEvent("firebase-error", {
+          detail: err
+        }));
+      });
+    } catch (err) {
+      console.warn("Firebase gagal diinisialisasi:", err);
+      window.dispatchEvent(new CustomEvent("firebase-error", {
+        detail: err
+      }));
+    }
+  } else {
+    window.dispatchEvent(new CustomEvent("firebase-disabled"));
+  }
+
+  window.FirebaseGame = {
+    enabled: () => !!(firebaseReady && db && auth),
+    user: () => currentUser,
+
+    async saveScore(record) {
+      if (!(firebaseReady && db && currentUser)) return false;
+      try {
+        await addDoc(collection(db, "highscores"), {
+          ...record,
+          uid: currentUser.uid,
+          createdAt: serverTimestamp()
+        });
+        return true;
+      } catch (err) {
+        console.warn("Gagal menyimpan highscore Firebase:", err);
+        return false;
+      }
+    },
+
+    async getHighscores() {
+      if (!(firebaseReady && db)) return [];
+      try {
+        const q = query(
+          collection(db, "highscores"),
+          orderBy("score", "desc"),
+          limit(100)
+        );
+        const snap = await getDocs(q);
+        return snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      } catch (err) {
+        console.warn("Gagal membaca highscore Firebase:", err);
+        return [];
+      }
+    },
+
+    async getEndingImage(path) {
+      if (!(firebaseReady && storage)) return null;
+      try {
+        return await getDownloadURL(ref(storage, path));
+      } catch (err) {
+        console.warn("Gambar ending tidak ditemukan:", path, err);
+        return null;
+      }
+    }
+  };
+
+  window.dispatchEvent(new CustomEvent(
+    firebaseReady ? "firebase-starting" : "firebase-disabled"
+  ));
+</script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=VT323&display=swap');
+
+:root{
+  --bg:#1e1e1c;
+  --panel:#2a2a28;
+  --panel2:#242422;
+  --paper:#e6dfc8;
+  --ink:#24231f;
+  --yellow:#d6b054;
+  --green:#7fa37f;
+  --red:#b56c6c;
+  --blue:#7094b8;
+  --muted:#9a978b;
+  --white:#eee9da;
+  --line:#57554d;
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{
+  background:var(--bg);
+  color:var(--white);
+  font-family:"Courier Prime",monospace;
+  user-select:none;
+  touch-action:manipulation;
+}
+
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed;opacity:.45}
+
+body:after{
+  content:"";
+  pointer-events:none;
+  position:fixed;
+  inset:0;
+  background:repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,.025) 0,
+    rgba(255,255,255,.025) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  z-index:9999;
+}
+
+.screen{
+  position:absolute;
+  inset:0;
+  display:none;
+}
+.screen.active{display:flex}
+
+#menuScreen{
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at center, #35352f 0, #1e1e1c 60%);
+}
+
+.menu{
+  width:min(720px,92vw);
+  text-align:center;
+}
+.game-title{
+  font-family:"VT323",monospace;
+  font-size:clamp(58px,10vw,110px);
+  line-height:.78;
+  color:var(--yellow);
+  text-shadow:4px 4px 0 #111;
+  letter-spacing:2px;
+}
+.game-subtitle{
+  font-family:"VT323",monospace;
+  color:#aaa69a;
+  font-size:clamp(22px,4vw,34px);
+  margin:15px 0 45px;
+  letter-spacing:3px;
+}
+.menu-buttons{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:12px;
+}
+.arcade-btn{
+  width:min(330px,80vw);
+  min-height:52px;
+  border:2px solid var(--yellow);
+  background:#262622;
+  color:var(--yellow);
+  box-shadow:4px 4px 0 #111;
+  text-transform:uppercase;
+  font-family:"VT323",monospace;
+  font-size:30px;
+  letter-spacing:2px;
+}
+.arcade-btn:hover,.arcade-btn:focus{
+  background:var(--yellow);
+  color:#222;
+  outline:none;
+}
+.menu-version,.menu-credit{
+  position:absolute;
+  bottom:12px;
+  color:#77746a;
+  font-family:"VT323",monospace;
+  font-size:18px;
+  letter-spacing:1px;
+}
+.menu-version{right:14px}
+.menu-credit{left:14px}
+
+#nameScreen,#tutorialScreen,#highscoreScreen{
+  align-items:center;
+  justify-content:center;
+  background:rgba(20,20,18,.98);
+}
+.modal{
+  width:min(760px,92vw);
+  max-height:88vh;
+  overflow:auto;
+  border:2px solid var(--yellow);
+  background:var(--panel);
+  padding:24px;
+  box-shadow:8px 8px 0 #111;
+  scrollbar-width:auto;
+}
+.modal::-webkit-scrollbar{width:18px}
+.modal::-webkit-scrollbar-track{background:#171715}
+.modal::-webkit-scrollbar-thumb{background:#77746a;border:3px solid #171715}
+.modal h2{
+  margin:0 0 18px;
+  color:var(--yellow);
+  font-family:"VT323",monospace;
+  font-size:48px;
+}
+.name-input{
+  width:100%;
+  padding:14px;
+  background:#171715;
+  border:2px solid var(--line);
+  color:var(--white);
+  outline:none;
+  text-transform:uppercase;
+}
+.name-input:focus{border-color:var(--yellow)}
+.modal-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:18px;
+  flex-wrap:wrap;
+}
+
+.tutorial-stage{
+  position:relative;
+  width:min(1150px,94vw);
+  height:min(720px,88vh);
+  border:2px solid var(--yellow);
+  background:#252522;
+  box-shadow:8px 8px 0 #111;
+  overflow:hidden;
+}
+.tutorial-title{
+  position:absolute;
+  left:22px;
+  top:16px;
+  font-family:"VT323",monospace;
+  font-size:42px;
+  color:var(--yellow);
+  z-index:3;
+}
+.tutorial-demo{
+  position:absolute;
+  inset:80px 25px 85px;
+  border:1px solid #4b4942;
+  background:#20201e;
+}
+.t-demo-client{
+  position:absolute;
+  left:15px;right:15px;top:15px;height:95px;
+  border:1px solid #555249;padding:10px;
+}
+.t-demo-paper{
+  position:absolute;
+  left:15px;right:230px;top:125px;bottom:15px;
+  background:var(--paper);
+  color:var(--ink);
+  border:5px solid #121211;
+  padding:25px;
+}
+.t-demo-inventory{
+  position:absolute;
+  width:190px;right:15px;top:125px;bottom:15px;
+  border:1px solid #555249;padding:10px;
+}
+.t-box{
+  border:2px dashed #6c685d;
+  padding:12px;
+  margin:9px 0;
+}
+.tutorial-text{
+  position:absolute;
+  left:22px;
+  right:22px;
+  bottom:17px;
+  height:55px;
+  display:flex;
+  align-items:center;
+  color:#ddd7c7;
+  font-size:16px;
+  padding-right:180px;
+}
+.tutorial-next{
+  position:absolute;
+  right:22px;
+  bottom:17px;
+  width:145px;
+  height:50px;
+}
+.t-arrow{
+  position:absolute;
+  z-index:10;
+  color:var(--yellow);
+  font-family:"VT323",monospace;
+  font-size:54px;
+  line-height:1;
+  animation:bob .65s infinite alternate;
+  text-shadow:3px 3px #111;
+}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(7px)}}
+.t-highlight{
+  position:absolute;
+  z-index:8;
+  border:3px solid var(--yellow);
+  box-shadow:0 0 0 9999px rgba(0,0,0,.48),0 0 20px rgba(214,176,84,.7);
+  pointer-events:none;
+}
+.t-step-label{
+  position:absolute;
+  top:54px;
+  right:22px;
+  color:#aaa69a;
+  font-family:"VT323",monospace;
+  font-size:23px;
+}
+
+#gameScreen{
+  flex-direction:column;
+  background:var(--bg);
+}
+.game-header{
+  flex:0 0 auto;
+  display:grid;
+  grid-template-columns:250px 1fr 250px;
+  gap:10px;
+  padding:10px;
+  height:115px;
+}
+.panel{
+  background:var(--panel);
+  border:1px solid #4a4841;
+}
+.client{
+  display:flex;
+  gap:10px;
+  padding:10px;
+}
+.avatar{
+  width:72px;height:72px;flex:0 0 72px;
+  border:2px solid var(--yellow);
+  background:#35342f;
+  display:grid;
+  place-items:center;
+  font-family:"VT323",monospace;
+  font-size:38px;
+  color:var(--yellow);
+}
+.client-info{min-width:0}
+.client-name{font-family:"VT323";font-size:25px;color:var(--yellow)}
+.client-role{font-size:11px;color:#aaa69a;margin-top:2px}
+.brief-title{font-size:11px;color:#77746a;margin-top:8px}
+.brief{font-size:12px;line-height:1.25}
+.deadline-panel{padding:10px}
+.deadline-top{display:flex;justify-content:space-between;font-size:12px}
+.timer{font-family:"VT323";font-size:34px;color:var(--green)}
+.timer.yellow{color:#d0ae58}.timer.red{color:#c76d6d}
+.timer-bar{
+  position:relative;
+  height:18px;
+  border:2px solid #5b594f;
+  background:#171715;
+  margin-top:7px;
+  overflow:hidden;
+}
+.timer-fill{
+  height:100%;
+  width:100%;
+  background:var(--green);
+  transition:width .2s linear,background .2s;
+}
+.timer-fill.yellow{background:#c7a64e}
+.timer-fill.red{background:#b96262}
+.timer-bonus{
+  position:absolute;
+  right:0;top:0;height:100%;
+  width:0;background:#5d86ad;
+  pointer-events:none;
+}
+.coffee-row{display:flex;gap:7px;margin-top:8px}
+.coffee{
+  flex:1;
+  min-height:29px;
+  background:#34332f;
+  color:#d7d0bd;
+  border:1px solid #666257;
+  font-size:11px;
+}
+.coffee:hover:not(:disabled){border-color:var(--blue);color:white}
+
+.game-main{
+  flex:1 1 auto;
+  min-height:0;
+  display:grid;
+  grid-template-columns:290px minmax(0,1fr) 240px;
+  gap:10px;
+  padding:0 10px 10px;
+}
+.zone{
+  min-height:0;
+  overflow:hidden;
+}
+.zone-title{
+  height:38px;
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+  background:#33322e;
+  border-bottom:1px solid #555249;
+  color:var(--yellow);
+  font-family:"VT323";
+  font-size:25px;
+}
+.scroll-zone{
+  height:calc(100% - 38px);
+  overflow-y:scroll;
+  scrollbar-width:auto;
+  scrollbar-color:#77746a #171715;
+  padding:10px;
+}
+.scroll-zone::-webkit-scrollbar{width:18px}
+.scroll-zone::-webkit-scrollbar-track{background:#171715;border-left:1px solid #444239}
+.scroll-zone::-webkit-scrollbar-thumb{background:#77746a;border:3px solid #171715}
+.scroll-zone::-webkit-scrollbar-thumb:hover{background:#9b978a}
+
+.block{
+  position:relative;
+  margin-bottom:9px;
+  padding:10px 10px 9px;
+  border:2px solid #56534a;
+  background:#35342f;
+  cursor:grab;
+  min-height:64px;
+  touch-action:none;
+}
+.block:hover{border-color:var(--yellow)}
+.block.dragging{opacity:.45}
+.block-type{
+  font-family:"VT323";
+  font-size:20px;
+  margin-bottom:4px;
+}
+.block-type.scene{color:var(--green)}
+.block-type.character{color:var(--red)}
+.block-type.action{color:#b7ad8d}
+.block-type.dialogue{color:#8fa9c6}
+.block-type.transition{color:#c4a96d}
+.block-text{font-size:12px;line-height:1.3;color:#e0dbcc}
+.block-badge{
+  position:absolute;right:7px;top:6px;
+  color:#7c786d;font-size:10px;
+}
+.block.incorrect{animation:shake .2s linear 2;border-color:var(--red)}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+.paper-scroll{
+  height:100%;
+  overflow-y:scroll;
+  scrollbar-width:auto;
+  scrollbar-color:#77746a #171715;
+  padding:10px;
+}
+.paper-scroll::-webkit-scrollbar{width:18px}
+.paper-scroll::-webkit-scrollbar-track{background:#171715}
+.paper-scroll::-webkit-scrollbar-thumb{background:#77746a;border:3px solid #171715}
+.paper{
+  width:min(760px,100%);
+  min-height:100%;
+  margin:0 auto;
+  background:var(--paper);
+  color:var(--ink);
+  box-shadow:7px 7px 0 #111;
+  padding:35px 45px 60px;
+}
+.paper-header{
+  border-bottom:1px solid #9b9583;
+  padding-bottom:12px;
+  margin-bottom:20px;
+  font-size:12px;
+}
+.paper-header strong{font-size:18px}
+.script-slot{
+  min-height:92px;
+  border:2px dashed #9c9685;
+  margin:12px 0;
+  padding:7px;
+  transition:.15s;
+}
+.script-slot:empty:before{
+  content:"DROP SCRIPT BLOCK HERE";
+  display:flex;height:74px;align-items:center;justify-content:center;
+  color:#9c9685;font-size:11px;
+}
+.script-slot.over{background:rgba(126,160,126,.16);border-color:#607d60}
+.placed{
+  margin:0;
+  border:2px solid #4f4b40;
+  background:#f1ead5;
+  padding:10px;
+  min-height:70px;
+}
+.placed .block-type{font-size:19px}
+.transition-line{
+  text-align:right;
+  min-height:45px;
+  font-size:12px;
+  font-weight:bold;
+}
+.paper-note{
+  margin-top:20px;
+  font-size:10px;
+  color:#777160;
+  border-top:1px solid #a39d8c;
+  padding-top:10px;
+}
+
+.checklist{font-size:12px}
+.check-item{
+  display:flex;gap:7px;
+  padding:8px 0;
+  border-bottom:1px solid #46443d;
+}
+.check-item.ok{color:#8caf8c}
+.check-item .mark{width:16px;text-align:center}
+.side-btn{
+  width:100%;
+  margin-top:10px;
+  min-height:40px;
+  background:#35342f;
+  border:1px solid #676257;
+  color:#ddd6c6;
+}
+.side-btn:hover{border-color:var(--yellow)}
+.submit-btn{
+  width:100%;
+  margin-top:14px;
+  min-height:50px;
+  background:var(--yellow);
+  color:#222;
+  border:2px solid #e6c976;
+  font-family:"VT323";
+  font-size:28px;
+}
+.submit-btn:hover{filter:brightness(1.1)}
+.level-info{
+  padding:10px;
+  border-bottom:1px solid #46443d;
+  color:#aaa69a;
+  font-size:11px;
+}
+.level-info strong{color:var(--yellow);font-size:18px}
+
+.feedback{
+  position:fixed;
+  left:50%;
+  bottom:20px;
+  transform:translateX(-50%);
+  z-index:100;
+  background:#171715;
+  border:2px solid var(--yellow);
+  color:white;
+  padding:10px 18px;
+  box-shadow:4px 4px #000;
+  opacity:0;
+  pointer-events:none;
+  transition:.2s;
+  max-width:90vw;
+  text-align:center;
+}
+.feedback.show{opacity:1}
+
+.overlay{
+  position:fixed;
+  inset:0;
+  z-index:500;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.78);
+}
+.overlay.active{display:flex}
+.result-card{
+  width:min(760px,94vw);
+  max-height:92vh;
+  overflow:auto;
+  background:var(--panel);
+  border:2px solid var(--yellow);
+  box-shadow:9px 9px #080808;
+  padding:20px;
+  text-align:center;
+  scrollbar-width:auto;
+}
+.result-card::-webkit-scrollbar{width:18px}
+.result-card::-webkit-scrollbar-track{background:#171715}
+.result-card::-webkit-scrollbar-thumb{background:#77746a;border:3px solid #171715}
+.result-image{
+  width:min(650px,100%);
+  aspect-ratio:16/9;
+  object-fit:cover;
+  background:#171715;
+  border:2px solid #555249;
+}
+.result-title{
+  font-family:"VT323";
+  font-size:54px;
+  color:var(--yellow);
+  margin:12px 0 2px;
+}
+.result-story{color:#d8d1c0;line-height:1.45;margin:10px auto;max-width:650px}
+.result-stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:8px;
+  margin:15px 0;
+}
+.stat{background:#20201e;border:1px solid #4c4a43;padding:9px}
+.stat b{display:block;font-family:"VT323";font-size:28px;color:var(--yellow)}
+.stat span{font-size:10px;color:#aaa69a}
+.rank-box{
+  border:2px solid var(--green);
+  padding:10px;
+  color:#b7d0b7;
+  margin:10px 0;
+}
+.loading{
+  padding:25px;
+  color:#aaa69a;
+  font-family:"VT323";
+  font-size:28px;
+}
+
+.hs-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+.hs-table th,.hs-table td{
+  padding:8px 5px;
+  border-bottom:1px solid #47453e;
+  text-align:left;
+}
+.hs-table th{color:var(--yellow);font-family:"VT323";font-size:20px}
+.hs-table td:nth-child(1){width:45px;color:#aaa69a}
+.hs-table td:nth-child(3){text-align:right}
+.hs-empty{text-align:center;color:#888477;padding:25px}
+
+@media(max-width:900px){
+  .game-header{grid-template-columns:1fr 1fr;height:155px}
+  .client{grid-column:1/2}
+  .deadline-panel{grid-column:2/3}
+  .game-main{grid-template-columns:220px minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+  .inventory-zone{display:none}
+  .paper{padding:25px}
+}
+@media(max-width:650px){
+  .game-header{grid-template-columns:1fr;height:170px}
+  .client{grid-column:auto}
+  .deadline-panel{grid-column:auto}
+  .game-main{grid-template-columns:1fr}
+  .blocks-zone{display:none}
+  .paper{padding:20px 18px}
+  .tutorial-demo{inset:75px 12px 105px}
+  .tutorial-text{font-size:12px;padding-right:0;bottom:70px;height:70px}
+  .tutorial-next{right:12px;bottom:12px}
+  .t-demo-paper{right:120px}
+  .t-demo-inventory{width:100px}
+  .result-stats{grid-template-columns:repeat(2,1fr)}
+  .menu-credit{font-size:13px}
+}
+</style>
 </head>
 
 <body>
 
-    <!-- ==================================================
-         GAME LAYOUT
-         ================================================== -->
-    <div id="game-layout">
+<!-- ==================== MAIN MENU ==================== -->
+<section id="menuScreen" class="screen active">
+  <div class="menu">
+    <div class="game-title">EDITOR SCRIPT</div>
+    <div class="game-subtitle">ARCADE MODE</div>
 
-        <!-- ==================================================
-             HEADER
-             ================================================== -->
-        <header id="game-header">
-            <!-- HEADER KIRI -->
-            <div class="header-left">
-                <div class="settings-btn" onclick="showProfile()" title="Profil & Progress">⚙</div>
-                <div class="title-area">
-                    <h1>EDITOR SCRIPT</h1>
-                    <div class="day-text" id="level-display">HARI 01</div>
-                </div>
-            </div>
+    <div class="menu-buttons">
+      <button class="arcade-btn" id="playBtn">PLAY</button>
+      <button class="arcade-btn" id="highscoreBtn">HIGHSCORE</button>
+      <button class="arcade-btn" id="tutorialBtn">TUTORIAL</button>
+    </div>
+  </div>
 
-            <!-- HEADER TENGAH -->
-            <div class="header-center">
-                <div class="avatar-wrapper">
-                    <div class="client-avatar">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                            <circle cx="9" cy="9" r="1.5" fill="#3b3a36"/>
-                            <circle cx="15" cy="9" r="1.5" fill="#3b3a36"/>
-                            <path d="M8 8.5h2M14 8.5h2M10.5 12h3" stroke="#3b3a36" stroke-width="1.5"/>
-                        </svg>
-                    </div>
-                    <div class="avatar-title">CLIENT BRIEF</div>
-                </div>
-                <div class="client-brief-box">
-                    <div class="brief-title">CLIENT BRIEF</div>
-                    <div class="brief-content" id="client-brief-content"></div>
-                </div>
-            </div>
+  <div class="menu-credit">CREDIT BY SHAILA SHAVIKA RHADIVA CRINATA</div>
+  <div class="menu-version">v1.0.0</div>
+</section>
 
-            <!-- HEADER KANAN -->
-            <div class="header-right">
-                <button id="btn-reset" class="retro-btn" onclick="clearBoard()" title="Kembalikan semua blok ke inventory">
-                    <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0;">
-                        <polyline points="1 4 1 10 7 10"></polyline>
-                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
-                    </svg>
-                    <span class="hide-mobile">RESET</span>
-                </button>
-                <button id="btn-periksa" class="retro-btn primary" onclick="checkScript()">
-                    PERIKSA <span class="hide-mobile">NASKAH</span>
-                </button>
-            </div>
-        </header>
+<!-- ==================== NAME ==================== -->
+<section id="nameScreen" class="screen">
+  <div class="modal">
+    <h2>PLAYER NAME</h2>
+    <p>Masukkan nama yang akan muncul di leaderboard.</p>
+    <input id="playerName" class="name-input" maxlength="18" placeholder="YOUR NAME">
+    <div class="modal-actions">
+      <button class="arcade-btn" id="nameBackBtn">BACK</button>
+      <button class="arcade-btn" id="startBtn">START</button>
+    </div>
+  </div>
+</section>
 
-        <!-- ==================================================
-             MAIN AREA
-             ================================================== -->
-        <div id="main-area">
+<!-- ==================== TUTORIAL ==================== -->
+<section id="tutorialScreen" class="screen">
+  <div class="tutorial-stage">
+    <div class="tutorial-title">HOW TO PLAY</div>
+    <div class="t-step-label" id="tutorialStepLabel">1 / 10</div>
 
-            <!-- ==================================================
-                 PANEL KIRI
-                 ================================================== -->
-            <div id="left-panel" class="panel">
-                <div class="panel-header">
-                    <div class="panel-header-text">
-                        <h2 class="panel-title">SCRIPT BLOCKS</h2>
-                        <div class="panel-subtitle">(TARIK KE HALAMAN)</div>
-                    </div>
-                    <button class="retro-btn btn-expand" onclick="openPreviewBlocks()" title="Lihat semua block">➚</button>
-                </div>
-                <div class="scroll-container">
-                    <div class="retro-scrollbar" id="block-container" ondragover="handleDragOverPanel(event)" ondrop="handleDropToPanel(event)"></div>
-                    <!-- CUSTOM SCROLLBAR -->
-                    <div class="w95-scrollbar" id="script-scrollbar">
-                        <div class="w95-scroll-track">
-                            <div class="w95-scroll-thumb"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <div class="tutorial-demo">
+      <div class="t-demo-client" id="tClient">
+        <b style="color:#d6b054;font-family:VT323;font-size:24px">CLIENT BRIEF</b><br>
+        <span style="font-size:12px">Baca kebutuhan klien sebelum menyusun naskah.</span>
+      </div>
 
-            <!-- ==================================================
-                 PANEL TENGAH
-                 ================================================== -->
-            <div id="center-panel" class="panel">
-                <div class="center-scroll-area">
-                    <div class="paper-sheet" id="script-paper">
-                        <div class="paper-header">
-                            <span class="title">UNTITLED</span>
-                            <span class="page-num" id="page-number"></span>
-                        </div>
-                        <div id="slots-container"></div>
-                    </div>
-                </div>
-                <button class="retro-btn btn-expand btn-expand-paper" onclick="openPreviewScript()" title="Perbesar Halaman">➚</button>
-            </div>
+      <div class="t-demo-paper" id="tPaper">
+        <b style="font-family:VT323;font-size:28px">SCRIPT PAGE</b>
+        <div class="t-box">SCENE HEADING</div>
+        <div class="t-box">ACTION / CHARACTER / DIALOGUE</div>
+      </div>
 
-            <!-- ==================================================
-                 PANEL KANAN
-                 ================================================== -->
-            <div id="right-panel" class="panel">
-                
-                <div class="right-panel-content">
-                    <div class="right-section-title">CHECKLIST</div>
-                    <div id="checklist-container"></div>
+      <div class="t-demo-inventory" id="tBlocks">
+        <b style="color:#d6b054;font-family:VT323;font-size:23px">SCRIPT BLOCKS</b>
+        <div class="t-box">ACTION</div>
+        <div class="t-box">CHARACTER</div>
+        <div class="t-box">DIALOGUE</div>
+      </div>
 
-                    <!-- HINT -->
-                    <div class="hint-section">
-                        <button id="btn-open-hint" class="hint-btn-style" onclick="openHint()">
-                            <span>HINT</span>
-                            <div id="hint-badge" class="notification-badge">1</div>
-                        </button>
-                    </div>
-
-                    <!-- KAMUS -->
-                    <div class="kamus-tab-container">
-                        <div class="kamus-tab-title">KAMUS</div>
-                        <div class="kamus-tab-content">
-                            <div id="glossary-empty" class="text-center text-xs" style="color: var(--text-muted); margin-top: 10px;">
-                                Klik kata biru pada naskah untuk melihat definisi.
-                            </div>
-                            <div id="glossary-content" class="hidden">
-                                <div class="g-term-title" id="glossary-title">ISTILAH</div>
-                                <p class="g-def-text" id="glossary-def">Definisi akan muncul di sini.</p>
-                                <div class="g-example-title">CONTOH</div>
-                                <p class="g-example-text" id="glossary-ex">"Contoh kalimat."</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- PAGINATION -->
-                <div class="pagination-area">
-                    <div class="nav-arrow">◄</div>
-                    <div class="page-thumb-wrapper">
-                        <div class="page-thumb active">1</div>
-                        <div class="page-indicator"></div>
-                    </div>
-                    <div class="page-thumb-wrapper" style="opacity: 0.4; pointer-events:none;">
-                        <div class="page-thumb">2</div>
-                    </div>
-                    <div class="nav-arrow">►</div>
-                </div>
-
-            </div>
-        </div>
+      <div class="t-highlight" id="tHighlight"></div>
+      <div class="t-arrow" id="tArrow">↓</div>
     </div>
 
-    <!-- ==================================================
-         SELECTED BLOCK POPUP (Khusus via Preview)
-         ================================================== -->
-    <div id="selected-block-popup">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 4px;">
-            <span style="color: var(--accent-yellow); font-family: var(--font-ui); font-size: 1rem;">SELECTED</span>
-            <button class="retro-btn" style="padding: 0; width: 24px; height: 24px; font-size: 0.8rem; display: flex; justify-content: center; align-items: center;" onclick="deselectBlock()">X</button>
-        </div>
-        <div class="script-block" style="margin-bottom: 0; border: none; box-shadow: none; background: transparent; padding: 4px;">
-            <div class="block-type-label" id="selected-popup-type" style="color: var(--text-highlight);"></div>
-            <div class="block-text" id="selected-popup-text" style="color: var(--text-normal);"></div>
-        </div>
+    <div class="tutorial-text" id="tutorialText"></div>
+    <button class="arcade-btn tutorial-next" id="tutorialNext">NEXT</button>
+  </div>
+</section>
+
+<!-- ==================== HIGHSCORE ==================== -->
+<section id="highscoreScreen" class="screen">
+  <div class="modal">
+    <h2>HIGHSCORE — TOP 100</h2>
+    <div id="highscoreContent" class="loading">LOADING...</div>
+    <div class="modal-actions">
+      <button class="arcade-btn" id="hsRefreshBtn">REFRESH</button>
+      <button class="arcade-btn" id="hsBackBtn">BACK</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== GAME ==================== -->
+<section id="gameScreen" class="screen">
+
+  <header class="game-header">
+    <div class="panel client">
+      <div class="avatar" id="avatar">ED</div>
+      <div class="client-info">
+        <div class="client-name" id="clientName">CLIENT</div>
+        <div class="client-role" id="clientRole">PRODUCTION CLIENT</div>
+        <div class="brief-title">BRIEF</div>
+        <div class="brief" id="briefText">...</div>
+      </div>
     </div>
 
-
-    <!-- ==================================================
-         MODAL PREVIEW BLOCKS
-         ================================================== -->
-    <div id="modal-preview-blocks" class="modal-overlay">
-        <div class="modal-content" style="min-width: 300px; padding: 25px;">
-            <div style="position: relative; margin-bottom: 15px;">
-                <h2 style="color: var(--accent-yellow); margin: 0; font-size: 1.5rem; text-align: center; letter-spacing: 1px; font-family: var(--font-ui);">AVAILABLE BLOCKS</h2>
-                <button class="modal-close-x" onclick="closeModal('modal-preview-blocks')">X</button>
-            </div>
-            <div id="preview-blocks-grid"></div>
-            <div class="text-xs" style="color: var(--text-muted); margin-top: 10px; font-family: sans-serif;">Klik blok untuk memilih, lalu letakkan di Script.</div>
-        </div>
+    <div class="panel deadline-panel">
+      <div class="deadline-top">
+        <span>DEADLINE</span>
+        <span id="levelLabel">LEVEL 1</span>
+      </div>
+      <div class="timer" id="timerText">01:30</div>
+      <div class="timer-bar">
+        <div id="timerFill" class="timer-fill"></div>
+        <div id="timerBonus" class="timer-bonus"></div>
+      </div>
+      <div class="coffee-row">
+        <button class="coffee" data-coffee="0">☕ COFFEE 1</button>
+        <button class="coffee" data-coffee="1">☕ COFFEE 2</button>
+        <button class="coffee" data-coffee="2">☕ COFFEE 3</button>
+      </div>
     </div>
 
+    <div class="panel" style="padding:10px">
+      <div style="font-family:VT323;font-size:25px;color:#d6b054">SESSION</div>
+      <div style="font-size:12px;margin-top:4px">PLAYER: <span id="sessionPlayer">---</span></div>
+      <div style="font-size:12px;margin-top:4px">JOBS: <span id="jobsDone">0</span></div>
+      <div style="font-size:12px;margin-top:4px">SCORE: <span id="scoreText">0</span></div>
+      <button class="side-btn" id="quitBtn">QUIT TO MENU</button>
+    </div>
+  </header>
 
-    <!-- ==================================================
-         MODAL PREVIEW SCRIPT
-         ================================================== -->
-    <div id="modal-preview-script" class="modal-overlay">
-        <div class="modal-content" style="max-width: 95%; padding: 25px; display: flex; flex-direction: column;">
-            <div style="position: relative; margin-bottom: 15px;">
-                <h2 style="color: var(--accent-yellow); margin: 0; font-size: 1.5rem; text-align: center; letter-spacing: 1px; font-family: var(--font-ui);">SCRIPT PREVIEW</h2>
-                <button class="modal-close-x" onclick="closeModal('modal-preview-script')">X</button>
-            </div>
-            <div id="preview-script-container"></div>
+  <main class="game-main">
+
+    <section class="panel zone blocks-zone">
+      <div class="zone-title">SCRIPT BLOCKS</div>
+      <div id="blockList" class="scroll-zone"></div>
+    </section>
+
+    <section class="panel zone">
+      <div class="zone-title">SCRIPT PAPER</div>
+      <div class="paper-scroll">
+        <div class="paper" id="paper">
+          <div class="paper-header">
+            <strong>EDITOR SCRIPT</strong><br>
+            Production Draft — Scene Assembly
+          </div>
+
+          <div id="slots"></div>
+
+          <div class="paper-note">
+            Susun elemen berdasarkan fungsi dan urutan logis. Gunakan Checklist,
+            Kamus, dan Hint bila diperlukan.
+          </div>
         </div>
+      </div>
+    </section>
+
+    <aside class="panel zone inventory-zone">
+      <div class="zone-title">TOOLS</div>
+      <div class="scroll-zone">
+
+        <div class="level-info">
+          <div>CURRENT JOB</div>
+          <strong id="jobNumber">#01</strong>
+        </div>
+
+        <div style="padding-top:10px">
+          <div style="font-family:VT323;font-size:24px;color:#d6b054">CHECKLIST</div>
+          <div id="checklist" class="checklist"></div>
+        </div>
+
+        <button class="side-btn" id="hintBtn">💡 HINT</button>
+        <button class="side-btn" id="glossaryBtn">📖 KAMUS</button>
+        <button class="submit-btn" id="submitBtn">SUBMIT</button>
+
+      </div>
+    </aside>
+
+  </main>
+</section>
+
+<!-- ==================== FEEDBACK ==================== -->
+<div id="feedback" class="feedback"></div>
+
+<!-- ==================== MODALS ==================== -->
+<div id="genericOverlay" class="overlay">
+  <div class="modal" id="genericModal"></div>
+</div>
+
+<div id="resultOverlay" class="overlay">
+  <div class="result-card">
+    <div id="resultLoading" class="loading">PREPARING ENDING...</div>
+
+    <img id="resultImage" class="result-image" alt="Ending illustration" style="display:none">
+
+    <div id="resultTitle" class="result-title"></div>
+    <div id="resultStory" class="result-story"></div>
+
+    <div class="result-stats">
+      <div class="stat"><b id="finalScore">0</b><span>SCORE</span></div>
+      <div class="stat"><b id="finalLevel">0</b><span>LEVEL</span></div>
+      <div class="stat"><b id="finalJobs">0</b><span>JOBS</span></div>
+      <div class="stat"><b id="finalMistakes">0</b><span>MISTAKES</span></div>
     </div>
 
+    <div id="rankBox" class="rank-box" style="display:none"></div>
 
-    <!-- ==================================================
-         MODAL HINT
-         ================================================== -->
-    <div id="modal-hint" class="modal-overlay">
-        <div class="modal-content" style="max-width: 650px; text-align: left;">
-            <h2 class="text-2xl mb-4 border-b pb-2" style="color: var(--accent-yellow); border-color: var(--border-light); text-align: center;">ANATOMI NASKAH</h2>
-            <div style="font-family: sans-serif; font-size: 0.9rem; color: var(--text-normal); line-height: 1.6; max-height: 65vh; padding-right: 15px; overflow-y: auto;">
-                <p class="mb-4">Setiap tipe blok memiliki peran penting. Perhatikan formatnya untuk menyusun alur yang benar.</p>
-                <div class="mb-4">
-                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">1. SCENE HEADING (Slugline)</strong><br>
-                    Penanda awal adegan (Lokasi & Waktu). Selalu kapital.<br>
-                    <span style="color: var(--text-muted); font-style: italic;">Contoh: INT. RUANG SIDANG - SIANG</span>
-                </div>
-                <div class="mb-4">
-                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">2. ACTION</strong><br>
-                    Deskripsi kejadian/tindakan fisik karakter yang terlihat di layar.<br>
-                    <span style="color: var(--text-muted); font-style: italic;">Contoh: Seorang Hakim mengetuk palu.</span>
-                </div>
-                <div class="mb-4">
-                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">3. DIALOGUE / CHARACTER</strong><br>
-                    Ucapan tokoh. Nama tokoh selalu kapital di atas dialog.<br>
-                    <span style="color: var(--text-muted); font-style: italic;">JAKSA<br>Saya keberatan!</span>
-                </div>
-                <div class="mb-4">
-                    <strong style="color: var(--text-highlight); font-family: var(--font-ui); font-size: 1.2rem;">4. TRANSITION</strong><br>
-                    Instruksi penyuntingan (kamera). Selalu di rata kanan.<br>
-                    <span style="color: var(--text-muted); font-style: italic;">Contoh: CUT TO:</span>
-                </div>
-            </div>
-            <div class="flex justify-center mt-6">
-                <button class="retro-btn primary" onclick="closeHint()">SAYA MENGERTI (TUTUP)</button>
-            </div>
-        </div>
+    <div class="modal-actions" style="justify-content:center">
+      <button class="arcade-btn" id="resultHsBtn">HIGHSCORE</button>
+      <button class="arcade-btn" id="resultMenuBtn">MAIN MENU</button>
     </div>
+  </div>
+</div>
 
+<script type="module">
+/* ============================================================
+   EDITOR SCRIPT — GAME LOGIC
+   ============================================================ */
 
-    <!-- ==================================================
-         MODAL EVALUASI
-         ================================================== -->
-    <div id="modal-eval" class="modal-overlay">
-        <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
-            <h2 id="eval-title" class="text-2xl mb-4 border-b pb-2" style="color: var(--text-highlight); border-color: var(--border-light);">EVALUASI KLIEN</h2>
-            <div class="grid grid-cols-2 gap-2 text-sm text-left mb-4" id="score-details" style="font-family: sans-serif; color: var(--text-normal);">
-                <div>Struktur Naskah:</div><div class="text-right" style="color: var(--text-highlight);" id="score-structure">0</div>
-                <div>Logika & Riset:</div><div class="text-right" style="color: var(--text-highlight);" id="score-logic">0</div>
-                <div>Kesesuaian Brief:</div><div class="text-right" style="color: var(--text-highlight);" id="score-char">0</div>
-                <div class="col-span-2 border-t my-1" style="border-color: var(--border-light);"></div>
-                <div class="font-bold" style="color: var(--accent-yellow);">TOTAL SKOR:</div><div class="text-right font-bold" style="color: var(--accent-yellow);" id="score-total">0</div>
-            </div>
-            <div class="p-3 text-sm font-sans mb-4 border text-left" id="eval-feedback" style="border-color: var(--border-light); line-height: 1.4;"></div>
-            <div class="flex justify-between mt-4">
-                <button class="retro-btn" id="btn-revisi" onclick="closeModal('modal-eval')">KEMBALI</button>
-                <button class="retro-btn primary hidden" id="btn-next" onclick="nextDay()">KASUS BERIKUTNYA</button>
-            </div>
-        </div>
+const $ = id => document.getElementById(id);
+
+const BASE_TIME = 90;
+const COFFEE_BOOST = 15;
+const PENALTY_TIME = 10;
+const MAX_HIGHSCORES = 100;
+const LOCAL_HS_KEY = "editor_script_arcade_highscores_v2";
+const PLAYER_KEY = "editor_script_player";
+
+const state = {
+  player: "",
+  level: 1,
+  jobs: 0,
+  score: 0,
+  mistakes: 0,
+  coffeesUsed: 0,
+  timeLeft: BASE_TIME,
+  maxTime: BASE_TIME,
+  bonusTime: 0,
+  timerId: null,
+  currentLevel: null,
+  placed: {},
+  sessionActive: false
+};
+
+/* ============================================================
+   ENDING DATA
+   Upload these exact filenames to Firebase Storage:
+   endings/industry-star.webp
+   endings/established-editor.webp
+   endings/freelance-survivor.webp
+   endings/client-magnet.webp
+   endings/burnout.webp
+   endings/fired.webp
+   endings/bankrupt.webp
+   endings/retirement.webp
+   ============================================================ */
+
+const ENDINGS = {
+  industry_star: {
+    title: "INDUSTRY STAR",
+    story: "Kamu bukan lagi sekadar editor naskah. Ketelitian, kecepatan, dan kemampuanmu membaca cerita membuat namamu mulai dikenal di industri.",
+    imagePath: "endings/industry-star.webp"
+  },
+  established_editor: {
+    title: "ESTABLISHED EDITOR",
+    story: "Kamu membangun karier yang stabil. Tidak selalu menjadi yang paling cepat, tetapi kualitas pekerjaanmu membuat klien terus kembali.",
+    imagePath: "endings/established-editor.webp"
+  },
+  freelance_survivor: {
+    title: "FREELANCE SURVIVOR",
+    story: "Tidak semua pekerjaan berjalan mulus. Namun kamu berhasil bertahan, belajar dari kesalahan, dan terus mengambil proyek berikutnya.",
+    imagePath: "endings/freelance-survivor.webp"
+  },
+  client_magnet: {
+    title: "CLIENT MAGNET",
+    story: "Brief datang silih berganti. Klien menyukai cara kerjamu yang cepat, teliti, dan mampu mengubah bahan mentah menjadi naskah yang siap diproduksi.",
+    imagePath: "endings/client-magnet.webp"
+  },
+  burnout: {
+    title: "BURNOUT",
+    story: "Kamu terlalu sering mengejar deadline dan lupa mengatur tenaga. Pekerjaan selesai, tetapi tubuh dan pikiran meminta berhenti sejenak.",
+    imagePath: "endings/burnout.webp"
+  },
+  fired: {
+    title: "FIRED",
+    story: "Terlalu banyak pekerjaan yang dikembalikan klien. Industri tidak memberi banyak kesempatan ketika kesalahan yang sama terus berulang.",
+    imagePath: "endings/fired.webp"
+  },
+  bankrupt: {
+    title: "BANKRUPT",
+    story: "Deadline terus berdatangan, tetapi pekerjaan yang selesai terlalu sedikit. Kariermu berhenti sebelum sempat berkembang.",
+    imagePath: "endings/bankrupt.webp"
+  },
+  retirement: {
+    title: "RETIREMENT",
+    story: "Setelah perjalanan panjang, kamu memilih menutup laptop dan pensiun. Cerita-cerita yang pernah kamu susun akan tetap hidup di layar.",
+    imagePath: "endings/retirement.webp"
+  }
+};
+
+/* ============================================================
+   LEVEL GENERATOR
+   ============================================================ */
+
+const LEVEL_THEMES = [
+  {
+    client:"MAYA",
+    role:"PRODUCER",
+    avatar:"MY",
+    theme:"SISWA",
+    brief:"Seorang siswa menunggu sendirian di kelas setelah semua teman pulang.",
+    scene:"INT. RUANG KELAS - SORE",
+    action:"Raka duduk sendirian di salah satu meja. Ia melihat ponselnya, lalu menatap pintu kelas yang mulai sepi.",
+    character:"RAKA",
+    dialogue:"Teman-temanku sudah pulang semua.",
+    wrongDialogue:"Besok cuacanya pasti cerah.",
+  },
+  {
+    client:"DAN",
+    role:"DIRECTOR",
+    avatar:"DN",
+    theme:"POLISI",
+    brief:"Seorang polisi menyelidiki suara mencurigakan di sebuah gang gelap pada malam hari.",
+    scene:"EXT. GANG GELAP - MALAM",
+    action:"Arman berjalan perlahan menyusuri gang. Ia mengangkat senter ketika mendengar suara dari balik pintu besi.",
+    character:"ARMAN",
+    dialogue:"Siapa di sana?",
+    wrongDialogue:"Saya ingin membeli sepatu baru.",
+  },
+  {
+    client:"NINA",
+    role:"PRODUCER",
+    avatar:"NN",
+    theme:"DOKTER",
+    brief:"Seorang dokter harus mengambil keputusan sebelum operasi dimulai.",
+    scene:"INT. RUANG OPERASI - MALAM",
+    action:"Dokter Sari memeriksa monitor. Perawat berdiri di samping meja operasi sambil menunggu instruksi.",
+    character:"DOKTER SARI",
+    dialogue:"Kita mulai sekarang.",
+    wrongDialogue:"Besok aku akan pergi ke pantai.",
+  },
+  {
+    client:"RUDI",
+    role:"DIRECTOR",
+    avatar:"RD",
+    theme:"JAKSA",
+    brief:"Seorang jaksa mempersiapkan pernyataan sebelum memasuki ruang sidang.",
+    scene:"INT. KORIDOR PENGADILAN - PAGI",
+    action:"Dimas berdiri di depan pintu ruang sidang. Ia membuka berkas dan memeriksa kembali catatan kasusnya.",
+    character:"DIMAS",
+    dialogue:"Semua bukti harus disampaikan dengan jelas.",
+    wrongDialogue:"Tolong bawakan saya satu mangkuk bakso.",
+  },
+  {
+    client:"SERA",
+    role:"CONTENT PRODUCER",
+    avatar:"SR",
+    theme:"KASIR",
+    brief:"Seorang kasir menemukan selisih uang ketika minimarket hampir tutup.",
+    scene:"INT. MINIMARKET - MALAM",
+    action:"Nia menghitung uang di meja kasir. Ia melihat layar mesin dan membuka kembali catatan transaksi.",
+    character:"NIA",
+    dialogue:"Ada selisih dua puluh ribu.",
+    wrongDialogue:"Aku tidak suka warna biru.",
+  }
+];
+
+function buildLevel(level){
+  const theme = LEVEL_THEMES[(level - 1) % LEVEL_THEMES.length];
+  const cycle = Math.floor((level - 1) / LEVEL_THEMES.length);
+
+  const blocks = [
+    {
+      id:"scene",
+      type:"SCENE HEADING",
+      className:"scene",
+      text:theme.scene,
+      correct:true
+    },
+    {
+      id:"action",
+      type:"ACTION",
+      className:"action",
+      text:theme.action,
+      correct:true
+    },
+    {
+      id:"character",
+      type:"CHARACTER",
+      className:"character",
+      text:theme.character,
+      correct:true
+    },
+    {
+      id:"dialogue",
+      type:"DIALOGUE",
+      className:"dialogue",
+      text:theme.dialogue,
+      correct:true
+    }
+  ];
+
+  /* Distractors become more convincing as the level rises. */
+  if(level >= 2){
+    blocks.push({
+      id:"wrong-character",
+      type:"CHARACTER",
+      className:"character",
+      text:"KUCING",
+      correct:false
+    });
+  }
+  if(level >= 3){
+    blocks.push({
+      id:"wrong-action",
+      type:"ACTION",
+      className:"action",
+      text:"Raka merasa sangat takut.",
+      correct:false
+    });
+  }
+  if(level >= 4){
+    blocks.push({
+      id:"wrong-dialogue",
+      type:"DIALOGUE",
+      className:"dialogue",
+      text:theme.wrongDialogue,
+      correct:false
+    });
+  }
+  if(level >= 5){
+    blocks.push({
+      id:"wrong-scene",
+      type:"SCENE HEADING",
+      className:"scene",
+      text:"EXT. TAMAN KOTA - SIANG",
+      correct:false
+    });
+  }
+  if(level >= 6){
+    blocks.push({
+      id:"transition",
+      type:"TRANSITION",
+      className:"transition",
+      text:"CUT TO:",
+      correct:true,
+      optional:true
+    });
+    blocks.push({
+      id:"wrong-transition",
+      type:"TRANSITION",
+      className:"transition",
+      text:"FADE OUT:",
+      correct:false
+    });
+  }
+
+  /* Higher levels introduce a harmless but tempting extra. */
+  if(level >= 8){
+    blocks.push({
+      id:"extra-action",
+      type:"ACTION",
+      className:"action",
+      text:"Angin bertiup dengan kencang di luar.",
+      correct:false
+    });
+  }
+
+  const required = ["scene","action","character","dialogue"];
+  if(level >= 6) required.push("transition");
+
+  return {
+    ...theme,
+    level,
+    cycle,
+    blocks:shuffle(blocks),
+    required
+  };
+}
+
+function shuffle(arr){
+  return [...arr].sort(() => Math.random() - .5);
+}
+
+/* ============================================================
+   SCREEN CONTROL
+   ============================================================ */
+
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  $(id).classList.add("active");
+}
+
+function showFeedback(message, good=false){
+  const el = $("feedback");
+  el.textContent = message;
+  el.style.borderColor = good ? "var(--green)" : "var(--yellow)";
+  el.classList.add("show");
+  clearTimeout(showFeedback.t);
+  showFeedback.t = setTimeout(() => el.classList.remove("show"), 1900);
+}
+
+/* ============================================================
+   NAME / START
+   ============================================================ */
+
+$("playBtn").onclick = () => {
+  $("playerName").value = localStorage.getItem(PLAYER_KEY) || "";
+  showScreen("nameScreen");
+  setTimeout(() => $("playerName").focus(), 50);
+};
+
+$("nameBackBtn").onclick = () => showScreen("menuScreen");
+
+$("startBtn").onclick = startGame;
+
+$("playerName").addEventListener("keydown", e => {
+  if(e.key === "Enter") startGame();
+});
+
+function startGame(){
+  const name = $("playerName").value.trim().replace(/\s+/g," ");
+  if(!name){
+    showFeedback("MASUKKAN NAMA PLAYER.");
+    return;
+  }
+
+  state.player = name.toUpperCase().slice(0,18);
+  localStorage.setItem(PLAYER_KEY, state.player);
+
+  state.level = 1;
+  state.jobs = 0;
+  state.score = 0;
+  state.mistakes = 0;
+  state.coffeesUsed = 0;
+  state.sessionActive = true;
+
+  $("sessionPlayer").textContent = state.player;
+  $("jobsDone").textContent = "0";
+  $("scoreText").textContent = "0";
+
+  showScreen("gameScreen");
+  loadLevel();
+}
+
+/* ============================================================
+   LEVEL LOADING
+   ============================================================ */
+
+function loadLevel(){
+  stopTimer();
+
+  state.currentLevel = buildLevel(state.level);
+  state.placed = {};
+
+  state.timeLeft = BASE_TIME;
+  state.maxTime = BASE_TIME;
+  state.bonusTime = 0;
+
+  $("levelLabel").textContent = `LEVEL ${state.level}`;
+  $("jobNumber").textContent = `#${String(state.jobs + 1).padStart(2,"0")}`;
+  $("clientName").textContent = state.currentLevel.client;
+  $("clientRole").textContent = state.currentLevel.role;
+  $("avatar").textContent = state.currentLevel.avatar;
+  $("briefText").textContent = state.currentLevel.brief;
+
+  renderBlocks();
+  renderSlots();
+  renderChecklist();
+  updateTimer();
+
+  document.querySelectorAll(".coffee").forEach((btn,i) => {
+    btn.disabled = false;
+    btn.textContent = `☕ COFFEE ${i+1}`;
+  });
+
+  startTimer();
+}
+
+/* ============================================================
+   SCRIPT BLOCKS + DRAG/DROP
+   ============================================================ */
+
+function renderBlocks(){
+  const list = $("blockList");
+  list.innerHTML = "";
+
+  state.currentLevel.blocks.forEach(block => {
+    const el = document.createElement("div");
+    el.className = "block";
+    el.draggable = true;
+    el.dataset.id = block.id;
+
+    el.innerHTML = `
+      <div class="block-badge">${block.id}</div>
+      <div class="block-type ${block.className}">${block.type}</div>
+      <div class="block-text">${escapeHtml(block.text)}</div>
+    `;
+
+    el.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/plain", block.id);
+      el.classList.add("dragging");
+    });
+    el.addEventListener("dragend", () => el.classList.remove("dragging"));
+
+    /* Touch / mouse fallback */
+    el.addEventListener("click", () => {
+      const empty = [...document.querySelectorAll(".script-slot")]
+        .find(slot => !slot.dataset.blockId);
+      if(empty) placeBlock(block.id, empty);
+    });
+
+    list.appendChild(el);
+  });
+}
+
+function renderSlots(){
+  const slots = $("slots");
+  slots.innerHTML = "";
+
+  const order = ["scene","action","character","dialogue"];
+  if(state.level >= 6) order.push("transition");
+
+  order.forEach((type, index) => {
+    const slot = document.createElement("div");
+    slot.className = "script-slot";
+    slot.dataset.slotType = type;
+    slot.dataset.slotIndex = index;
+
+    slot.addEventListener("dragover", e => {
+      e.preventDefault();
+      slot.classList.add("over");
+    });
+    slot.addEventListener("dragleave", () => slot.classList.remove("over"));
+    slot.addEventListener("drop", e => {
+      e.preventDefault();
+      slot.classList.remove("over");
+      const id = e.dataTransfer.getData("text/plain");
+      if(id) placeBlock(id, slot);
+    });
+
+    slots.appendChild(slot);
+  });
+}
+
+function placeBlock(blockId, slot){
+  const block = state.currentLevel.blocks.find(b => b.id === blockId);
+  if(!block) return;
+
+  /* Clicking an already-used block moves it to the first empty slot. */
+  if(Object.values(state.placed).includes(blockId)){
+    showFeedback("BLOCK INI SUDAH DIGUNAKAN.");
+    return;
+  }
+
+  if(slot.dataset.blockId){
+    showFeedback("SLOT SUDAH TERISI.");
+    return;
+  }
+
+  slot.dataset.blockId = blockId;
+  state.placed[slot.dataset.slotIndex] = blockId;
+
+  const placed = document.createElement("div");
+  placed.className = "placed";
+  placed.dataset.blockId = blockId;
+  placed.innerHTML = `
+    <div class="block-type ${block.className}">${block.type}</div>
+    <div class="block-text">${escapeHtml(block.text)}</div>
+  `;
+
+  placed.title = "Klik untuk mengembalikan block";
+  placed.addEventListener("click", () => {
+    delete state.placed[slot.dataset.slotIndex];
+    delete slot.dataset.blockId;
+    slot.innerHTML = "";
+  });
+
+  slot.innerHTML = "";
+  slot.appendChild(placed);
+  renderChecklist();
+}
+
+function escapeHtml(text){
+  return String(text)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+/* ============================================================
+   CHECKLIST
+   ============================================================ */
+
+function renderChecklist(){
+  const wrap = $("checklist");
+  wrap.innerHTML = "";
+
+  const requiredLabels = {
+    scene:"Scene Heading",
+    action:"Action",
+    character:"Character",
+    dialogue:"Dialogue",
+    transition:"Transition"
+  };
+
+  state.currentLevel.required.forEach(type => {
+    const found = Object.values(state.placed).some(id => id === type);
+    const div = document.createElement("div");
+    div.className = "check-item" + (found ? " ok" : "");
+    div.innerHTML = `
+      <span class="mark">${found ? "✓" : "□"}</span>
+      <span>${requiredLabels[type]}</span>
+    `;
+    wrap.appendChild(div);
+  });
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+
+function startTimer(){
+  stopTimer();
+  state.timerId = setInterval(() => {
+    if(!state.sessionActive) return;
+
+    state.timeLeft -= 1;
+    if(state.timeLeft <= 0){
+      state.timeLeft = 0;
+      updateTimer();
+      endGame("time");
+      return;
+    }
+    updateTimer();
+  },1000);
+}
+
+function stopTimer(){
+  if(state.timerId){
+    clearInterval(state.timerId);
+    state.timerId = null;
+  }
+}
+
+function updateTimer(){
+  const pct = Math.max(0,Math.min(100,(state.timeLeft/state.maxTime)*100));
+  const fill = $("timerFill");
+  const text = $("timerText");
+
+  fill.style.width = pct + "%";
+
+  fill.classList.remove("yellow","red");
+  text.classList.remove("yellow","red");
+
+  if(state.timeLeft <= 15){
+    fill.classList.add("red");
+    text.classList.add("red");
+  }else if(state.timeLeft <= 30){
+    fill.classList.add("yellow");
+    text.classList.add("yellow");
+  }
+
+  const m = Math.floor(state.timeLeft/60);
+  const s = state.timeLeft % 60;
+  text.textContent = `${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
+
+  /*
+    Blue is used only as the visual marker for bonus time.
+    It overlays the right side of the timer bar.
+  */
+  const bonusPct = state.maxTime > 0
+    ? Math.min(100,(state.bonusTime/state.maxTime)*100)
+    : 0;
+  $("timerBonus").style.width = bonusPct + "%";
+}
+
+/* ============================================================
+   COFFEE
+   ============================================================ */
+
+document.querySelectorAll(".coffee").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const index = Number(btn.dataset.coffee);
+    if(btn.disabled || !state.sessionActive) return;
+
+    btn.disabled = true;
+    btn.textContent = "☕ USED";
+
+    state.timeLeft += COFFEE_BOOST;
+    state.maxTime += COFFEE_BOOST;
+    state.bonusTime += COFFEE_BOOST;
+    state.coffeesUsed += 1;
+
+    updateTimer();
+    showFeedback(`COFFEE +${COFFEE_BOOST} DETIK`, true);
+  });
+});
+
+/* ============================================================
+   SUBMIT / VALIDATION
+   ============================================================ */
+
+$("submitBtn").onclick = submitLevel;
+
+function submitLevel(){
+  if(!state.sessionActive) return;
+
+  const slots = [...document.querySelectorAll(".script-slot")];
+
+  if(slots.some(s => !s.dataset.blockId)){
+    state.mistakes++;
+    state.timeLeft = Math.max(0,state.timeLeft - PENALTY_TIME);
+    updateTimer();
+    showFeedback(`NASKAH BELUM LENGKAP. -${PENALTY_TIME} DETIK`);
+    return;
+  }
+
+  let correct = true;
+
+  slots.forEach((slot,index) => {
+    const id = slot.dataset.blockId;
+    const expected = ["scene","action","character","dialogue"];
+    if(state.level >= 6) expected.push("transition");
+
+    if(id !== expected[index]) correct = false;
+  });
+
+  if(!correct){
+    state.mistakes++;
+    state.timeLeft = Math.max(0,state.timeLeft - PENALTY_TIME);
+    updateTimer();
+    showFeedback(`URUTAN ATAU BLOCK SALAH. -${PENALTY_TIME} DETIK`);
+    return;
+  }
+
+  const speedBonus = Math.max(0,Math.floor(state.timeLeft * 2));
+  const accuracyBonus = Math.max(0,100 - state.mistakes * 10);
+  const levelPoints = state.level * 100;
+
+  const gained = levelPoints + speedBonus + accuracyBonus;
+
+  state.score += gained;
+  state.jobs += 1;
+
+  $("scoreText").textContent = state.score;
+  $("jobsDone").textContent = state.jobs;
+
+  showFeedback(`CLIENT ACCEPTED +${gained} POINTS`, true);
+
+  stopTimer();
+
+  setTimeout(() => {
+    state.level++;
+    loadLevel();
+  },700);
+}
+
+/* ============================================================
+   HINT / GLOSSARY
+   ============================================================ */
+
+$("hintBtn").onclick = () => {
+  const hints = [
+    "Scene Heading menentukan lokasi, INT/EXT, dan waktu.",
+    "Action berisi sesuatu yang dapat dilihat atau didengar penonton.",
+    "Character adalah nama tokoh yang berbicara.",
+    "Dialogue adalah ucapan tokoh.",
+    "Transition seperti CUT TO: digunakan untuk perpindahan adegan."
+  ];
+
+  const missing = state.currentLevel.required.find(type =>
+    !Object.values(state.placed).includes(type)
+  );
+
+  const message = missing
+    ? hints[["scene","action","character","dialogue","transition"].indexOf(missing)]
+    : "Periksa urutan block. Scene Heading biasanya menjadi awal adegan.";
+
+  showGeneric("HINT", `<p>${escapeHtml(message)}</p>`);
+};
+
+$("glossaryBtn").onclick = () => {
+  showGeneric("KAMUS", `
+    <div class="t-box"><b>SCENE HEADING</b><br>Menunjukkan INT/EXT, lokasi, dan waktu.</div>
+    <div class="t-box"><b>ACTION</b><br>Deskripsi tindakan/peristiwa yang dapat divisualisasikan atau didengar.</div>
+    <div class="t-box"><b>CHARACTER</b><br>Nama tokoh yang sedang berbicara.</div>
+    <div class="t-box"><b>DIALOGUE</b><br>Ucapan yang disampaikan oleh karakter.</div>
+    <div class="t-box"><b>TRANSITION</b><br>Instruksi perpindahan dari satu adegan ke adegan lain.</div>
+  `);
+};
+
+function showGeneric(title,body){
+  $("genericModal").innerHTML = `
+    <h2>${title}</h2>
+    <div>${body}</div>
+    <div class="modal-actions">
+      <button class="arcade-btn" id="closeGeneric">CLOSE</button>
     </div>
-
-
-    <!-- ==================================================
-         MODAL START / PROFILE
-         ================================================== -->
-    <div id="modal-start" class="modal-overlay active">
-        <div class="modal-content">
-            <h1 class="text-4xl mb-2">EDITOR SCRIPT</h1>
-            <p class="text-sm mb-6 font-sans" style="color: var(--text-muted);">
-                Setiap cerita memiliki masalah. Tugasmu memastikan setiap bagian memiliki alasan yang logis.
-            </p>
-            <div id="profile-stats" class="text-sm mb-6 hidden border p-3 text-left font-sans" style="color: var(--text-normal); border-color: var(--border-light);">
-                <div class="grid grid-cols-2 gap-2">
-                    <div>Hari Dicapai:</div><div id="stat-day" class="text-right" style="color: var(--text-highlight);">1</div>
-                    <div>Kasus Selesai:</div><div id="stat-cases" class="text-right" style="color: var(--text-highlight);">0</div>
-                    <div>Rata-rata Skor:</div><div id="stat-score" class="text-right" style="color: var(--text-highlight);">0</div>
-                </div>
-            </div>
-            <div class="flex justify-between items-center mt-6">
-                <button class="text-xs cursor-pointer hover:text-[var(--text-highlight)]" style="background:none; border:none; color:var(--text-muted);" onclick="resetSave()">[ RESET DATA ]</button>
-                <button class="retro-btn primary" id="btn-start-game" onclick="startGame()">MULAI KERJA</button>
-            </div>
-        </div>
-    </div>
-    
-    <!-- ==================================================
-         CUSTOM ALERT/CONFIRM MODAL
-         ================================================== -->
-    <div id="modal-msg" class="modal-overlay">
-        <div class="modal-content" style="max-width: 400px;">
-            <h2 id="msg-title" class="text-2xl mb-4 border-b pb-2" style="color: var(--accent-yellow); border-color: var(--border-light);">INFO</h2>
-            <p id="msg-body" class="mb-6 font-sans text-sm text-center" style="line-height: 1.5; color: var(--text-normal);"></p>
-            <div class="flex justify-center gap-4">
-                <button class="retro-btn" id="btn-msg-cancel" style="display:none;" onclick="closeModal('modal-msg')">BATAL</button>
-                <button class="retro-btn primary" id="btn-msg-ok" onclick="closeModal('modal-msg')">OK</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================================================
-         JAVASCRIPT
-         ================================================== -->
-    <script>
-
-        /* ==================================================
-           CUSTOM ALERT & CONFIRM LOGIC
-           ================================================== */
-        function customAlert(text) {
-            document.getElementById('msg-title').innerText = "PERHATIAN";
-            document.getElementById('msg-body').innerText = text;
-            document.getElementById('btn-msg-cancel').style.display = "none";
-            document.getElementById('btn-msg-ok').onclick = () => closeModal('modal-msg');
-            document.getElementById('modal-msg').classList.add('active');
-        }
-
-        function customConfirm(text, onConfirm) {
-            document.getElementById('msg-title').innerText = "KONFIRMASI";
-            document.getElementById('msg-body').innerText = text;
-            document.getElementById('btn-msg-cancel').style.display = "block";
-            document.getElementById('btn-msg-ok').onclick = () => {
-                closeModal('modal-msg');
-                if(onConfirm) onConfirm();
-            };
-            document.getElementById('modal-msg').classList.add('active');
-        }
-
-        /* ==================================================
-           GLOSSARY
-           ================================================== */
-        const glossaryDB = {
-            "JAKSA": { def: "Pejabat yang berwenang mengajukan tuntutan/dakwaan terhadap terdakwa di pengadilan.", ex: "\"Jaksa membacakan dakwaan di sidang.\"" },
-            "ALIBI": { def: "Keterangan bukti bahwa tersangka berada di tempat lain saat kejadian kriminal terjadi.", ex: "\"Tersangka memiliki alibi kuat berupa rekaman CCTV.\"" },
-            "KLINIS": { def: "Pemeriksaan berdasarkan observasi langsung pada kondisi fisik pasien.", ex: "\"Pemeriksaan klinis menunjukkan hasil stabil.\"" },
-            "STETOSKOP": { def: "Alat medis untuk mendengarkan detak jantung dan paru-paru.", ex: "\"Dokter memeriksa detak jantungnya dengan stetoskop.\"" },
-            "GARIS POLISI": { def: "Pita peringatan untuk mengamankan TKP, hanya berwenang dipasang oleh Polisi.", ex: "\"Warga dilarang melewati batas garis polisi.\"" },
-            "IRONIS": { def: "Kejadian yang bertentangan 180 derajat dengan harapan atau pengetahuan karakter.", ex: "\"Sangat ironis, sang penipu justru tertipu.\"" },
-            "AUTOPSI": { def: "Pemeriksaan bedah pada mayat untuk mengetahui penyebab kematian.", ex: "\"Laporan autopsi membuktikan ada racun.\"" },
-            "PLEDOI": { def: "Nota pembelaan yang dibacakan oleh terdakwa/pengacaranya di pengadilan.", ex: "\"Pengacara mengajukan pledoi tebal.\"" },
-            "BARANG BUKTI": { def: "Benda dari tindak pidana yang disita secara hukum.", ex: "\"Pistol itu diamankan sebagai barang bukti utama.\"" },
-            "CLIFFHANGER": { def: "Akhir cerita yang menggantung dan menegangkan tanpa penyelesaian.", ex: "\"Film itu berakhir cliffhanger.\"" },
-            "RESEP": { def: "Catatan resmi dari dokter untuk apoteker mengenai obat.", ex: "\"Dokter menuliskan resep antibiotik.\"" }
-        };
-
-        /* ==================================================
-           STORY TEMPLATE
-           ================================================== */
-        const storyTemplates = [
-            {
-                genre: "HOROR",
-                theme: "Ketakutan pada yang tak terlihat",
-                reqText: "Akhir cerita harus IRONIS.",
-                protagonists: ["POLISI", "DOKTER"],
-                locations: ["RUMAH SAKIT KOSONG", "GUDANG TUA", "RUMAH TUA"],
-                conflicts: ["terdengar langkah kaki mendekat perlahan", "semua lampu berkedip dan mati"],
-                ending: "IRONIS"
-            },
-            {
-                genre: "DRAMA KRIMINAL",
-                theme: "Keadilan yang terhalang kebohongan",
-                reqText: "Kewenangan hukum tidak boleh dilanggar.",
-                protagonists: ["JAKSA"],
-                locations: ["RUANG SIDANG"],
-                conflicts: ["saksi ahli tiba-tiba mengubah kesaksiannya", "alibi terdakwa dipalsukan"],
-                ending: "PENYELESAIAN TUNTUTAN"
-            },
-            {
-                genre: "THRILLER MEDIS",
-                theme: "Berpacu dengan waktu melawan kematian",
-                reqText: "Tensi memuncak di akhir cerita (Cliffhanger).",
-                protagonists: ["DOKTER"],
-                locations: ["RUANG OPERASI", "KLINIK DARURAT"],
-                conflicts: ["kondisi korban memburuk dalam hitungan detik", "pasien kejang hebat"],
-                ending: "CLIFFHANGER"
-            },
-            {
-                genre: "MISTERI",
-                theme: "Kebenaran bersembunyi di detail kecil",
-                reqText: "Tokoh harus mengamankan area TKP.",
-                protagonists: ["POLISI"],
-                locations: ["TKP PENEMUAN KORBAN", "GANG GELAP"],
-                conflicts: ["sebuah BARANG BUKTI hilang", "tersangka menolak bicara"],
-                ending: "TERBUKA (AMBIGU)"
-            }
-        ];
-
-        /* ==================================================
-           GAME STATE
-           ================================================== */
-        let gameState = {
-            day: 1,
-            casesCompleted: 0,
-            totalScore: 0,
-            history: [],
-            currentBible: null,
-            currentBlocks: [],
-            placedBlocks: [],
-            selectedBlockId: null,
-            hintUsed: false
-        };
-
-        let selectedFromPreview = false; // Flag status asal block yang diselect
-
-        /* ==================================================
-           RANDOM
-           ================================================== */
-        function pickRandom(arr) {
-            return arr[Math.floor(Math.random() * arr.length)];
-        }
-
-        /* ==================================================
-           GENERATE STORY
-           ================================================== */
-        function generateStoryBible() {
-            let available = storyTemplates;
-
-            if (gameState.history.length > 0 && available.length > 1) {
-                const lastGen = gameState.history[gameState.history.length - 1].genre;
-                available = available.filter(t => t.genre !== lastGen);
-            }
-
-            if (available.length === 0) {
-                available = storyTemplates;
-            }
-
-            const t = pickRandom(available);
-
-            const formats = [
-                { id: 'CUT_TO', text: "Akhiri naskah dengan transisi CUT TO:" },
-                { id: 'FADE_OUT', text: "Akhiri naskah dengan transisi FADE OUT." },
-                { id: 'NO_TRANS', text: "-" },
-                { id: 'ANY_TRANS', text: "-" }
-            ];
-            const chosenFormat = pickRandom(formats);
-
-            return {
-                genre: t.genre,
-                theme: t.theme,
-                reqText: t.reqText,
-                protagonist: pickRandom(t.protagonists),
-                location: pickRandom(t.locations),
-                conflict: pickRandom(t.conflicts),
-                ending: t.ending,
-                formatId: chosenFormat.id,
-                formatText: chosenFormat.text
-            };
-        }
-
-        /* ==================================================
-           GENERATE BLOCKS
-           ================================================== */
-        function generateBlocksForBible(bible) {
-            let blocks = [];
-            let cid = 1;
-
-            const cb = (type, text, isCorrect, seq, req, err, hint) => ({
-                id: 'blk_' + cid++,
-                type,
-                text,
-                isCorrect,
-                sequenceOrder: seq,
-                required: req,
-                errorReason: err,
-                hint
-            });
-
-            /* SCENE */
-            blocks.push(cb('SCENE HEADING', `INT. ${bible.location} - SIANG`, true, 1, true));
-
-            if (gameState.day >= 4) {
-                blocks.push(cb('SCENE HEADING', `EXT. JALAN RAYA - MALAM`, false, 0, false, "Lokasi Salah", "Perhatikan lokasi relevan sesuai profesi di kasus ini."));
-                blocks.push(cb('SCENE HEADING', `INT. RESTORAN CEPAT SAJI - PAGI`, false, 0, false, "Lokasi Salah", "Konteks adegan tidak terjadi di restoran."));
-            }
-
-            /* JAKSA */
-            if (bible.protagonist === 'JAKSA') {
-                blocks.push(cb('ACTION', `Seorang JAKSA merapikan berkas di meja dengan gugup.`, true, 2, true));
-                blocks.push(cb('DIALOGUE', `JAKSA\nKita harus periksa ALIBI terdakwa dengan saksama.`, true, 3, true));
-                blocks.push(cb('ACTION', `JAKSA mengetuk palu dan memutuskan vonis penjara.`, false, 0, false, "Kewenangan", "Periksa batas wewenang profesi Jaksa di pengadilan."));
-                blocks.push(cb('DIALOGUE', `JAKSA\nSaya akan melakukan AUTOPSI sekarang juga.`, false, 0, false, "Kewenangan", "Jaksa bukan tenaga forensik."));
-                blocks.push(cb('ACTION', `Hakim menyuruh JAKSA membacakan PLEDOI.`, false, 0, false, "Kewenangan", "Pledoi adalah tugas terdakwa/pengacara pembela."));
-            }
-            /* DOKTER */
-            else if (bible.protagonist === 'DOKTER') {
-                blocks.push(cb('ACTION', `DOKTER memeriksa kondisi KLINIS pasien secara manual.`, true, 2, true));
-                blocks.push(cb('ACTION', `Ia mengambil STETOSKOP dan menarik napas panjang.`, true, 3, true));
-                blocks.push(cb('ACTION', `DOKTER mengeluarkan pistol dan memborgol pelaku.`, false, 0, false, "Kewenangan", "Dokter sipil tidak berwenang menangkap."));
-                blocks.push(cb('ACTION', `DOKTER memasang GARIS POLISI di sekitar ranjang.`, false, 0, false, "Kewenangan", "Tindakan ini wewenang kepolisian."));
-                blocks.push(cb('DIALOGUE', `DOKTER\nSaya akan mengajukan PLEDOI untuk pasien ini.`, false, 0, false, "Konteks", "Istilah hukum tak lazim dalam medis. Ia harusnya menulis RESEP."));
-            }
-            /* POLISI */
-            else {
-                blocks.push(cb('ACTION', `POLISI merunduk di bawah GARIS POLISI.`, true, 2, true));
-                blocks.push(cb('DIALOGUE', `POLISI\nArea ini steril. Amankan BARANG BUKTI!`, true, 3, true));
-                blocks.push(cb('ACTION', `POLISI melakukan pembedahan KLINIS pada mayat.`, false, 0, false, "Kewenangan", "Pembedahan ranah forensik (Autopsi)."));
-                blocks.push(cb('ACTION', `POLISI membacakan PLEDOI di depan saksi.`, false, 0, false, "Kewenangan", "Ini tugas pengacara di persidangan."));
-                blocks.push(cb('ACTION', `POLISI menuliskan RESEP untuk korban luka.`, false, 0, false, "Kewenangan", "Hanya dokter yang berhak meresepkan."));
-            }
-
-            /* CONFLICT */
-            blocks.push(cb('ACTION', `Tiba-tiba, ${bible.conflict}.`, true, 4, true));
-
-            /* TRANSITION */
-            let reqTrans = bible.formatId;
-            if (reqTrans === 'CUT_TO') {
-                blocks.push(cb('TRANSITION', `CUT TO:`, true, 5, true));
-                if (gameState.day >= 4) blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format Transisi", "Klien meminta CUT TO: secara spesifik."));
-            } 
-            else if (reqTrans === 'FADE_OUT') {
-                blocks.push(cb('TRANSITION', `FADE OUT.`, true, 5, true));
-                if (gameState.day >= 4) blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format Transisi", "Klien meminta FADE OUT secara spesifik."));
-            }
-            else if (reqTrans === 'NO_TRANS') {
-                if (gameState.day >= 4) {
-                    blocks.push(cb('TRANSITION', `CUT TO:`, false, 0, false, "Format Transisi", "Naskah ini diminta tanpa transisi di akhir."));
-                    blocks.push(cb('TRANSITION', `FADE OUT.`, false, 0, false, "Format Transisi", "Naskah ini diminta tanpa transisi di akhir."));
-                }
-            }
-            else if (reqTrans === 'ANY_TRANS') {
-                blocks.push(cb('TRANSITION', pickRandom([`CUT TO:`, `FADE OUT.`]), true, 5, true));
-                if (gameState.day >= 4) blocks.push(cb('TRANSITION', `DISSOLVE TO:`, false, 0, false, "Format Transisi", "Gunakan transisi standar yang lazim seperti CUT TO atau FADE OUT."));
-            }
-
-            return blocks.sort(() => Math.random() - 0.5);
-        }
-
-        /* ==================================================
-           SETUP CASE
-           ================================================== */
-        function setupNewCase() {
-            gameState.currentBible = generateStoryBible();
-            gameState.currentBlocks = generateBlocksForBible(gameState.currentBible);
-            const reqCount = gameState.currentBlocks.filter(b => b.required).length;
-            gameState.placedBlocks = new Array(reqCount).fill(null);
-            
-            deselectBlock(); // Clear selection
-            
-            gameState.hintUsed = false;
-            
-            document.getElementById('hint-badge').style.display = 'flex';
-            document.getElementById('btn-open-hint').classList.remove('hint-disabled');
-            document.getElementById('glossary-empty').classList.remove('hidden');
-            document.getElementById('glossary-content').classList.add('hidden');
-            
-            updateUI();
-        }
-
-        /* ==================================================
-           HINT & GLOSSARY
-           ================================================== */
-        function openHint() {
-            if (gameState.hintUsed) return;
-            document.getElementById('modal-hint').classList.add('active');
-        }
-
-        function closeHint() {
-            document.getElementById('modal-hint').classList.remove('active');
-            gameState.hintUsed = true;
-            document.getElementById('hint-badge').style.display = 'none';
-            document.getElementById('btn-open-hint').classList.add('hint-disabled');
-        }
-
-        function processTextForGlossary(text) {
-            let p = text;
-            for (const key in glossaryDB) {
-                const r = new RegExp(`\\b(${key})\\b`, 'gi');
-                p = p.replace(r, `<span class="glossary-term-link" onclick="event.stopPropagation(); openGlossary('${key}')">$&</span>`);
-            }
-            return p;
-        }
-
-        function openGlossary(term) {
-            const key = term.toUpperCase();
-            if (glossaryDB[key]) {
-                document.getElementById('glossary-empty').classList.add('hidden');
-                document.getElementById('glossary-content').classList.remove('hidden');
-                document.getElementById('glossary-title').innerText = key;
-                document.getElementById('glossary-def').innerText = glossaryDB[key].def;
-                document.getElementById('glossary-ex').innerText = glossaryDB[key].ex;
-            }
-        }
-
-        /* ==================================================
-           UPDATE UI & RENDER
-           ================================================== */
-        function updateUI() {
-            document.getElementById('level-display').innerText = `HARI 0${gameState.day}`;
-            document.getElementById('page-number').innerText = gameState.day === 1 ? "" : `HAL 2.`;
-
-            document.getElementById('client-brief-content').innerHTML = `
-                <div class="brief-line"><span class="label">GENRE</span><span class="value">: ${gameState.currentBible.genre}</span></div>
-                <div class="brief-line"><span class="label">TEMA</span><span class="value">: ${gameState.currentBible.theme}</span></div>
-                <div class="brief-line"><span class="label">PLOT</span><span class="value" style="color: var(--accent-yellow);">: ${gameState.currentBible.reqText}</span></div>
-                <div class="brief-line"><span class="label">FORMAT</span><span class="value" style="color: var(--color-scene);">: ${gameState.currentBible.formatText}</span></div>
-            `;
-
-            let checklistHTML = '';
-            if (gameState.currentBible.reqText !== "-") {
-                checklistHTML += `<div class="checklist-item" id="chk-blocks"><span class="checklist-box"></span>Sesuai plot klien</div>`;
-            }
-            if (gameState.currentBible.formatId === 'NO_TRANS') {
-                checklistHTML += `<div class="checklist-item" id="chk-trans"><span class="checklist-box"></span>Tanpa transisi</div>`;
-            } else if (gameState.currentBible.formatId === 'CUT_TO' || gameState.currentBible.formatId === 'FADE_OUT') {
-                checklistHTML += `<div class="checklist-item" id="chk-trans"><span class="checklist-box"></span>Transisi sesuai instruksi</div>`;
-            }
-            checklistHTML += `
-                <div class="checklist-item" id="chk-logic"><span class="checklist-box"></span>Urutan logis</div>
-                <div class="checklist-item" id="chk-prof"><span class="checklist-box"></span>Karakter sesuai profesi</div>
-            `;
-
-            document.getElementById('checklist-container').innerHTML = checklistHTML;
-
-            if (gameState.hintUsed) {
-                document.getElementById('hint-badge').style.display = 'none';
-                document.getElementById('btn-open-hint').classList.add('hint-disabled');
-            }
-
-            renderBlocksAndSlots();
-            updateChecklist();
-        }
-
-        function renderBlocksAndSlots() {
-            const bc = document.getElementById('block-container');
-            const sc = document.getElementById('slots-container');
-
-            bc.innerHTML = '';
-            sc.innerHTML = '';
-
-            gameState.currentBlocks.forEach(b => {
-                if (!gameState.placedBlocks.includes(b.id)) {
-                    bc.appendChild(createBlockEl(b, false));
-                }
-            });
-
-            for (let i = 0; i < gameState.placedBlocks.length; i++) {
-                const row = document.createElement('div');
-                row.className = 'slot-row';
-                
-                const num = document.createElement('div');
-                num.className = 'slot-number';
-                num.innerText = i + 1;
-
-                const slot = document.createElement('div');
-                slot.className = 'drop-slot';
-                slot.dataset.index = i;
-
-                slot.addEventListener('dragover', handleDragOver);
-                slot.addEventListener('dragleave', handleDragLeave);
-                slot.addEventListener('drop', handleDrop);
-                slot.addEventListener('click', () => handleSlotClick(i));
-
-                const pId = gameState.placedBlocks[i];
-                if (pId) {
-                    const block = gameState.currentBlocks.find(x => x.id === pId);
-                    if (block) {
-                        slot.appendChild(createBlockEl(block, true, i));
-                        slot.style.borderStyle = 'none';
-                        slot.style.background = 'transparent';
-                    }
-                }
-
-                row.appendChild(num);
-                row.appendChild(slot);
-                sc.appendChild(row);
-            }
-
-            requestAnimationFrame(() => {
-                const container = document.getElementById('block-container');
-                if (container) container.dispatchEvent(new Event('scroll'));
-            });
-        }
-
-        function createBlockEl(b, isPlaced = false, slotIdx = null) {
-            const div = document.createElement('div');
-            div.className = 'script-block';
-            
-            // Highlight Style
-            if (gameState.selectedBlockId === b.id) {
-                div.style.borderColor = 'var(--accent-yellow)';
-                div.style.boxShadow = '0 0 6px var(--accent-yellow)';
-            }
-            
-            div.draggable = true;
-            div.id = b.id;
-            div.dataset.type = b.type;
-            div.innerHTML = `
-                <div class="block-type-label">${b.type}</div>
-                <div class="block-text">${processTextForGlossary(b.text.replace(/\n/g, '<br>'))}</div>
-            `;
-            
-            div.addEventListener('dragstart', e => handleDragStart(e, b.id, isPlaced, slotIdx));
-            div.addEventListener('dragend', handleDragEnd);
-            div.addEventListener('click', e => {
-                if (!e.target.classList.contains('glossary-term-link')) {
-                    handleBlockClick(b.id, false); // Klik langsung dari Panel, Popup = false
-                }
-            });
-            return div;
-        }
-
-        /* ==================================================
-           SELECTION & PREVIEW LOGIC
-           ================================================== */
-        function handleBlockClick(id, fromPreview = false) {
-            if (gameState.selectedBlockId === id) {
-                gameState.selectedBlockId = null;
-                selectedFromPreview = false;
-            } else {
-                gameState.selectedBlockId = id;
-                selectedFromPreview = fromPreview;
-            }
-            renderBlocksAndSlots();
-            updateSelectedPopup();
-        }
-
-        function deselectBlock() {
-            gameState.selectedBlockId = null;
-            selectedFromPreview = false;
-            renderBlocksAndSlots();
-            updateSelectedPopup();
-        }
-
-        function updateSelectedPopup() {
-            const popup = document.getElementById('selected-block-popup');
-            if (!gameState.selectedBlockId || !selectedFromPreview) {
-                popup.classList.remove('active');
-                return;
-            }
-            const b = gameState.currentBlocks.find(x => x.id === gameState.selectedBlockId);
-            if (b) {
-                document.getElementById('selected-popup-type').innerText = b.type;
-                document.getElementById('selected-popup-text').innerHTML = processTextForGlossary(b.text.replace(/\n/g, '<br>'));
-                popup.classList.add('active');
-            }
-        }
-
-        function openPreviewBlocks() {
-            const grid = document.getElementById('preview-blocks-grid');
-            grid.innerHTML = '';
-            
-            const unplaced = gameState.currentBlocks.filter(b => !gameState.placedBlocks.includes(b.id));
-            
-            unplaced.forEach(b => {
-                const div = document.createElement('div');
-                div.className = 'script-block';
-                div.draggable = true;
-                
-                if (gameState.selectedBlockId === b.id) {
-                    div.style.borderColor = 'var(--accent-yellow)';
-                    div.style.boxShadow = '0 0 6px var(--accent-yellow)';
-                }
-                
-                div.innerHTML = `<div class="block-type-label">${b.type}</div><div class="block-text">${processTextForGlossary(b.text.replace(/\n/g, '<br>'))}</div>`;
-                
-                div.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    closeModal('modal-preview-blocks');
-                    handleBlockClick(b.id, true); // True, panggil Popup
-                });
-                
-                div.addEventListener('dragstart', (e) => {
-                    handleDragStart(e, b.id, false, null);
-                    setTimeout(() => closeModal('modal-preview-blocks'), 50); 
-                });
-                
-                grid.appendChild(div);
-            });
-            document.getElementById('modal-preview-blocks').classList.add('active');
-        }
-
-        function openPreviewScript() {
-            const container = document.getElementById('preview-script-container');
-            container.innerHTML = '';
-            
-            const clone = document.getElementById('script-paper').cloneNode(true);
-            
-            // Clean up the clone & adjust to content height for readability
-            clone.style.width = '100%';
-            clone.style.minHeight = '100%'; // Full height to cover black background
-            clone.style.margin = '0';
-            clone.style.boxShadow = 'none';
-            clone.style.transform = 'none'; 
-            
-            container.appendChild(clone);
-            document.getElementById('modal-preview-script').classList.add('active');
-        }
-
-        /* ==================================================
-           DRAG & DROP
-           ================================================== */
-        let draggedId = null;
-        let draggedFrom = null;
-
-        function handleDragStart(e, id, isPlaced, idx) {
-            draggedId = id;
-            draggedFrom = isPlaced ? idx : null;
-            e.dataTransfer.setData('text/plain', id);
-            setTimeout(() => { e.target.style.opacity = '0.5'; }, 0);
-        }
-
-        function handleDragEnd(e) {
-            e.target.style.opacity = '1';
-            draggedId = null;
-            draggedFrom = null;
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            e.currentTarget.classList.add('drag-over');
-        }
-
-        function handleDragLeave(e) {
-            e.currentTarget.classList.remove('drag-over');
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            e.currentTarget.classList.remove('drag-over');
-            moveBlock(draggedId, parseInt(e.currentTarget.dataset.index), draggedFrom);
-        }
-
-        function handleDragOverPanel(e) { e.preventDefault(); }
-        
-        function handleDropToPanel(e) {
-            e.preventDefault();
-            if (draggedId && draggedFrom !== null) moveBlock(draggedId, null, draggedFrom);
-        }
-
-        function handleSlotClick(idx) {
-            if (gameState.selectedBlockId) {
-                let fromIdx = gameState.placedBlocks.indexOf(gameState.selectedBlockId);
-                moveBlock(gameState.selectedBlockId, idx, fromIdx !== -1 ? fromIdx : null);
-                deselectBlock(); // Clears popup auto when placed
-            } else if (gameState.placedBlocks[idx]) {
-                gameState.selectedBlockId = gameState.placedBlocks[idx];
-                selectedFromPreview = false;
-                renderBlocksAndSlots();
-                updateSelectedPopup();
-            }
-        }
-
-        function moveBlock(bId, toIdx, fromIdx) {
-            if (!bId) return;
-            if (toIdx === null) {
-                if (fromIdx !== null) gameState.placedBlocks[fromIdx] = null;
-            } else {
-                const ex = gameState.placedBlocks[toIdx];
-                if (fromIdx !== null) {
-                    gameState.placedBlocks[fromIdx] = ex;
-                    gameState.placedBlocks[toIdx] = bId;
-                } else {
-                    gameState.placedBlocks[toIdx] = bId;
-                }
-            }
-            // Automatis clear select status setelah di move/drop
-            gameState.selectedBlockId = null;
-            selectedFromPreview = false;
-            
-            renderBlocksAndSlots();
-            updateChecklist();
-            updateSelectedPopup();
-        }
-
-        function clearBoard() {
-            gameState.placedBlocks.fill(null);
-            deselectBlock();
-            renderBlocksAndSlots();
-            updateChecklist();
-        }
-
-        /* ==================================================
-           CHECKLIST & CHECK SCRIPT
-           ================================================== */
-        function updateChecklist() {
-            const pIds = gameState.placedBlocks.filter(i => i !== null);
-            const rCount = gameState.currentBlocks.filter(b => b.required).length;
-
-            const cBlocks = document.getElementById('chk-blocks');
-            const cTrans = document.getElementById('chk-trans');
-            const cLogic = document.getElementById('chk-logic');
-            const cProf = document.getElementById('chk-prof');
-
-            if (!cLogic || !cProf) return;
-
-            let placedReq = 0;
-            gameState.currentBlocks.forEach(b => {
-                if (b.required && pIds.includes(b.id)) placedReq++;
-            });
-
-            if (placedReq >= rCount && pIds.length === gameState.placedBlocks.length) {
-                if (cBlocks) cBlocks.classList.add('done');
-                if (cTrans) {
-                    if (gameState.currentBible.formatId === 'NO_TRANS') {
-                        let hasTrans = pIds.some(id => gameState.currentBlocks.find(x => x.id === id).type === 'TRANSITION');
-                        if (!hasTrans) cTrans.classList.add('done');
-                        else cTrans.classList.remove('done');
-                    } else {
-                        let hasCorrectTrans = pIds.some(id => {
-                            const b = gameState.currentBlocks.find(x => x.id === id);
-                            return b.type === 'TRANSITION' && b.isCorrect;
-                        });
-                        if (hasCorrectTrans) cTrans.classList.add('done');
-                        else cTrans.classList.remove('done');
-                    }
-                }
-                
-                let sErr = false;
-                let hErr = false;
-                let lSeq = -1;
-
-                pIds.forEach(id => {
-                    const b = gameState.currentBlocks.find(x => x.id === id);
-                    if (b.sequenceOrder > 0) {
-                        if (b.sequenceOrder < lSeq) sErr = true;
-                        lSeq = b.sequenceOrder;
-                    }
-                    if (!b.isCorrect) hErr = true;
-                });
-
-                if (!sErr) cLogic.classList.add('done'); else cLogic.classList.remove('done');
-                if (!hErr) cProf.classList.add('done'); else cProf.classList.remove('done');
-            } else {
-                if (cBlocks) cBlocks.classList.remove('done');
-                if (cTrans) cTrans.classList.remove('done');
-                cLogic.classList.remove('done');
-                cProf.classList.remove('done');
-            }
-        }
-
-        function checkScript() {
-            const pIds = gameState.placedBlocks.filter(i => i !== null);
-
-            if (pIds.length === 0) {
-                customAlert("Naskah kosong!");
-                return;
-            }
-            if (pIds.length < gameState.placedBlocks.length) {
-                customAlert("Masih ada bagian naskah yang kosong! Harap isi semua slot yang tersedia sebelum memeriksa.");
-                return;
-            }
-
-            let sSt = 100, sLg = 100, sCh = 100;
-            let msgs = [], aReq = true, lSeq = -1, hErr = false, sErr = false;
-
-            gameState.currentBlocks.filter(b => b.required).forEach(rb => {
-                if (!pIds.includes(rb.id)) aReq = false;
-            });
-
-            if (!aReq) {
-                sSt -= 30;
-                msgs.push("- <strong>Kekurangan adegan kunci.</strong> Pastikan requirement klien terpenuhi.");
-            }
-
-            pIds.forEach(id => {
-                const b = gameState.currentBlocks.find(x => x.id === id);
-                if (b && b.sequenceOrder > 0) {
-                    if (b.sequenceOrder < lSeq) sErr = true;
-                    lSeq = b.sequenceOrder;
-                }
-                if (b && !b.isCorrect) {
-                    hErr = true;
-                    sCh -= 40;
-                    sLg -= 20;
-                    msgs.push(`- <strong>KONTINUITAS/LOGIKA:</strong> ${b.hint}`);
-                }
-            });
-
-            if (sErr) {
-                sLg -= 30;
-                msgs.push("- <strong>URUTAN ADEGAN SALAH:</strong> Kejadian melompat atau sebab-akibat rancu.");
-            }
-            
-            updateChecklist();
-
-            sSt = Math.max(0, sSt);
-            sLg = Math.max(0, sLg);
-            sCh = Math.max(0, sCh);
-
-            const tot = Math.round((sSt + sLg + sCh + (aReq ? 100 : 0)) / 4);
-
-            document.getElementById('score-structure').innerText = sSt;
-            document.getElementById('score-logic').innerText = sLg;
-            document.getElementById('score-char').innerText = sCh;
-            document.getElementById('score-total').innerText = tot;
-
-            const fB = document.getElementById('eval-feedback');
-            const bNx = document.getElementById('btn-next');
-
-            if (tot >= 80 && !hErr && aReq && !sErr) {
-                fB.style.borderColor = "var(--color-scene)";
-                fB.style.color = "var(--color-scene)";
-                fB.innerHTML = "<strong>STATUS: DISETUJUI.</strong><br><br>Naskah solid, logis, dan karakter bertindak sesuai dengan kapasitas/kewenangannya.";
-                bNx.classList.remove('hidden');
-                document.getElementById('btn-revisi').innerText = "TUTUP";
-
-                if (bNx.dataset.saved !== "true") {
-                    gameState.casesCompleted++;
-                    gameState.totalScore += tot;
-                    gameState.history.push({ genre: gameState.currentBible.genre });
-                    saveData();
-                    bNx.dataset.saved = "true";
-                }
-            } else {
-                fB.style.borderColor = "var(--color-char)";
-                fB.style.color = "var(--color-char)";
-                fB.innerHTML = "<strong>STATUS: REVISI DIBUTUHKAN.</strong><br><br>" + msgs.join("<br><br>");
-                bNx.classList.add('hidden');
-                document.getElementById('btn-revisi').innerText = "REVISI NASKAH";
-            }
-            document.getElementById('modal-eval').classList.add('active');
-        }
-
-        /* ==================================================
-           SYSTEM & SAVE
-           ================================================== */
-        function nextDay() {
-            gameState.day++;
-            document.getElementById('modal-eval').classList.remove('active');
-            document.getElementById('btn-next').dataset.saved = "false";
-            setupNewCase();
-            saveData();
-        }
-
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        function saveData() {
-            localStorage.setItem('edsave', JSON.stringify({
-                d: gameState.day,
-                c: gameState.casesCompleted,
-                s: gameState.totalScore,
-                h: gameState.history
-            }));
-        }
-
-        function loadData() {
-            const sv = localStorage.getItem('edsave');
-            if (sv) {
-                const d = JSON.parse(sv);
-                gameState.day = d.d;
-                gameState.casesCompleted = d.c;
-                gameState.totalScore = d.s;
-                gameState.history = d.h || [];
-                return true;
-            }
-            return false;
-        }
-
-        function resetSave() {
-            customConfirm("Hapus progress?", () => {
-                localStorage.removeItem('edsave');
-                location.reload();
-            });
-        }
-
-        function showProfile() {
-            document.getElementById('stat-day').innerText = gameState.day;
-            document.getElementById('stat-cases').innerText = gameState.casesCompleted;
-            document.getElementById('stat-score').innerText = gameState.casesCompleted > 0 ? Math.round(gameState.totalScore / gameState.casesCompleted) : 0;
-            document.getElementById('profile-stats').classList.remove('hidden');
-            document.getElementById('modal-start').classList.add('active');
-            document.getElementById('btn-start-game').innerText = "LANJUTKAN";
-        }
-
-        function startGame() {
-            document.getElementById('modal-start').classList.remove('active');
-            if (gameState.currentBlocks.length === 0) setupNewCase();
-        }
-
-        /* ==================================================
-           CUSTOM SCROLLBAR INITIALIZATION
-           ================================================== */
-        function initW95Scrollbars() {
-            const container = document.getElementById('block-container');
-            const scrollbar = document.getElementById('script-scrollbar');
-            if (!container || !scrollbar) return;
-            const track = scrollbar.querySelector('.w95-scroll-track');
-            const thumb = scrollbar.querySelector('.w95-scroll-thumb');
-            if (!track || !thumb) return;
-
-            function updateScrollbar() {
-                const scrollHeight = container.scrollHeight;
-                const clientHeight = container.clientHeight;
-                const maxScrollTop = Math.max(0, scrollHeight - clientHeight);
-
-                if (maxScrollTop <= 0 || scrollHeight <= clientHeight) {
-                    scrollbar.classList.add('disabled');
-                    thumb.style.height = '100%';
-                    thumb.style.transform = 'translate3d(0, 0, 0)';
-                    return;
-                }
-                scrollbar.classList.remove('disabled');
-
-                const trackHeight = track.clientHeight;
-                const ratio = clientHeight / scrollHeight;
-                const minThumbHeight = window.matchMedia('(pointer: coarse)').matches ? 50 : 40;
-                const thumbHeight = Math.max(minThumbHeight, trackHeight * ratio);
-                const finalThumbHeight = Math.min(thumbHeight, trackHeight);
-                thumb.style.height = `${finalThumbHeight}px`;
-
-                const maxThumbTop = Math.max(0, trackHeight - finalThumbHeight);
-                let scrollTop = Math.max(0, Math.min(container.scrollTop, maxScrollTop));
-                const scrollRatio = maxScrollTop > 0 ? scrollTop / maxScrollTop : 0;
-                const thumbTop = scrollRatio * maxThumbTop;
-                
-                thumb.style.transform = `translate3d(0, ${thumbTop}px, 0)`;
-            }
-
-            container.addEventListener('scroll', updateScrollbar, { passive: true });
-            window.addEventListener('resize', updateScrollbar);
-            const observer = new MutationObserver(() => requestAnimationFrame(updateScrollbar));
-            observer.observe(container, { childList: true, subtree: true, attributes: true, characterData: true });
-
-            let isDragging = false;
-            let pointerStartY = 0;
-            let scrollStartTop = 0;
-
-            function onPointerDown(e) {
-                if (scrollbar.classList.contains('disabled')) return;
-                isDragging = true;
-                
-                if (e.touches) {
-                    pointerStartY = e.touches[0].clientY;
-                } else {
-                    pointerStartY = e.clientY;
-                }
-                
-                scrollStartTop = container.scrollTop;
-                thumb.classList.add('dragging');
-                
-                document.addEventListener('pointermove', onMove, { passive: false });
-                document.addEventListener('pointerup', onUp);
-                document.addEventListener('pointercancel', onUp);
-                
-                document.addEventListener('touchmove', onTouchMove, { passive: false });
-                document.addEventListener('touchend', onUp);
-                document.addEventListener('touchcancel', onUp);
-
-                if (e.cancelable) e.preventDefault();
-                e.stopPropagation();
-            }
-
-            function onMove(e) {
-                if (!isDragging) return;
-                if (e.cancelable) e.preventDefault();
-                doScroll(e.clientY);
-            }
-            
-            function onTouchMove(e) {
-                if (!isDragging) return;
-                if (e.cancelable) e.preventDefault();
-                doScroll(e.touches[0].clientY);
-            }
-
-            function doScroll(clientY) {
-                const deltaY = clientY - pointerStartY;
-                const trackHeight = track.clientHeight;
-                const thumbHeight = thumb.offsetHeight;
-                const maxThumbTop = Math.max(0, trackHeight - thumbHeight);
-                const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight);
-
-                if (maxThumbTop <= 0 || maxScrollTop <= 0) return;
-                
-                const scrollPerPixel = maxScrollTop / maxThumbTop;
-                let newScrollTop = scrollStartTop + (deltaY * scrollPerPixel);
-                newScrollTop = Math.max(0, Math.min(newScrollTop, maxScrollTop));
-                
-                container.scrollTop = newScrollTop;
-            }
-
-            function onUp(e) {
-                if (!isDragging) return;
-                isDragging = false;
-                thumb.classList.remove('dragging');
-                
-                document.removeEventListener('pointermove', onMove);
-                document.removeEventListener('pointerup', onUp);
-                document.removeEventListener('pointercancel', onUp);
-                
-                document.removeEventListener('touchmove', onTouchMove);
-                document.removeEventListener('touchend', onUp);
-                document.removeEventListener('touchcancel', onUp);
-
-                requestAnimationFrame(updateScrollbar);
-            }
-
-            thumb.addEventListener('pointerdown', onPointerDown);
-            thumb.addEventListener('touchstart', onPointerDown, {passive: false});
-
-            function handleTrackClick(e) {
-                if (e.target === thumb || scrollbar.classList.contains('disabled')) return;
-                const rect = track.getBoundingClientRect();
-                const clickY = (e.touches ? e.touches[0].clientY : e.clientY) - rect.top;
-                const thumbRect = thumb.getBoundingClientRect();
-                const thumbTop = thumbRect.top - rect.top;
-                const thumbBottom = thumbTop + thumb.offsetHeight;
-                const pageAmount = container.clientHeight * 0.85;
-
-                if (clickY < thumbTop) {
-                    container.scrollBy({ top: -pageAmount, behavior: 'smooth' });
-                } else if (clickY > thumbBottom) {
-                    container.scrollBy({ top: pageAmount, behavior: 'smooth' });
-                }
-                if (e.cancelable) e.preventDefault();
-            }
-
-            track.addEventListener('pointerdown', handleTrackClick);
-            track.addEventListener('touchstart', handleTrackClick, {passive: false});
-
-            requestAnimationFrame(() => updateScrollbar());
-            setTimeout(updateScrollbar, 100);
-            setTimeout(updateScrollbar, 300);
-        }
-
-        window.onload = function() {
-            if (loadData()) {
-                document.getElementById('btn-start-game').innerText = "LANJUTKAN";
-            }
-            initW95Scrollbars();
-        };
-
-    </script>
+  `;
+  $("genericOverlay").classList.add("active");
+  $("closeGeneric").onclick = () => $("genericOverlay").classList.remove("active");
+}
+
+/* ============================================================
+   ENDING ENGINE
+   ============================================================ */
+
+function calculateEnding(){
+  if(state.level <= 2 && state.jobs <= 1) return "bankrupt";
+  if(state.mistakes >= 8) return "fired";
+  if(state.coffeesUsed >= 3 && state.jobs < 5) return "burnout";
+  if(state.score >= 9000 && state.mistakes <= 2) return "industry_star";
+  if(state.score >= 5500 && state.mistakes <= 5) return "client_magnet";
+  if(state.jobs >= 6 && state.mistakes <= 7) return "established_editor";
+  if(state.jobs >= 3) return "freelance_survivor";
+  return "retirement";
+}
+
+/* ============================================================
+   GAME OVER
+   ============================================================ */
+
+async function endGame(reason){
+  if(!state.sessionActive) return;
+
+  state.sessionActive = false;
+  stopTimer();
+
+  const endingKey = calculateEnding();
+  const ending = ENDINGS[endingKey];
+
+  const record = {
+    name: state.player,
+    score: state.score,
+    level: state.level,
+    jobs: state.jobs,
+    mistakes: state.mistakes,
+    coffees: state.coffeesUsed,
+    ending: endingKey,
+    date: new Date().toISOString()
+  };
+
+  const image = $("resultImage");
+  const loading = $("resultLoading");
+
+  $("resultOverlay").classList.add("active");
+  loading.style.display = "block";
+  image.style.display = "none";
+
+  $("resultTitle").textContent = ending.title;
+  $("resultStory").textContent = ending.story;
+  $("finalScore").textContent = state.score;
+  $("finalLevel").textContent = state.level;
+  $("finalJobs").textContent = state.jobs;
+  $("finalMistakes").textContent = state.mistakes;
+  $("rankBox").style.display = "none";
+
+  /* Try Firebase Storage first. */
+  let imageUrl = null;
+  if(window.FirebaseGame?.enabled()){
+    imageUrl = await window.FirebaseGame.getEndingImage(ending.imagePath);
+  }
+
+  /*
+    If Storage is not configured yet, use a generated local SVG fallback.
+    This means the game never shows a broken-image icon during testing.
+  */
+  if(!imageUrl){
+    imageUrl = makeFallbackEndingImage(ending.title);
+  }
+
+  image.src = imageUrl;
+  image.style.display = "block";
+  loading.style.display = "none";
+
+  /* Save to localStorage immediately. */
+  saveLocalScore(record);
+
+  /* Save to Firebase when configured and authenticated. */
+  if(window.FirebaseGame?.enabled()){
+    await window.FirebaseGame.saveScore(record);
+  }
+
+  const rank = await calculateRank(record);
+  if(rank && rank <= MAX_HIGHSCORES){
+    $("rankBox").style.display = "block";
+    $("rankBox").textContent = `NEW HIGHSCORE!  RANK #${rank}`;
+  }
+}
+
+function makeFallbackEndingImage(title){
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720">
+    <rect width="1280" height="720" fill="#20201e"/>
+    <rect x="55" y="55" width="1170" height="610" fill="#2a2a28" stroke="#d6b054" stroke-width="4"/>
+    <text x="640" y="330" text-anchor="middle" fill="#d6b054"
+      font-family="monospace" font-size="72" font-weight="bold">${escapeXml(title)}</text>
+    <text x="640" y="405" text-anchor="middle" fill="#e6dfc8"
+      font-family="monospace" font-size="28">EDITOR SCRIPT — ENDING</text>
+  </svg>`;
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+}
+
+function escapeXml(text){
+  return String(text).replace(/[<>&'"]/g, c => ({
+    "<":"&lt;",">":"&gt;","&":"&amp;","'":"&apos;",'"':"&quot;"
+  }[c]));
+}
+
+/* ============================================================
+   HIGHSCORE
+   ============================================================ */
+
+function getLocalScores(){
+  try{
+    return JSON.parse(localStorage.getItem(LOCAL_HS_KEY) || "[]");
+  }catch{
+    return [];
+  }
+}
+
+function saveLocalScore(record){
+  const list = getLocalScores();
+  list.push(record);
+  list.sort((a,b) => Number(b.score || 0) - Number(a.score || 0));
+  localStorage.setItem(
+    LOCAL_HS_KEY,
+    JSON.stringify(list.slice(0,MAX_HIGHSCORES))
+  );
+}
+
+async function getScores(){
+  if(window.FirebaseGame?.enabled()){
+    const remote = await window.FirebaseGame.getHighscores();
+    if(remote.length) return remote;
+  }
+  return getLocalScores();
+}
+
+async function calculateRank(record){
+  const scores = await getScores();
+  const index = scores.findIndex(s =>
+    s.name === record.name &&
+    Number(s.score) === Number(record.score) &&
+    Number(s.jobs) === Number(record.jobs)
+  );
+  return index >= 0 ? index + 1 : null;
+}
+
+async function renderHighscores(){
+  const content = $("highscoreContent");
+  content.innerHTML = `<div class="loading">LOADING...</div>`;
+
+  const scores = await getScores();
+
+  if(!scores.length){
+    content.innerHTML = `<div class="hs-empty">NO SCORES YET.<br>BE THE FIRST EDITOR.</div>`;
+    return;
+  }
+
+  scores.sort((a,b) => Number(b.score || 0) - Number(a.score || 0));
+
+  let html = `
+    <table class="hs-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>PLAYER</th>
+          <th>SCORE</th>
+          <th>JOBS</th>
+          <th>ENDING</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  scores.slice(0,MAX_HIGHSCORES).forEach((s,i) => {
+    const ending = ENDINGS[s.ending]?.title || String(s.ending || "-");
+    html += `
+      <tr>
+        <td>${i+1}</td>
+        <td>${escapeHtml(s.name || "UNKNOWN")}</td>
+        <td>${Number(s.score || 0).toLocaleString("id-ID")}</td>
+        <td>${Number(s.jobs || 0)}</td>
+        <td>${escapeHtml(ending)}</td>
+      </tr>
+    `;
+  });
+
+  html += `</tbody></table>`;
+  content.innerHTML = html;
+}
+
+$("highscoreBtn").onclick = async () => {
+  showScreen("highscoreScreen");
+  await renderHighscores();
+};
+$("hsRefreshBtn").onclick = renderHighscores;
+$("hsBackBtn").onclick = () => showScreen("menuScreen");
+
+$("resultHsBtn").onclick = async () => {
+  $("resultOverlay").classList.remove("active");
+  showScreen("highscoreScreen");
+  await renderHighscores();
+};
+
+$("resultMenuBtn").onclick = () => {
+  $("resultOverlay").classList.remove("active");
+  showScreen("menuScreen");
+};
+
+/* ============================================================
+   QUIT
+   ============================================================ */
+
+$("quitBtn").onclick = () => {
+  stopTimer();
+  state.sessionActive = false;
+  showScreen("menuScreen");
+};
+
+/* ============================================================
+   TUTORIAL
+   ============================================================ */
+
+const TUTORIAL = [
+  {
+    target:"tClient",
+    text:"Baca CLIENT BRIEF terlebih dahulu. Brief menjelaskan situasi, karakter, lokasi, dan kebutuhan adegan.",
+    arrow:"↓"
+  },
+  {
+    target:"tClient",
+    text:"Perhatikan DEADLINE. Waktu akan terus berjalan selama kamu mengerjakan pekerjaan.",
+    arrow:"↓"
+  },
+  {
+    target:"tClient",
+    text:"Gunakan COFFEE untuk mendapatkan tambahan waktu. Kamu memiliki 3 Coffee dalam satu permainan.",
+    arrow:"↓"
+  },
+  {
+    target:"tBlocks",
+    text:"Di SCRIPT BLOCKS terdapat potongan-potongan naskah. Tidak semuanya benar. Kamu harus membaca dan memilih dengan teliti.",
+    arrow:"←"
+  },
+  {
+    target:"tPaper",
+    text:"Seret block ke SCRIPT PAPER. Kamu juga dapat mengklik block untuk memasukkannya ke slot kosong.",
+    arrow:"←"
+  },
+  {
+    target:"tPaper",
+    text:"Susun elemen sesuai struktur naskah: Scene Heading → Action → Character → Dialogue. Level lanjut dapat menambahkan Transition.",
+    arrow:"↓"
+  },
+  {
+    target:"tBlocks",
+    text:"CHECKLIST membantu memastikan elemen wajib sudah ada. Gunakan sebagai alat pemeriksaan, bukan sebagai pengganti membaca brief.",
+    arrow:"←"
+  },
+  {
+    target:"tBlocks",
+    text:"Gunakan HINT ketika benar-benar membutuhkan bantuan. Gunakan KAMUS untuk memahami fungsi setiap elemen skenario.",
+    arrow:"←"
+  },
+  {
+    target:"tPaper",
+    text:"Jika semua sudah benar, tekan SUBMIT. Kesalahan akan mengurangi waktu, jadi periksa sebelum mengirim.",
+    arrow:"↓"
+  },
+  {
+    target:"tPaper",
+    text:"Selesaikan sebanyak mungkin pekerjaan untuk mendapatkan SCORE tinggi. Di akhir permainan, performamu menentukan ENDING kariermu.",
+    arrow:"↓"
+  }
+];
+
+let tutorialIndex = 0;
+
+$("tutorialBtn").onclick = () => {
+  tutorialIndex = 0;
+  showScreen("tutorialScreen");
+  renderTutorial();
+};
+
+$("tutorialNext").onclick = () => {
+  tutorialIndex++;
+  if(tutorialIndex >= TUTORIAL.length){
+    showScreen("menuScreen");
+    return;
+  }
+  renderTutorial();
+};
+
+function renderTutorial(){
+  const step = TUTORIAL[tutorialIndex];
+  $("tutorialStepLabel").textContent = `${tutorialIndex+1} / ${TUTORIAL.length}`;
+  $("tutorialText").textContent = step.text;
+  $("tutorialNext").textContent =
+    tutorialIndex === TUTORIAL.length - 1 ? "DONE" : "NEXT";
+
+  const target = $(step.target);
+  const highlight = $("tHighlight");
+  const arrow = $("tArrow");
+  const demo = document.querySelector(".tutorial-demo").getBoundingClientRect();
+  const rect = target.getBoundingClientRect();
+
+  const x = rect.left - demo.left;
+  const y = rect.top - demo.top;
+
+  highlight.style.left = `${x-5}px`;
+  highlight.style.top = `${y-5}px`;
+  highlight.style.width = `${rect.width+10}px`;
+  highlight.style.height = `${rect.height+10}px`;
+
+  arrow.textContent = step.arrow;
+
+  if(step.arrow === "←"){
+    arrow.style.left = `${Math.max(0,x-55)}px`;
+    arrow.style.top = `${y + rect.height/2 - 25}px`;
+  }else{
+    arrow.style.left = `${x + rect.width/2 - 20}px`;
+    arrow.style.top = `${Math.max(0,y-55)}px`;
+  }
+}
+
+/* ============================================================
+   GLOBAL KEYBOARD
+   ============================================================ */
+
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape"){
+    if($("genericOverlay").classList.contains("active")){
+      $("genericOverlay").classList.remove("active");
+    }
+  }
+});
+
+/* ============================================================
+   FIREBASE STATUS
+   ============================================================ */
+
+window.addEventListener("firebase-ready", () => {
+  console.log("Firebase siap. Anonymous user:", window.FirebaseGame.user()?.uid);
+});
+
+window.addEventListener("firebase-disabled", () => {
+  console.info("Firebase belum dikonfigurasi. Game menggunakan localStorage.");
+});
+
+window.addEventListener("firebase-error", e => {
+  console.warn("Firebase error:", e.detail);
+});
+
+/* Prevent accidental browser drag image behavior. */
+document.addEventListener("dragstart", e => {
+  if(e.target.tagName === "IMG") e.preventDefault();
+});
+
+/* Initial menu. */
+showScreen("menuScreen");
+</script>
 </body>
 </html>
